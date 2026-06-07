@@ -115,7 +115,21 @@ export default function TransactionsPage() {
           {filteredTransactions.length > 0 ? (
             <div className="space-y-2.5">
               {filteredTransactions.map(tx => (
-                <div key={tx.id} className="bg-white rounded-[14px] p-3 border border-gray-100 shadow-[0_2px_8px_-4px_rgba(0,0,0,0.05)] flex items-center justify-between">
+                <div 
+                  key={tx.id} 
+                  onClick={() => {
+                    const params = new URLSearchParams({
+                      id: tx.id.toString(),
+                      title: tx.title,
+                      date: tx.date,
+                      amount: tx.amount,
+                      status: tx.status,
+                      type: tx.type
+                    });
+                    router.push(`/dashboard/transactions/receipt?${params.toString()}`);
+                  }}
+                  className="bg-white rounded-[14px] p-3 border border-gray-100 shadow-[0_2px_8px_-4px_rgba(0,0,0,0.05)] flex items-center justify-between cursor-pointer hover:bg-gray-50 active:scale-[0.99] transition-all"
+                >
                   <div className="flex items-center gap-3">
                     <div className={`w-10 h-10 rounded-[10px] flex items-center justify-center ${tx.iconBg} ${tx.iconColor}`}>
                       <tx.icon size={18} />
