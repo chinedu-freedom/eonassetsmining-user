@@ -33,3 +33,12 @@ body {
 .animate-\[marquee_15s_linear_infinite\] {
   animation: marquee 15s linear infinite;
 }
+
+@keyframes scrollVertical {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-50%); }
+}
+
+.animate-\[scrollVertical_15s_linear_infinite\] {
+  animation: scrollVertical 15s linear infinite;
+}
