@@ -21,13 +21,53 @@ import {
   Settings,
   HelpCircle,
   LogOut,
-  ChevronRight
+  ChevronRight,
+  Search,
+  X,
+  CheckCircle2
 } from "lucide-react";
 import Link from "next/link";
+
+const languages = [
+  { code: 'EN', name: 'English', sub: 'English', short: 'GB' },
+  { code: 'ES', name: 'Español', sub: 'Spanish', short: 'ES' },
+  { code: 'FR', name: 'Français', sub: 'French', short: 'FR' },
+  { code: 'DE', name: 'Deutsch', sub: 'German', short: 'DE' },
+  { code: 'IT', name: 'Italiano', sub: 'Italian', short: 'IT' },
+  { code: 'PT', name: 'Português', sub: 'Portuguese', short: 'BR' },
+  { code: 'RU', name: 'Русский', sub: 'Russian', short: 'RU' },
+  { code: 'ZH', name: '中文', sub: 'Chinese', short: 'CN' },
+  { code: 'JA', name: '日本語', sub: 'Japanese', short: 'JP' },
+  { code: 'KO', name: '한국어', sub: 'Korean', short: 'KR' },
+  { code: 'AR', name: 'العربية', sub: 'Arabic', short: 'SA' },
+  { code: 'HI', name: 'हिन्दी', sub: 'Hindi', short: 'IN' },
+  { code: 'ID', name: 'Bahasa Indonesia', sub: 'Indonesian', short: 'ID' },
+  { code: 'TR', name: 'Türkçe', sub: 'Turkish', short: 'TR' },
+  { code: 'VI', name: 'Tiếng Việt', sub: 'Vietnamese', short: 'VN' },
+  { code: 'TH', name: 'ไทย', sub: 'Thai', short: 'TH' },
+  { code: 'NL', name: 'Nederlands', sub: 'Dutch', short: 'NL' },
+  { code: 'PL', name: 'Polski', sub: 'Polish', short: 'PL' }
+];
 
 export default function AccountPage() {
   const [currency, setCurrency] = useState("USD");
   const [showBalance, setShowBalance] = useState(true);
+  const [showLanguageModal, setShowLanguageModal] = useState(false);
+  const [currentLang, setCurrentLang] = useState("EN");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [showToast, setShowToast] = useState(false);
+  const [profilePic, setProfilePic] = useState(null);
+
+  const handleProfilePicChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setProfilePic(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
   const toggleCurrency = () => {
     setCurrency(prev => prev === "USD" ? "NGN" : "USD");
@@ -65,21 +105,37 @@ export default function AccountPage() {
       {/* Header */}
       <div className="bg-white px-4 pt-4 pb-3 flex justify-between items-center z-10 sticky top-0 shadow-sm border-b border-gray-100">
         <div className="flex items-center gap-2.5">
-          <div className="w-10 h-10 bg-[#3b82f6] rounded-full flex items-center justify-center text-white shadow-sm">
-            <User size={20} fill="currentColor" className="opacity-80" />
-          </div>
+          <label className="relative w-10 h-10 bg-[#3b82f6] rounded-full flex items-center justify-center text-white shadow-sm cursor-pointer overflow-hidden group shrink-0">
+            {profilePic ? (
+              <img src={profilePic} alt="Profile" className="w-full h-full object-cover" />
+            ) : (
+              <User size={20} fill="currentColor" className="opacity-80" />
+            )}
+            <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+              <Upload size={14} className="text-white" />
+            </div>
+            <input 
+              type="file" 
+              accept="image/*"
+              className="hidden" 
+              onChange={handleProfilePicChange} 
+            />
+          </label>
           <div>
             <h1 className="text-[#1e3a8a] text-[15px] font-bold leading-tight">Spark</h1>
             <p className="text-gray-400 text-[10px] mt-0.5">chinedufreedom10@gmail.com</p>
           </div>
         </div>
         <div className="flex items-center gap-1.5">
-          <button className="flex items-center gap-1 bg-gray-50 px-2 py-1.5 rounded-lg text-[10px] font-bold text-gray-500 hover:bg-gray-100 transition-colors border border-gray-100">
-            <Globe size={12} className="text-[#3b82f6]" /> EN
+          <button 
+            onClick={() => setShowLanguageModal(true)}
+            className="flex items-center gap-1 bg-gray-50 px-2 py-1.5 rounded-lg text-[10px] font-bold text-gray-500 hover:bg-gray-100 transition-colors border border-gray-100"
+          >
+            <Globe size={12} className="text-[#3b82f6]" /> {currentLang}
           </button>
-          <button className="w-7 h-7 bg-gray-50 rounded-lg flex items-center justify-center text-[#3b82f6] hover:bg-gray-100 transition-colors border border-gray-100">
+          <Link href="/dashboard/help" className="w-7 h-7 bg-gray-50 rounded-lg flex items-center justify-center text-[#3b82f6] hover:bg-gray-100 transition-colors border border-gray-100">
             <MessageCircle size={12} fill="currentColor" className="opacity-80" />
-          </button>
+          </Link>
         </div>
       </div>
 
@@ -180,28 +236,129 @@ export default function AccountPage() {
 
         {/* Menu List */}
         <div className="bg-white rounded-[16px] border border-gray-100 shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] overflow-hidden">
-          {menuItems.map((item, index) => (
-            <Link 
-              key={index} 
-              href={item.href}
-              className={`flex items-center justify-between px-4 py-3.5 hover:bg-gray-50 transition-colors ${
-                index !== menuItems.length - 1 ? 'border-b border-gray-50' : ''
-              }`}
-            >
-              <div className="flex items-center gap-3">
-                <div className={`w-8 h-8 rounded-[10px] flex items-center justify-center ${item.bg} ${item.color}`}>
-                  <item.icon size={14} />
+          {menuItems.map((item, index) => {
+            const isDownload = item.label === "Download App";
+            return (
+              <Link 
+                key={index} 
+                href={item.href}
+                onClick={(e) => {
+                  if (isDownload) {
+                    e.preventDefault();
+                    setShowToast(true);
+                    setTimeout(() => setShowToast(false), 3000);
+                  }
+                }}
+                className={`flex items-center justify-between px-4 py-3.5 hover:bg-gray-50 transition-colors ${
+                  index !== menuItems.length - 1 ? 'border-b border-gray-50' : ''
+                }`}
+              >
+                <div className="flex items-center gap-3">
+                  <div className={`w-8 h-8 rounded-[10px] flex items-center justify-center ${item.bg} ${item.color}`}>
+                    <item.icon size={14} />
+                  </div>
+                  <span className={`text-[13px] font-medium ${item.label === 'Logout' ? 'text-[#ef4444]' : 'text-[#334155]'}`}>
+                    {item.label}
+                  </span>
                 </div>
-                <span className={`text-[13px] font-medium ${item.label === 'Logout' ? 'text-[#ef4444]' : 'text-[#334155]'}`}>
-                  {item.label}
-                </span>
-              </div>
-              <ChevronRight size={14} className="text-gray-300" />
-            </Link>
-          ))}
+                <ChevronRight size={14} className="text-gray-300" />
+              </Link>
+            );
+          })}
         </div>
 
       </div>
+
+      {/* Language Modal (Bottom Sheet) */}
+      {showLanguageModal && (
+        <div className="fixed inset-0 z-50 flex flex-col justify-end">
+          {/* Overlay */}
+          <div 
+            className="absolute inset-0 bg-black/40 backdrop-blur-sm" 
+            onClick={() => setShowLanguageModal(false)}
+          ></div>
+
+          {/* Modal Content */}
+          <div className="relative bg-white w-full max-w-[480px] mx-auto rounded-t-[24px] overflow-hidden flex flex-col max-h-[85vh] animate-in slide-in-from-bottom-full duration-300">
+            
+            {/* Header */}
+            <div className="bg-[#2563eb] p-5 flex justify-between items-center text-white">
+              <h2 className="text-[16px] font-bold">Select Language</h2>
+              <button 
+                onClick={() => setShowLanguageModal(false)}
+                className="w-7 h-7 bg-white/20 rounded-full flex items-center justify-center hover:bg-white/30 transition-colors"
+              >
+                <X size={14} />
+              </button>
+            </div>
+
+            {/* Search */}
+            <div className="p-3 border-b border-gray-100 flex items-center gap-2">
+              <Search size={16} className="text-gray-400 ml-2" />
+              <input 
+                type="text"
+                placeholder="Search language..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full py-2 px-2 text-[13px] outline-none placeholder:text-gray-400"
+              />
+            </div>
+
+            {/* Language List */}
+            <div className="p-4 space-y-3 overflow-y-auto flex-1">
+              {languages
+                .filter(l => l.name.toLowerCase().includes(searchQuery.toLowerCase()) || l.sub.toLowerCase().includes(searchQuery.toLowerCase()))
+                .map((lang) => {
+                const isSelected = currentLang === lang.code;
+                return (
+                  <button
+                    key={lang.code}
+                    onClick={() => {
+                      setCurrentLang(lang.code);
+                      setTimeout(() => setShowLanguageModal(false), 200);
+                    }}
+                    className={`w-full flex items-center justify-between p-3 rounded-[12px] border transition-colors ${
+                      isSelected 
+                        ? 'border-[#3b82f6] bg-[#eff6ff]' 
+                        : 'border-gray-200 hover:border-[#3b82f6] bg-white'
+                    }`}
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="relative w-10 h-10 bg-white border border-gray-100 rounded-xl flex items-center justify-center text-[12px] font-bold text-gray-400 shadow-sm">
+                        {lang.short}
+                        {isSelected && (
+                          <div className="absolute -top-1 -right-1 bg-white rounded-full">
+                            <CheckCircle2 size={14} className="text-[#10b981]" fill="#fff" />
+                          </div>
+                        )}
+                      </div>
+                      <div className="text-left">
+                        <div className="text-[13px] font-bold text-[#0f172a]">{lang.name}</div>
+                        <div className="text-[11px] text-gray-500">{lang.sub}</div>
+                      </div>
+                    </div>
+                    <ChevronRight size={16} className={isSelected ? 'text-[#3b82f6]' : 'text-gray-300'} />
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Coming Soon Toast */}
+      {showToast && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center pointer-events-none p-4">
+          <div className="bg-white rounded-[24px] shadow-[0_8px_30px_rgb(0,0,0,0.12)] px-5 py-4 flex items-center gap-4 animate-in fade-in zoom-in-95 duration-300 pointer-events-auto max-w-[320px] w-full border border-gray-100/50">
+            <div className="w-12 h-12 bg-[#eff6ff] rounded-[14px] flex items-center justify-center shrink-0">
+              <div className="w-6 h-6 bg-[#2563eb] rounded-full flex items-center justify-center text-white">
+                <Info size={14} strokeWidth={3} />
+              </div>
+            </div>
+            <span className="text-[#0f172a] text-[18px] font-bold">Coming soon</span>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
