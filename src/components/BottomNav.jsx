@@ -27,9 +27,9 @@ export default function BottomNav() {
               <div className="absolute inset-0 bg-[#eef2ff] rounded-full scale-[1.3] -z-10"></div>
               <Link
                 href={item.href}
-                className="w-[52px] h-[52px] bg-[#3C3CF6] rounded-full flex items-center justify-center shadow-md text-white hover:bg-[#2e2ee6] transition-colors"
+                className="w-[48px] h-[48px] bg-[#3b82f6] rounded-full flex items-center justify-center shadow-md text-white hover:bg-[#2563eb] transition-colors"
               >
-                <item.icon size={22} fill="currentColor" strokeWidth={1.5} className="text-white" />
+                <item.icon size={20} fill="currentColor" strokeWidth={1.5} className="text-white" />
               </Link>
             </div>
           );
@@ -39,17 +39,17 @@ export default function BottomNav() {
           <Link
             key={index}
             href={item.href}
-            className={`flex flex-col items-center justify-center w-[60px] gap-1.5 ${
-              isActive ? "text-[#3C3CF6]" : "text-gray-400"
+            className={`flex flex-col items-center justify-center w-[60px] gap-1 ${
+              isActive ? "text-[#3b82f6]" : "text-gray-400"
             }`}
           >
             <item.icon 
-              size={22} 
+              size={20} 
               strokeWidth={isActive ? 2 : 1.5}
-              className={isActive ? "text-[#3C3CF6]" : "text-gray-400"} 
+              className={isActive ? "text-[#3b82f6]" : "text-gray-400"} 
               fill={isActive && item.name !== "Mining Plans" ? "currentColor" : "none"}
             />
-            <span className="text-[10px] font-semibold tracking-tight">{item.name}</span>
+            <span className="text-[9px] font-medium tracking-tight">{item.name}</span>
           </Link>
         );
       })}
