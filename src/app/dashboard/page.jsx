@@ -1,8 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { Globe, MessageCircle, Eye, EyeOff, Wallet, CreditCard, Volume2, HelpCircle, CheckSquare, Users, Loader, Download, Gift, Calendar, Activity, ArrowDown, DollarSign, BadgeCheck, BarChart2, ChevronRight, X, Lock, Coins } from "lucide-react";
+import { Globe, MessageCircle, Eye, EyeOff, Wallet, CreditCard, Volume2, HelpCircle, CheckSquare, Users, Loader, Download, Gift, Calendar, Activity, ArrowDown, DollarSign, BadgeCheck, BarChart2, ChevronRight, X, Lock, Coins, Search, CheckCircle2 } from "lucide-react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 const activities = [
   { type: "deposit", name: "", text: "deposited", amount: "+$1,910", iconBg: "bg-green-100", iconCol: "text-green-600", Icon: ArrowDown },
@@ -13,9 +14,51 @@ const activities = [
 ];
 const doubledActivities = [...activities, ...activities];
 
+const languages = [
+  { code: 'EN', name: 'English', sub: 'English', short: 'GB' },
+  { code: 'ES', name: 'Español', sub: 'Spanish', short: 'ES' },
+  { code: 'FR', name: 'Français', sub: 'French', short: 'FR' },
+  { code: 'DE', name: 'Deutsch', sub: 'German', short: 'DE' },
+  { code: 'IT', name: 'Italiano', sub: 'Italian', short: 'IT' },
+  { code: 'PT', name: 'Português', sub: 'Portuguese', short: 'BR' },
+  { code: 'RU', name: 'Русский', sub: 'Russian', short: 'RU' },
+  { code: 'ZH', name: '中文', sub: 'Chinese', short: 'CN' },
+  { code: 'JA', name: '日本語', sub: 'Japanese', short: 'JP' },
+  { code: 'KO', name: '한국어', sub: 'Korean', short: 'KR' },
+  { code: 'AR', name: 'العربية', sub: 'Arabic', short: 'SA' },
+  { code: 'HI', name: 'हिन्दी', sub: 'Hindi', short: 'IN' },
+  { code: 'ID', name: 'Bahasa Indonesia', sub: 'Indonesian', short: 'ID' },
+  { code: 'TR', name: 'Türkçe', sub: 'Turkish', short: 'TR' },
+  { code: 'VI', name: 'Tiếng Việt', sub: 'Vietnamese', short: 'VN' },
+  { code: 'TH', name: 'ไทย', sub: 'Thai', short: 'TH' },
+  { code: 'NL', name: 'Nederlands', sub: 'Dutch', short: 'NL' },
+  { code: 'PL', name: 'Polski', sub: 'Polish', short: 'PL' }
+];
+
 export default function DashboardPage() {
+  const router = useRouter();
+  const [currency, setCurrency] = useState("USDT");
   const [showBalance, setShowBalance] = useState(false);
   const [showDailyModal, setShowDailyModal] = useState(false);
+  const [showToast, setShowToast] = useState(false);
+  const [showLanguageModal, setShowLanguageModal] = useState(false);
+  const [currentLang, setCurrentLang] = useState("EN");
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const toggleCurrency = () => {
+    setCurrency(prev => prev === "USDT" ? "NGN" : "USDT");
+  };
+
+  const balances = {
+    USDT: {
+      total: "$5.10"
+    },
+    NGN: {
+      total: "₦6,938.78"
+    }
+  };
+
+  const currentBalance = balances[currency];
 
   return (
     <div className="flex flex-col h-full bg-[#f8f9fa] overflow-y-auto  [&::-webkit-scrollbar]:hidden">
@@ -29,11 +72,17 @@ export default function DashboardPage() {
           <span className="text-[#1e3a8a] font-bold text-[15px]">EonAssets</span>
         </div>
         <div className="flex items-center gap-2">
-          <button className="flex items-center gap-1 bg-white border border-gray-200 px-2.5 py-1 rounded-full text-[11px] font-bold text-[#1e3a8a] shadow-sm hover:bg-gray-50 transition-colors">
+          <button 
+            onClick={() => setShowLanguageModal(true)}
+            className="flex items-center gap-1 bg-white border border-gray-200 px-2.5 py-1 rounded-full text-[11px] font-bold text-[#1e3a8a] shadow-sm hover:bg-gray-50 transition-colors"
+          >
             <Globe size={13} className="text-[#3b82f6]" />
-            EN
+            {currentLang}
           </button>
-          <button className="bg-[#eff6ff] p-1.5 rounded-full text-[#3b82f6] hover:bg-[#dbeafe] transition-colors">
+          <button 
+            onClick={() => router.push('/dashboard/help')}
+            className="bg-[#eff6ff] p-1.5 rounded-full text-[#3b82f6] hover:bg-[#dbeafe] transition-colors"
+          >
             <MessageCircle size={16} />
           </button>
         </div>
@@ -48,14 +97,17 @@ export default function DashboardPage() {
           
           <div className="flex justify-between items-start mb-2 relative z-10">
             <p className="text-white/80 text-[13px] font-medium">Total Balance</p>
-            <button className="bg-white/10 px-2 py-1 rounded-md text-[11px] font-bold flex items-center gap-1 hover:bg-white/20 transition-colors backdrop-blur-sm border border-white/10">
-              USD <span className="text-[7px] opacity-70">▼</span>
+            <button 
+              onClick={toggleCurrency}
+              className="bg-white/10 px-2 py-1 rounded-md text-[11px] font-bold flex items-center gap-1 hover:bg-white/20 transition-colors backdrop-blur-sm border border-white/10"
+            >
+              {currency} <span className="text-[7px] opacity-70">▼</span>
             </button>
           </div>
           
           <div className="flex items-center gap-2 mb-5 relative z-10">
             <h2 className="text-[28px] font-bold tracking-wider leading-none">
-              {showBalance ? "$0.00" : "****"}
+              {showBalance ? currentBalance.total : "****"}
             </h2>
             <button 
               onClick={() => setShowBalance(!showBalance)}
@@ -90,21 +142,21 @@ export default function DashboardPage() {
         {/* Action Grid */}
         <div className="bg-white rounded-[18px] p-4 shadow-sm border border-gray-100">
           <div className="grid grid-cols-4 gap-y-5 gap-x-2">
-            <div className="flex flex-col items-center gap-1.5 cursor-pointer group">
+            <div onClick={() => router.push('/dashboard/investments')} className="flex flex-col items-center gap-1.5 cursor-pointer group">
               <div className="w-10 h-10 bg-[#eff6ff] rounded-xl flex items-center justify-center group-hover:bg-[#dbeafe] transition-colors shadow-sm">
                 <Wallet className="text-[#3b82f6]" size={20} />
               </div>
               <span className="text-[10px] text-[#1e293b] font-medium">My Assets</span>
             </div>
 
-            <div className="flex flex-col items-center gap-1.5 cursor-pointer group">
+            <div onClick={() => router.push('/dashboard/about')} className="flex flex-col items-center gap-1.5 cursor-pointer group">
               <div className="w-10 h-10 bg-[#eff6ff] rounded-xl flex items-center justify-center group-hover:bg-[#dbeafe] transition-colors shadow-sm">
                 <HelpCircle className="text-[#3b82f6]" size={20} />
               </div>
               <span className="text-[10px] text-[#1e293b] font-medium">Info</span>
             </div>
 
-            <div className="flex flex-col items-center gap-1.5 cursor-pointer group relative">
+            <div onClick={() => router.push('/dashboard/task')} className="flex flex-col items-center gap-1.5 cursor-pointer group relative">
               <div className="absolute -top-1.5 right-1 bg-[#3b82f6] text-white text-[7px] font-bold px-1 py-[1px] rounded z-10 shadow-sm">
                 NEW
               </div>
@@ -114,7 +166,7 @@ export default function DashboardPage() {
               <span className="text-[10px] text-[#1e293b] font-medium">Task</span>
             </div>
 
-            <div className="flex flex-col items-center gap-1.5 cursor-pointer group">
+            <div onClick={() => router.push('/dashboard/team')} className="flex flex-col items-center gap-1.5 cursor-pointer group">
               <div className="w-10 h-10 bg-[#eff6ff] rounded-xl flex items-center justify-center group-hover:bg-[#dbeafe] transition-colors shadow-sm">
                 <Users className="text-[#3b82f6]" size={20} />
               </div>
@@ -131,7 +183,10 @@ export default function DashboardPage() {
               <span className="text-[10px] text-[#1e293b] font-medium">Spin Wheel</span>
             </div>
 
-            <div className="flex flex-col items-center gap-1.5 cursor-pointer group mt-1">
+            <div 
+              onClick={() => { setShowToast(true); setTimeout(() => setShowToast(false), 3000); }} 
+              className="flex flex-col items-center gap-1.5 cursor-pointer group mt-1"
+            >
               <div className="w-10 h-10 bg-[#eff6ff] rounded-xl flex items-center justify-center group-hover:bg-[#dbeafe] transition-colors shadow-sm">
                 <Download className="text-[#3b82f6]" size={20} />
               </div>
@@ -145,7 +200,7 @@ export default function DashboardPage() {
               <span className="text-[10px] text-[#1e293b] font-medium">Treasure</span>
             </div>
 
-            <div className="flex flex-col items-center gap-1.5 cursor-pointer group mt-1">
+            <div onClick={() => router.push('/dashboard/help')} className="flex flex-col items-center gap-1.5 cursor-pointer group mt-1">
               <div className="w-10 h-10 bg-[#eff6ff] rounded-xl flex items-center justify-center group-hover:bg-[#dbeafe] transition-colors shadow-sm">
                 <HelpCircle className="text-[#3b82f6]" size={20} />
               </div>
@@ -504,6 +559,90 @@ export default function DashboardPage() {
           </div>
         </div>
       )}
+      {/* Language Modal (Bottom Sheet) */}
+      {showLanguageModal && (
+        <div className="fixed inset-0 z-50 flex flex-col justify-end">
+          {/* Overlay */}
+          <div 
+            className="absolute inset-0 bg-black/40 backdrop-blur-sm" 
+            onClick={() => setShowLanguageModal(false)}
+          ></div>
+
+          {/* Modal Content */}
+          <div className="relative bg-white w-full max-w-[480px] mx-auto rounded-t-[24px] overflow-hidden flex flex-col max-h-[85vh] animate-in slide-in-from-bottom-full duration-300">
+            
+            {/* Header */}
+            <div className="bg-[#2563eb] p-5 flex justify-between items-center text-white">
+              <h2 className="text-[16px] font-bold">Select Language</h2>
+              <button 
+                onClick={() => setShowLanguageModal(false)}
+                className="w-7 h-7 bg-white/20 rounded-full flex items-center justify-center hover:bg-white/30 transition-colors"
+              >
+                <X size={14} />
+              </button>
+            </div>
+
+            {/* Search */}
+            <div className="p-3 border-b border-gray-100 flex items-center gap-2">
+              <Search size={16} className="text-gray-400 ml-2" />
+              <input 
+                type="text"
+                placeholder="Search language..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full py-2 px-2 text-[13px] outline-none placeholder:text-gray-400"
+              />
+            </div>
+
+            {/* Language List */}
+            <div className="p-4 space-y-3 overflow-y-auto flex-1">
+              {languages
+                .filter(l => l.name.toLowerCase().includes(searchQuery.toLowerCase()) || l.sub.toLowerCase().includes(searchQuery.toLowerCase()))
+                .map((lang) => {
+                const isSelected = currentLang === lang.code;
+                return (
+                  <button
+                    key={lang.code}
+                    onClick={() => {
+                      setCurrentLang(lang.code);
+                      setTimeout(() => setShowLanguageModal(false), 200);
+                    }}
+                    className={`w-full flex items-center justify-between p-3 rounded-[12px] border transition-colors ${
+                      isSelected 
+                        ? 'border-[#3b82f6] bg-[#eff6ff]' 
+                        : 'border-gray-200 hover:border-[#3b82f6] bg-white'
+                    }`}
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="relative w-10 h-10 bg-white border border-gray-100 rounded-xl flex items-center justify-center text-[12px] font-bold text-gray-400 shadow-sm">
+                        {lang.short}
+                        {isSelected && (
+                          <div className="absolute -top-1 -right-1 bg-white rounded-full">
+                            <CheckCircle2 size={14} className="text-[#10b981]" fill="#fff" />
+                          </div>
+                        )}
+                      </div>
+                      <div className="text-left">
+                        <div className="text-[13px] font-bold text-[#0f172a]">{lang.name}</div>
+                        <div className="text-[11px] text-gray-500">{lang.sub}</div>
+                      </div>
+                    </div>
+                    <ChevronRight size={16} className={isSelected ? 'text-[#3b82f6]' : 'text-gray-300'} />
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Toast Notification */}
+      {showToast && (
+        <div className="fixed top-4 left-1/2 -translate-x-1/2 z-50 bg-[#1e293b] text-white px-4 py-2.5 rounded-full shadow-lg flex items-center gap-2 animate-in slide-in-from-top-5 duration-300">
+          <span className="text-[13px] font-medium">Coming Soon!</span>
+        </div>
+      )}
+
     </div>
   );
 }

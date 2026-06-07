@@ -7,11 +7,11 @@ export default function TeamPage() {
   const router = useRouter();
 
   return (
-    <div className="flex flex-col h-full bg-[#f8f9fa] overflow-y-auto [&::-webkit-scrollbar]:hidden pb-24">
+    <div className="flex flex-col h-full bg-[#f8f9fa] overflow-y-auto [&::-webkit-scrollbar]:hidden ">
       {/* Header */}
       <div className="bg-[#f8f9fa] px-4 py-4 flex justify-between items-center sticky top-0 z-20">
         <div className="flex items-center gap-3">
-          <button 
+          <button
             onClick={() => router.back()}
             className="w-9 h-9 bg-[#2b354e] rounded-[10px] flex items-center justify-center text-white hover:bg-[#1e2538] transition-colors shadow-sm"
           >
@@ -19,7 +19,7 @@ export default function TeamPage() {
           </button>
           <h1 className="text-[#1e3a8a] text-[20px] font-bold">Team</h1>
         </div>
-        <button 
+        <button
           onClick={() => router.push('/dashboard/invite')}
           className="w-9 h-9 bg-[#3b82f6] rounded-[10px] flex items-center justify-center text-white shadow-sm hover:bg-[#2563eb] transition-colors"
         >
@@ -28,7 +28,7 @@ export default function TeamPage() {
       </div>
 
       <div className="px-4 space-y-4 max-w-[480px] mx-auto w-full">
-        
+
         {/* Team Data Overview */}
         <div className="bg-[#111827] rounded-[16px] p-5 text-white shadow-md">
           <div className="flex justify-between items-center mb-6">
@@ -37,7 +37,7 @@ export default function TeamPage() {
               today
             </div>
           </div>
-          
+
           <div className="grid grid-cols-2 gap-4">
             <div className="flex flex-col items-center">
               <div className="text-[28px] font-bold mb-1 leading-none">0</div>
@@ -95,7 +95,7 @@ export default function TeamPage() {
             <div className="text-[#64748b] text-[13px]">
               Accumulated Team: <span className="text-[#0f172a] font-bold">0</span>
             </div>
-            <button 
+            <button
               onClick={() => router.push('/dashboard/team/list')}
               className="text-[#3b82f6] text-[13px] hover:underline"
             >
@@ -127,7 +127,7 @@ export default function TeamPage() {
                 </div>
               </div>
             </div>
-            
+
             <div className="h-px bg-gray-50 w-full"></div>
 
             {/* Level 2 */}

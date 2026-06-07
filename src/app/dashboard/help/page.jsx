@@ -2,14 +2,14 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { 
-  ArrowLeft, 
-  HelpCircle, 
-  Search, 
-  MessageCircle, 
-  Send, 
-  Phone, 
-  Users, 
+import {
+  ArrowLeft,
+  HelpCircle,
+  Search,
+  MessageCircle,
+  Send,
+  Phone,
+  Users,
   Zap,
   Wallet,
   CreditCard,
@@ -61,10 +61,10 @@ export default function HelpCenterPage() {
   ];
 
   return (
-    <div className="flex flex-col h-full bg-[#f8f9fa] overflow-y-auto [&::-webkit-scrollbar]:hidden pb-24">
+    <div className="flex flex-col h-full bg-[#f8f9fa] overflow-y-auto [&::-webkit-scrollbar]:hidden ">
       {/* Header */}
       <div className="bg-white px-4 py-3 flex items-center gap-2.5 sticky top-0 z-20 shadow-sm border-b border-gray-100">
-        <button 
+        <button
           onClick={() => router.back()}
           className="w-7 h-7 bg-gray-50 hover:bg-gray-100 rounded-full flex items-center justify-center transition-colors text-gray-600"
         >
@@ -74,7 +74,7 @@ export default function HelpCenterPage() {
       </div>
 
       <div className="px-4 py-6 max-w-[480px] mx-auto w-full space-y-6">
-        
+
         {/* Top Hero */}
         <div className="flex flex-col items-center text-center">
           <div className="w-[60px] h-[60px] bg-[#2563eb] rounded-[18px] flex items-center justify-center mb-4 shadow-[0_4px_12px_rgba(37,99,235,0.3)]">
@@ -91,7 +91,7 @@ export default function HelpCenterPage() {
         {/* Search */}
         <div className="relative">
           <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
-          <input 
+          <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
@@ -200,13 +200,13 @@ export default function HelpCenterPage() {
           {/* Decorative subtle circles */}
           <div className="absolute -top-10 -right-10 w-32 h-32 bg-white/10 rounded-full blur-2xl"></div>
           <div className="absolute -bottom-10 -left-10 w-32 h-32 bg-white/10 rounded-full blur-2xl"></div>
-          
+
           <div className="relative z-10 flex flex-col items-center">
             <div className="inline-flex items-center gap-1.5 bg-white/20 px-3 py-1.5 rounded-full text-[11px] font-bold mb-4 backdrop-blur-sm border border-white/10">
               <div className="w-1.5 h-1.5 bg-[#4ade80] rounded-full shadow-[0_0_8px_rgba(74,222,128,0.8)]"></div>
               Online Now
             </div>
-            
+
             <h3 className="text-[18px] font-bold mb-2">24/7 Customer Support</h3>
             <p className="text-white/80 text-[13px] leading-relaxed max-w-[280px]">
               Our dedicated support team is always ready to help you with any questions or concerns.

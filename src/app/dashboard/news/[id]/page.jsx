@@ -28,7 +28,7 @@ export default function NewsArticlePage({ params }) {
   };
 
   return (
-    <div className="flex flex-col h-full bg-[#f8f9fa] overflow-y-auto pb-24 [&::-webkit-scrollbar]:hidden">
+    <div className="flex flex-col h-full bg-[#f8f9fa] overflow-y-auto  [&::-webkit-scrollbar]:hidden">
       {/* Header */}
       <div className="bg-white px-4 pt-4 pb-3 flex justify-between items-center shadow-sm z-10 sticky top-0 border-b border-gray-100">
         <div className="flex items-center gap-3">
@@ -61,8 +61,8 @@ export default function NewsArticlePage({ params }) {
 
           {/* Featured Image Placeholder */}
           <div className="w-full h-[140px] bg-gradient-to-r from-blue-500 to-[#0f172a] rounded-xl mb-6 shadow-inner relative overflow-hidden flex items-center justify-center">
-             <div className="absolute inset-0 bg-black/20"></div>
-             <span className="text-white/50 text-[10px] font-bold tracking-widest uppercase z-10">EonAssets News</span>
+            <div className="absolute inset-0 bg-black/20"></div>
+            <span className="text-white/50 text-[10px] font-bold tracking-widest uppercase z-10">EonAssets News</span>
           </div>
 
           {/* Content */}

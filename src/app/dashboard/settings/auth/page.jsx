@@ -2,17 +2,17 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { 
-  ArrowLeft, 
-  ShieldAlert, 
-  ShieldCheck, 
+import {
+  ArrowLeft,
+  ShieldAlert,
+  ShieldCheck,
   AlertTriangle,
   CheckCircle2
 } from "lucide-react";
 
 export default function AuthenticationSettingsPage() {
   const router = useRouter();
-  
+
   // 1 = unverified, 2 = enter code, 3 = verified
   const [step, setStep] = useState(1);
   const [code, setCode] = useState("");
@@ -27,10 +27,10 @@ export default function AuthenticationSettingsPage() {
   };
 
   return (
-    <div className="flex flex-col h-full bg-[#f8f9fa] overflow-y-auto [&::-webkit-scrollbar]:hidden pb-24">
+    <div className="flex flex-col h-full bg-[#f8f9fa] overflow-y-auto [&::-webkit-scrollbar]:hidden ">
       {/* Header */}
       <div className="bg-white px-4 py-3 flex items-center gap-2.5 sticky top-0 z-20 shadow-sm border-b border-gray-100">
-        <button 
+        <button
           onClick={() => router.back()}
           className="w-7 h-7 bg-gray-50 hover:bg-gray-100 rounded-full flex items-center justify-center transition-colors text-gray-600"
         >
@@ -41,7 +41,7 @@ export default function AuthenticationSettingsPage() {
 
       <div className="px-4 py-4 max-w-[480px] mx-auto w-full">
         <div className="bg-white rounded-[16px] border border-gray-100 shadow-[0_2px_8px_-4px_rgba(0,0,0,0.05)] p-6">
-          
+
           {/* Top Status Area */}
           <div className="flex flex-col items-center text-center">
             {step < 3 ? (
@@ -53,7 +53,7 @@ export default function AuthenticationSettingsPage() {
                 <ShieldCheck size={36} className="fill-[#059669] text-[#d1fae5]" />
               </div>
             )}
-            
+
             <h2 className="text-[#0f172a] text-[20px] font-bold mb-1.5">
               {step < 3 ? "Verify Your Email" : "Email Verified"}
             </h2>
@@ -79,7 +79,7 @@ export default function AuthenticationSettingsPage() {
 
           {/* Action Area based on step */}
           {step === 1 && (
-            <button 
+            <button
               onClick={handleSendCode}
               className="w-full bg-[#2563eb] hover:bg-blue-700 text-white font-bold text-[15px] py-3.5 rounded-[12px] transition-colors shadow-sm"
             >
@@ -91,17 +91,17 @@ export default function AuthenticationSettingsPage() {
             <form onSubmit={handleVerify} className="space-y-4">
               <div className="space-y-2">
                 <label className="block text-[#334155] text-[13px] font-medium">Enter Verification Code</label>
-                <input 
-                  type="text" 
+                <input
+                  type="text"
                   value={code}
                   onChange={(e) => setCode(e.target.value)}
-                  placeholder="0 0 0 0 0 0" 
+                  placeholder="0 0 0 0 0 0"
                   className="w-full bg-[#f8fafc] border border-gray-200 rounded-[12px] px-4 py-4 text-[16px] text-center tracking-[0.4em] font-medium text-gray-800 placeholder-gray-400 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all"
                   maxLength={6}
                 />
               </div>
 
-              <button 
+              <button
                 type="submit"
                 className="w-full bg-[#2563eb] hover:bg-blue-700 text-white font-bold text-[15px] py-3.5 rounded-[12px] transition-colors shadow-sm"
               >

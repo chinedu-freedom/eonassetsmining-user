@@ -142,8 +142,11 @@ export default function AccountPage() {
       <div className="px-4 pt-4 pb-4 space-y-4 max-w-[480px] mx-auto w-full">
         
         {/* Total Balance Card */}
-        <div className="bg-[#2563eb] rounded-[24px] p-1.5 shadow-[0_4px_14px_rgba(37,99,235,0.3)]">
-          <div className="bg-[#3b82f6] rounded-[20px] p-[16px] text-white">
+        <div className="bg-gradient-to-br from-[#1e3a8a] to-[#0f172a] rounded-[24px] p-1.5 shadow-lg border border-white/10 relative overflow-hidden">
+          {/* Background decoration */}
+          <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/3 blur-2xl pointer-events-none"></div>
+          
+          <div className="bg-white/5 rounded-[20px] p-[16px] text-white relative z-10">
             {/* Top section */}
             <div className="flex justify-between items-start mb-1">
               <span className="text-[10px] text-white/90">Total Balance</span>
@@ -169,13 +172,15 @@ export default function AccountPage() {
             </div>
 
             {/* Actions */}
-            <div className="flex gap-2.5">
-              <button className="flex-1 bg-white text-[#1e3a8a] flex items-center justify-center gap-1.5 py-2 rounded-[10px] text-[11px] font-bold hover:bg-gray-50 transition-colors shadow-sm">
-                <Wallet size={12} /> Deposit
-              </button>
-              <button className="flex-1 bg-white/20 text-white flex items-center justify-center gap-1.5 py-2 rounded-[10px] text-[11px] font-bold hover:bg-white/30 transition-colors border border-white/10">
-                <CreditCard size={12} /> Withdraw
-              </button>
+            <div className="flex gap-2.5 mt-2 relative z-10">
+              <Link href="/dashboard/wallet?tab=deposit" className="flex-1 bg-white text-[#1e3a8a] py-2 rounded-[12px] text-[11px] font-bold flex items-center justify-center gap-1.5 hover:bg-gray-50 transition-colors shadow-sm">
+                <Wallet size={14} />
+                Deposit
+              </Link>
+              <Link href="/dashboard/wallet?tab=withdraw" className="flex-1 bg-white/10 text-white py-2 rounded-[12px] text-[11px] font-bold flex items-center justify-center gap-1.5 hover:bg-white/20 transition-colors border border-white/15 backdrop-blur-sm">
+                <CreditCard size={14} />
+                Withdraw
+              </Link>
             </div>
           </div>
         </div>

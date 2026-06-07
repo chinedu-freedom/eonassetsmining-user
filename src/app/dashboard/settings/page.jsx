@@ -2,14 +2,14 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { 
-  ArrowLeft, 
-  User, 
-  Lock, 
-  Key, 
-  ShieldCheck, 
-  Trash2, 
-  ChevronRight 
+import {
+  ArrowLeft,
+  User,
+  Lock,
+  Key,
+  ShieldCheck,
+  Trash2,
+  ChevronRight
 } from "lucide-react";
 
 export default function SettingsPage() {
@@ -56,10 +56,10 @@ export default function SettingsPage() {
   ];
 
   return (
-    <div className="flex flex-col h-full bg-[#f8f9fa] overflow-y-auto [&::-webkit-scrollbar]:hidden pb-24">
+    <div className="flex flex-col h-full bg-[#f8f9fa] overflow-y-auto [&::-webkit-scrollbar]:hidden ">
       {/* Header */}
       <div className="bg-white px-4 py-3 flex items-center gap-2.5 sticky top-0 z-20 shadow-sm border-b border-gray-100">
-        <button 
+        <button
           onClick={() => router.back()}
           className="w-7 h-7 bg-gray-50 hover:bg-gray-100 rounded-full flex items-center justify-center transition-colors text-gray-600"
         >
@@ -69,16 +69,15 @@ export default function SettingsPage() {
       </div>
 
       <div className="px-4 py-4 max-w-[480px] mx-auto w-full space-y-3">
-        
+
         {/* Main Settings Group */}
         <div className="bg-white rounded-[16px] border border-gray-100 shadow-[0_2px_8px_-4px_rgba(0,0,0,0.05)] overflow-hidden">
           {menuItems.map((item, index) => (
-            <button 
+            <button
               key={item.id}
               onClick={() => item.href && router.push(item.href)}
-              className={`w-full flex items-center justify-between px-3.5 py-3 hover:bg-gray-50 transition-colors ${
-                index !== menuItems.length - 1 ? 'border-b border-gray-50' : ''
-              }`}
+              className={`w-full flex items-center justify-between px-3.5 py-3 hover:bg-gray-50 transition-colors ${index !== menuItems.length - 1 ? 'border-b border-gray-50' : ''
+                }`}
             >
               <div className="flex items-center gap-3.5">
                 <div className={`w-9 h-9 rounded-[10px] flex items-center justify-center ${item.iconBg} ${item.iconColor}`}>
@@ -86,7 +85,7 @@ export default function SettingsPage() {
                 </div>
                 <span className="text-[#334155] text-[13px] font-medium">{item.label}</span>
               </div>
-              
+
               <div className="flex items-center gap-2.5">
                 {item.badge && (
                   <span className={`${item.badge.bg} ${item.badge.color} px-2.5 py-1 rounded-[6px] text-[10px] font-bold`}>
@@ -101,7 +100,7 @@ export default function SettingsPage() {
 
         {/* Delete Account */}
         <div className="bg-white rounded-[16px] border border-gray-100 shadow-[0_2px_8px_-4px_rgba(0,0,0,0.05)] overflow-hidden">
-          <button 
+          <button
             onClick={() => setShowDeleteModal(true)}
             className="w-full flex items-center justify-between px-3.5 py-3 hover:bg-red-50/50 transition-colors"
           >
@@ -130,13 +129,13 @@ export default function SettingsPage() {
                 Are you sure you want to delete your account? This action is permanent and cannot be undone.
               </p>
               <div className="flex gap-3 w-full">
-                <button 
+                <button
                   onClick={() => setShowDeleteModal(false)}
                   className="flex-1 py-2.5 rounded-[12px] bg-gray-100 text-gray-700 font-bold text-[13px] hover:bg-gray-200 transition-colors"
                 >
                   Cancel
                 </button>
-                <button 
+                <button
                   onClick={() => {
                     // TODO: Handle actual delete logic here
                     setShowDeleteModal(false);

@@ -38,7 +38,7 @@ export default function NewsPage() {
   ];
 
   return (
-    <div className="flex flex-col h-full bg-[#f8f9fa] overflow-y-auto pb-24 [&::-webkit-scrollbar]:hidden">
+    <div className="flex flex-col h-full bg-[#f8f9fa] overflow-y-auto  [&::-webkit-scrollbar]:hidden">
       {/* Header */}
       <div className="bg-white px-4 pt-4 pb-3 flex justify-between items-center shadow-sm z-10 sticky top-0 border-b border-gray-100">
         <div className="flex items-center gap-3">
@@ -65,15 +65,15 @@ export default function NewsPage() {
                 <span>{news.date}</span>
               </div>
             </div>
-            
+
             <h2 className="text-[#0f172a] font-bold text-[14px] leading-tight mb-1.5">
               {news.title}
             </h2>
-            
+
             <p className="text-gray-500 text-[11px] leading-relaxed line-clamp-2 mb-3">
               {news.summary}
             </p>
-            
+
             <div className="flex items-center text-[#3b82f6] text-[10px] font-bold">
               Read Full Article <ChevronRight size={12} className="ml-0.5" />
             </div>

@@ -2,13 +2,13 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { 
-  ArrowLeft, 
-  BarChart2, 
-  FileText, 
-  ListFilter, 
-  Download, 
-  Upload, 
+import {
+  ArrowLeft,
+  BarChart2,
+  FileText,
+  ListFilter,
+  Download,
+  Upload,
   Gift,
   Inbox
 } from "lucide-react";
@@ -49,16 +49,16 @@ export default function TransactionsPage() {
     }
   ];
 
-  const filteredTransactions = activeTab === "All" 
-    ? transactions 
+  const filteredTransactions = activeTab === "All"
+    ? transactions
     : transactions.filter(t => t.type === activeTab);
 
   return (
-    <div className="flex flex-col h-full bg-[#f8f9fa] overflow-y-auto [&::-webkit-scrollbar]:hidden pb-24">
-      
+    <div className="flex flex-col h-full bg-[#f8f9fa] overflow-y-auto [&::-webkit-scrollbar]:hidden ">
+
       {/* Header */}
       <div className="bg-white px-4 py-3 flex items-center gap-2.5 sticky top-0 z-20 shadow-sm border-b border-gray-100">
-        <button 
+        <button
           onClick={() => router.back()}
           className="w-7 h-7 bg-gray-50 hover:bg-gray-100 rounded-full flex items-center justify-center transition-colors text-gray-600"
         >
@@ -68,7 +68,7 @@ export default function TransactionsPage() {
       </div>
 
       <div className="px-4 py-4 max-w-[480px] mx-auto w-full space-y-4">
-        
+
         {/* Summary Cards */}
         <div className="grid grid-cols-2 gap-3">
           <div className="bg-white rounded-[16px] p-4 border border-gray-100 shadow-[0_2px_8px_-4px_rgba(0,0,0,0.05)] flex flex-col">
@@ -78,7 +78,7 @@ export default function TransactionsPage() {
             <div className="text-[#0f172a] font-bold text-[18px] mb-0.5">$5.10</div>
             <div className="text-gray-400 text-[11px]">Total Volume</div>
           </div>
-          
+
           <div className="bg-white rounded-[16px] p-4 border border-gray-100 shadow-[0_2px_8px_-4px_rgba(0,0,0,0.05)] flex flex-col">
             <div className="w-8 h-8 bg-[#dbeafe] rounded-[8px] flex items-center justify-center text-[#3b82f6] mb-3">
               <FileText size={16} />
@@ -97,11 +97,10 @@ export default function TransactionsPage() {
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`flex items-center gap-1.5 px-3.5 py-2 rounded-full whitespace-nowrap text-[12px] font-bold transition-all ${
-                  isActive 
-                    ? 'bg-[#2563eb] text-white shadow-[0_4px_10px_rgba(37,99,235,0.25)]' 
+                className={`flex items-center gap-1.5 px-3.5 py-2 rounded-full whitespace-nowrap text-[12px] font-bold transition-all ${isActive
+                    ? 'bg-[#2563eb] text-white shadow-[0_4px_10px_rgba(37,99,235,0.25)]'
                     : 'bg-white text-gray-500 border border-gray-200 hover:bg-gray-50'
-                }`}
+                  }`}
               >
                 <Icon size={14} className={isActive ? "text-white" : "text-gray-400"} />
                 {tab.label}
@@ -115,8 +114,8 @@ export default function TransactionsPage() {
           {filteredTransactions.length > 0 ? (
             <div className="space-y-2.5">
               {filteredTransactions.map(tx => (
-                <div 
-                  key={tx.id} 
+                <div
+                  key={tx.id}
                   onClick={() => {
                     const params = new URLSearchParams({
                       id: tx.id.toString(),

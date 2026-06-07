@@ -28,7 +28,7 @@ export default function WalletPage() {
   const currentBalance = balances[currency];
 
   return (
-    <div className="flex flex-col h-full bg-[#f8f9fa] overflow-y-auto pb-24 [&::-webkit-scrollbar]:hidden">
+    <div className="flex flex-col h-full bg-[#f8f9fa] overflow-y-auto  [&::-webkit-scrollbar]:hidden">
       {/* Header */}
       <div className="bg-white px-4 pt-4 pb-3 flex justify-between items-center shadow-sm z-10 sticky top-0 border-b border-gray-100">
         <h1 className="text-[#1e3a8a] text-[15px] font-bold">Wallet</h1>
@@ -43,7 +43,7 @@ export default function WalletPage() {
           {/* Top section */}
           <div className="flex justify-between items-start mb-1">
             <span className="text-[10px] text-white/90">Available Balance</span>
-            <button 
+            <button
               onClick={toggleCurrency}
               className="flex items-center gap-1 bg-white/20 px-2 py-1 rounded text-[9px] font-bold hover:bg-white/30 transition-colors"
             >
@@ -56,7 +56,7 @@ export default function WalletPage() {
             <span className="text-[24px] font-bold tracking-tight">
               {showBalance ? currentBalance.total : "****"}
             </span>
-            <button 
+            <button
               onClick={() => setShowBalance(!showBalance)}
               className="text-white/80 hover:text-white transition-colors p-1"
             >
