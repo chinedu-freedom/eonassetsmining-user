@@ -5,15 +5,15 @@ import { Wallet, Eye, EyeOff, ChevronDown, ChevronUp, Download, Upload, Clock, A
 import Link from "next/link";
 
 export default function WalletPage() {
-  const [currency, setCurrency] = useState("USD");
+  const [currency, setCurrency] = useState("USDT");
   const [showBalance, setShowBalance] = useState(true);
 
   const toggleCurrency = () => {
-    setCurrency(prev => prev === "USD" ? "NGN" : "USD");
+    setCurrency(prev => prev === "USDT" ? "NGN" : "USDT");
   };
 
   const balances = {
-    USD: {
+    USDT: {
       total: "$5.10",
       main: "$0.60",
       gift: "$4.50"
@@ -47,7 +47,7 @@ export default function WalletPage() {
               onClick={toggleCurrency}
               className="flex items-center gap-1 bg-white/20 px-2 py-1 rounded text-[9px] font-bold hover:bg-white/30 transition-colors"
             >
-              {currency} {currency === "USD" ? <ChevronDown size={10} /> : <ChevronUp size={10} />}
+              {currency} {currency === "USDT" ? <ChevronDown size={10} /> : <ChevronUp size={10} />}
             </button>
           </div>
 

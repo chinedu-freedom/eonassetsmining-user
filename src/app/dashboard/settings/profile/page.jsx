@@ -21,6 +21,7 @@ export default function MyProfilePage() {
 
       <div className="px-4 py-4 max-w-[480px] mx-auto w-full space-y-4">
         
+        
         {/* Main Details Card */}
         <div className="bg-white rounded-[16px] border border-gray-100 shadow-[0_2px_8px_-4px_rgba(0,0,0,0.05)] overflow-hidden">
           <div className="flex flex-col divide-y divide-gray-50">

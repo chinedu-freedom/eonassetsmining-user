@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Globe, MessageCircle, Eye, EyeOff, Wallet, CreditCard, Volume2, HelpCircle, CheckSquare, Users, Loader, Download, Gift, Calendar, Activity, ArrowDown, DollarSign, BadgeCheck, BarChart2, ChevronRight } from "lucide-react";
+import { Globe, MessageCircle, Eye, EyeOff, Wallet, CreditCard, Volume2, HelpCircle, CheckSquare, Users, Loader, Download, Gift, Calendar, Activity, ArrowDown, DollarSign, BadgeCheck, BarChart2, ChevronRight, X, Lock, Coins } from "lucide-react";
 import Image from "next/image";
 
 const activities = [
@@ -15,6 +15,7 @@ const doubledActivities = [...activities, ...activities];
 
 export default function DashboardPage() {
   const [showBalance, setShowBalance] = useState(false);
+  const [showDailyModal, setShowDailyModal] = useState(false);
 
   return (
     <div className="flex flex-col h-full bg-[#f8f9fa] overflow-y-auto  [&::-webkit-scrollbar]:hidden">
@@ -154,7 +155,10 @@ export default function DashboardPage() {
         </div>
 
         {/* Daily Check-in */}
-        <div className="bg-gradient-to-r from-[#3b82f6] to-[#2563eb] rounded-[16px] py-3 px-4 flex items-center justify-between text-white shadow-sm shadow-blue-500/20 cursor-pointer hover:shadow-md transition-all">
+        <div 
+          onClick={() => setShowDailyModal(true)}
+          className="bg-gradient-to-r from-[#3b82f6] to-[#2563eb] rounded-[16px] py-3 px-4 flex items-center justify-between text-white shadow-sm shadow-blue-500/20 cursor-pointer hover:shadow-md transition-all"
+        >
           <div className="flex items-center gap-2.5">
             <div className="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center backdrop-blur-sm">
               <Calendar className="text-white" size={20} />
@@ -401,6 +405,105 @@ export default function DashboardPage() {
         </div>
 
       </div>
+
+      {/* Daily Rewards Modal */}
+      {showDailyModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#0f172a]/60 backdrop-blur-sm p-4">
+          <div className="bg-white w-full max-w-[340px] rounded-[24px] overflow-hidden flex flex-col relative animate-in zoom-in-95 duration-200 shadow-2xl">
+            {/* Close Button */}
+            <button 
+              onClick={() => setShowDailyModal(false)}
+              className="absolute top-4 right-4 w-7 h-7 bg-gray-100 hover:bg-gray-200 rounded-full flex items-center justify-center text-gray-500 transition-colors z-10"
+            >
+              <X size={14} />
+            </button>
+
+            {/* Header */}
+            <div className="pt-8 pb-6 px-6 flex flex-col items-center text-center">
+              <div className="text-[32px] leading-none mb-3 drop-shadow-md">🎁</div>
+              <h3 className="font-bold text-[#0f172a] text-[18px] mb-1">Daily Rewards</h3>
+              <p className="text-gray-500 text-[11px]">Check in for 7 days to get maximum rewards</p>
+            </div>
+
+            {/* Days Grid */}
+            <div className="px-6 pb-6 space-y-3">
+              {/* Row 1 (Days 1-4) */}
+              <div className="grid grid-cols-4 gap-2">
+                {/* Day 1 (Active) */}
+                <div className="border border-[#3b82f6] bg-blue-50/30 rounded-[12px] p-2 flex flex-col items-center justify-center gap-1.5 shadow-sm">
+                  <span className="text-[#3b82f6] text-[8px] font-bold uppercase tracking-wider">Day 1</span>
+                  <div className="w-7 h-7 bg-[#f59e0b] rounded-full flex items-center justify-center shadow-inner">
+                    <Coins size={14} className="text-white" />
+                  </div>
+                  <span className="text-[#3b82f6] text-[11px] font-bold">+$0.10</span>
+                </div>
+                {/* Day 2 */}
+                <div className="border border-gray-100 bg-gray-50/50 rounded-[12px] p-2 flex flex-col items-center justify-center gap-1.5">
+                  <span className="text-gray-400 text-[8px] font-bold uppercase tracking-wider">Day 2</span>
+                  <div className="w-7 h-7 rounded-full flex items-center justify-center">
+                    <Lock size={16} className="text-gray-300" />
+                  </div>
+                  <span className="text-gray-400 text-[11px] font-bold">+$0.20</span>
+                </div>
+                {/* Day 3 */}
+                <div className="border border-gray-100 bg-gray-50/50 rounded-[12px] p-2 flex flex-col items-center justify-center gap-1.5">
+                  <span className="text-gray-400 text-[8px] font-bold uppercase tracking-wider">Day 3</span>
+                  <div className="w-7 h-7 rounded-full flex items-center justify-center">
+                    <Lock size={16} className="text-gray-300" />
+                  </div>
+                  <span className="text-gray-400 text-[11px] font-bold">+$0.02</span>
+                </div>
+                {/* Day 4 */}
+                <div className="border border-gray-100 bg-gray-50/50 rounded-[12px] p-2 flex flex-col items-center justify-center gap-1.5">
+                  <span className="text-gray-400 text-[8px] font-bold uppercase tracking-wider">Day 4</span>
+                  <div className="w-7 h-7 rounded-full flex items-center justify-center">
+                    <Lock size={16} className="text-gray-300" />
+                  </div>
+                  <span className="text-gray-400 text-[11px] font-bold">+$0.10</span>
+                </div>
+              </div>
+
+              {/* Row 2 (Days 5-7) */}
+              <div className="grid grid-cols-4 gap-2">
+                {/* Day 5 */}
+                <div className="border border-gray-100 bg-gray-50/50 rounded-[12px] p-2 flex flex-col items-center justify-center gap-1.5 col-start-1">
+                  <span className="text-gray-400 text-[8px] font-bold uppercase tracking-wider">Day 5</span>
+                  <div className="w-7 h-7 rounded-full flex items-center justify-center">
+                    <Lock size={16} className="text-gray-300" />
+                  </div>
+                  <span className="text-gray-400 text-[11px] font-bold">+$0.30</span>
+                </div>
+                {/* Day 6 */}
+                <div className="border border-gray-100 bg-gray-50/50 rounded-[12px] p-2 flex flex-col items-center justify-center gap-1.5">
+                  <span className="text-gray-400 text-[8px] font-bold uppercase tracking-wider">Day 6</span>
+                  <div className="w-7 h-7 rounded-full flex items-center justify-center">
+                    <Lock size={16} className="text-gray-300" />
+                  </div>
+                  <span className="text-gray-400 text-[11px] font-bold">+$0.40</span>
+                </div>
+                {/* Day 7 */}
+                <div className="border border-gray-100 bg-gray-50/50 rounded-[12px] p-2 flex flex-col items-center justify-center gap-1.5">
+                  <span className="text-gray-400 text-[8px] font-bold uppercase tracking-wider">Day 7</span>
+                  <div className="w-7 h-7 rounded-full flex items-center justify-center">
+                    <Lock size={16} className="text-gray-300" />
+                  </div>
+                  <span className="text-gray-400 text-[11px] font-bold">+$0.50</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Action Button */}
+            <div className="p-6 pt-2">
+              <button 
+                className="w-full bg-[#3b82f6] text-white font-bold py-3.5 rounded-[12px] hover:bg-blue-600 transition-colors text-[14px] shadow-sm"
+              >
+                Claim Day 1
+              </button>
+            </div>
+            
+          </div>
+        </div>
+      )}
     </div>
   );
 }

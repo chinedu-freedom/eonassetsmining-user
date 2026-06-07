@@ -50,7 +50,7 @@ const languages = [
 ];
 
 export default function AccountPage() {
-  const [currency, setCurrency] = useState("USD");
+  const [currency, setCurrency] = useState("USDT");
   const [showBalance, setShowBalance] = useState(true);
   const [showLanguageModal, setShowLanguageModal] = useState(false);
   const [currentLang, setCurrentLang] = useState("EN");
@@ -70,11 +70,11 @@ export default function AccountPage() {
   };
 
   const toggleCurrency = () => {
-    setCurrency(prev => prev === "USD" ? "NGN" : "USD");
+    setCurrency(prev => prev === "USDT" ? "NGN" : "USDT");
   };
 
   const balances = {
-    USD: {
+    USDT: {
       total: "$5.10",
       deposit: "$0.00",
       withdraw: "$0.00",
@@ -151,7 +151,7 @@ export default function AccountPage() {
                 onClick={toggleCurrency}
                 className="flex items-center gap-1 bg-white/20 px-2 py-1 rounded text-[9px] font-bold hover:bg-white/30 transition-colors"
               >
-                {currency} {currency === "USD" ? <ChevronDown size={10} /> : <ChevronUp size={10} />}
+                {currency} {currency === "USDT" ? <ChevronDown size={10} /> : <ChevronUp size={10} />}
               </button>
             </div>
 
@@ -196,7 +196,7 @@ export default function AccountPage() {
                 </div>
                 <span className="text-[8px] font-bold text-gray-400 uppercase tracking-wider">Total Deposit</span>
               </div>
-              <div className="text-[13px] font-bold text-[#0f172a] ml-1">{currentBalance.deposit}</div>
+              <div className="text-[13px] font-bold text-[#0f172a] ml-1">{showBalance ? currentBalance.deposit : "****"}</div>
             </div>
 
             {/* Total Withdraw */}
@@ -207,7 +207,7 @@ export default function AccountPage() {
                 </div>
                 <span className="text-[8px] font-bold text-gray-400 uppercase tracking-wider">Total Withdraw</span>
               </div>
-              <div className="text-[13px] font-bold text-[#0f172a] ml-1">{currentBalance.withdraw}</div>
+              <div className="text-[13px] font-bold text-[#0f172a] ml-1">{showBalance ? currentBalance.withdraw : "****"}</div>
             </div>
 
             {/* Total Income */}
@@ -218,7 +218,7 @@ export default function AccountPage() {
                 </div>
                 <span className="text-[8px] font-bold text-gray-400 uppercase tracking-wider">Total Income</span>
               </div>
-              <div className="text-[13px] font-bold text-[#0f172a] ml-1">{currentBalance.income}</div>
+              <div className="text-[13px] font-bold text-[#0f172a] ml-1">{showBalance ? currentBalance.income : "****"}</div>
             </div>
 
             {/* Team Members */}
