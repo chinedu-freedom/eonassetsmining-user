@@ -1,0 +1,373 @@
+"use client";
+
+import { useState, useEffect, useRef } from "react";
+import { ArrowLeft, Volume2, VolumeX, History, Gift, Ticket, HelpCircle } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useFetchData, usePost } from "@/hooks/useApi";
+import HowToPlayModal from "@/components/HowToPlayModal";
+import toast from "react-hot-toast";
+import dayjs from "dayjs";
+
+export default function SpinPage() {
+  const router = useRouter();
+  const [isSpinning, setIsSpinning] = useState(false);
+  const [rotation, setRotation] = useState(0);
+  const [isHowToPlayOpen, setIsHowToPlayOpen] = useState(false);
+  const [isMuted, setIsMuted] = useState(false);
+  const audioCtxRef = useRef(null);
+
+  // Initialize audio context
+  useEffect(() => {
+    try {
+      const AudioContext = window.AudioContext || window.webkitAudioContext;
+      audioCtxRef.current = new AudioContext();
+    } catch (e) {
+      console.warn("Web Audio API not supported", e);
+    }
+    return () => {
+      if (audioCtxRef.current?.state !== 'closed') {
+        audioCtxRef.current?.close().catch(() => {});
+      }
+    };
+  }, []);
+
+  const playTick = () => {
+    if (isMuted || !audioCtxRef.current) return;
+    try {
+      const ctx = audioCtxRef.current;
+      if (ctx.state === 'suspended') ctx.resume();
+
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(800, ctx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(300, ctx.currentTime + 0.05);
+      
+      gain.gain.setValueAtTime(0.1, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.05);
+      
+      osc.start(ctx.currentTime);
+      osc.stop(ctx.currentTime + 0.05);
+    } catch (e) {
+      // Ignore audio errors during rapid playback
+    }
+  };
+  
+  // Fetch spin data
+  const { data: spinRes, isLoading, refetch } = useFetchData('/users/spin');
+  const postSpin = usePost('/users/spin');
+
+  const spinData = spinRes?.data;
+  
+  const currentBalance = spinData?.accountBalance || 0;
+  const freeSpins = spinData?.userSpins?.free_spins_remaining || 0;
+  const cost = Number(spinData?.settings?.cost_per_spin || 0);
+
+  // Dynamic segments from backend, strictly 9 divisions
+  let basePrizes = spinData?.prizes || [];
+  let displaySegments = [];
+
+  for (let i = 0; i < 9; i++) {
+    if (i < 8) {
+      if (basePrizes[i]) {
+        displaySegments.push({
+          label: basePrizes[i].name,
+          color: i % 2 === 0 ? "#fefefe" : "#fdf6e3",
+          id: basePrizes[i].id,
+          value: Number(basePrizes[i].value),
+          originalIndex: i
+        });
+      } else {
+        displaySegments.push({
+          label: "???",
+          color: i % 2 === 0 ? "#fefefe" : "#fdf6e3",
+          id: `empty-${i}`,
+          value: 0,
+          originalIndex: i
+        });
+      }
+    } else {
+      // 9th segment is constant 'Try again' (or the 9th configured prize if it exists)
+      displaySegments.push({
+        label: basePrizes[8] ? basePrizes[8].name : "Try again",
+        color: "#fefefe", // 8 is even index, so #fefefe
+        id: basePrizes[8] ? basePrizes[8].id : "try-again",
+        value: basePrizes[8] ? Number(basePrizes[8].value) : 0,
+        originalIndex: 8
+      });
+    }
+  }
+
+  const segments = displaySegments;
+  const segmentDegree = 360 / 9; // Exactly 40 degrees
+
+  // Build the conic-gradient string
+  const gradientStops = segments.map((seg, i) => {
+    const start = i * segmentDegree;
+    const end = start + segmentDegree;
+    return `${seg.color} ${start}deg ${end}deg`;
+  }).join(", ");
+
+  const handleSpin = async () => {
+    if (isSpinning) return;
+    
+    if (basePrizes.length < 8) {
+      toast.error("Wheel not fully configured. 8 prizes required.");
+      return;
+    }
+    
+    // Check local balance first if no free spins
+    if (freeSpins <= 0 && currentBalance < cost) {
+      toast.error('Insufficient balance for a spin');
+      return;
+    }
+
+    setIsSpinning(true);
+    
+    postSpin.mutate({}, {
+      onSuccess: (res) => {
+        if (!res.success) {
+          toast.error(res.message);
+          setIsSpinning(false);
+          return;
+        }
+
+        const { prizeIndex, rewardAmount } = res.data;
+        
+        // Find all visual segments that map to this actual backend prize index
+        const matchingIndices = segments
+          .map((seg, idx) => (seg.originalIndex === prizeIndex ? idx : -1))
+          .filter(idx => idx !== -1);
+          
+        // Pick a random visual segment out of the duplicates to land on
+        const targetIndex = matchingIndices.length > 0 
+          ? matchingIndices[Math.floor(Math.random() * matchingIndices.length)] 
+          : prizeIndex;
+        
+        // Calculate target rotation based on the visual index
+        const targetAngle = targetIndex * segmentDegree + (segmentDegree / 2);
+        const newRotation = rotation + (360 * 5) + (360 - (targetAngle + (rotation % 360)) % 360);
+        
+        setRotation(newRotation);
+
+        // Play ticking sound while spinning
+        let tickCount = 0;
+        const tickInterval = setInterval(() => {
+          if (tickCount >= 38) { // ~3.8 seconds
+            clearInterval(tickInterval);
+          } else {
+            playTick();
+            tickCount++;
+          }
+        }, 100);
+
+        setTimeout(() => {
+          setIsSpinning(false);
+          clearInterval(tickInterval);
+          if (rewardAmount > 0) {
+            toast.success(`You won ${res.data.prize.name}!`);
+          } else {
+            toast.error(`Better luck next time!`);
+          }
+          refetch(); // Reload data to update balances and history
+        }, 4000); // 4 seconds spin duration
+      },
+      onError: (err) => {
+        toast.error(err.response?.data?.message || 'Failed to spin');
+        setIsSpinning(false);
+      }
+    });
+  };
+
+  return (
+    <div className="flex flex-col h-full bg-[#f8f9fa] overflow-y-auto [&::-webkit-scrollbar]:hidden pb-20">
+      {/* Header */}
+      <div className="px-4 py-4 flex justify-between items-center bg-[#f8f9fa] sticky top-0 z-20">
+        <button 
+          onClick={() => router.back()}
+          className="w-10 h-10 bg-white border border-gray-100 rounded-[12px] flex items-center justify-center text-gray-500 shadow-sm"
+        >
+          <ArrowLeft size={18} />
+        </button>
+        <h1 className="text-[#1e3a8a] text-[18px] font-bold">Lucky Spin</h1>
+        <button 
+          onClick={() => setIsMuted(!isMuted)}
+          className="cursor-pointer w-10 h-10 bg-white border border-gray-100 rounded-[12px] flex items-center justify-center text-gray-500 shadow-sm hover:bg-gray-50 transition-colors"
+        >
+          {isMuted ? <VolumeX size={18} /> : <Volume2 size={18} />}
+        </button>
+      </div>
+
+      <div className="px-4 mt-2 space-y-4 relative z-10">
+        
+        {/* Stats Row */}
+        <div className="grid grid-cols-2 gap-3 mb-4">
+          <div className="bg-white p-4 rounded-[16px] border border-gray-100 shadow-sm">
+            <div className="flex items-center gap-1.5 mb-2">
+              <div className="w-4 h-4 rounded-[4px] bg-gray-200 flex items-center justify-center">
+                <div className="w-2 h-1.5 bg-gray-400 rounded-[1px]"></div>
+              </div>
+              <span className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">Available Balance</span>
+            </div>
+            <div className="text-[20px] font-bold text-[#3b82f6]">
+              ${Number(currentBalance).toFixed(2)}
+            </div>
+          </div>
+
+          <div className="bg-[#eaf2ff] p-4 rounded-[16px] border border-[#dbeafe] shadow-sm">
+            <div className="flex items-center gap-1.5 mb-2">
+              <Ticket className="text-gray-400 w-4 h-4" />
+              <span className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">Free Spins</span>
+            </div>
+            <div className="text-[20px] font-bold text-[#3b82f6]">
+              {freeSpins}
+            </div>
+          </div>
+        </div>
+
+        {/* Cost Indicator */}
+        <div className="flex justify-center mt-2 mb-6">
+          <div className="bg-white px-5 py-2 rounded-full border border-gray-100 shadow-sm flex items-center gap-2">
+            <div className="w-4 h-4 bg-gray-400 rounded-[4px]"></div>
+            <span className="text-[13px] font-bold text-[#475569]">Cost: ${cost.toFixed(2)}</span>
+          </div>
+        </div>
+
+        {/* Wheel Container */}
+        <div className="flex justify-center items-center py-6">
+          <div className="relative w-[320px] h-[320px]">
+            {/* The Outer Blue Ring with Lights */}
+            <div className="absolute inset-0 rounded-full bg-[#3b82f6] shadow-[0_0_20px_rgba(59,130,246,0.3)] border-4 border-[#60a5fa] overflow-hidden">
+              {/* Fake lights using CSS repeating conic gradient or positioned dots */}
+              <div className="absolute inset-1 rounded-full border border-blue-400/50"></div>
+              {Array.from({ length: 24 }).map((_, i) => (
+                <div 
+                  key={i}
+                  className="absolute w-1.5 h-1.5 bg-white rounded-full shadow-[0_0_4px_white]"
+                  style={{
+                    top: '50%',
+                    left: '50%',
+                    transform: `translate(-50%, -50%) rotate(${i * 15}deg) translateY(-150px)`
+                  }}
+                />
+              ))}
+            </div>
+
+            {/* The Inner Spinning Wheel */}
+            <div 
+              className="absolute inset-[15px] rounded-full overflow-hidden shadow-inner transition-transform"
+              style={{
+                background: `conic-gradient(${gradientStops})`,
+                transform: `rotate(${rotation}deg)`,
+                transitionDuration: isSpinning ? '4s' : '0s',
+                transitionTimingFunction: 'cubic-bezier(0.2, 0.8, 0.2, 1)'
+              }}
+            >
+              {segments.map((seg, i) => {
+                const angle = (i * segmentDegree) + (segmentDegree / 2);
+                const lineAngle = i * segmentDegree;
+                return (
+                  <div key={i}>
+                    {/* Separator Line */}
+                    <div 
+                      className="absolute top-0 left-1/2 w-[1px] h-1/2 bg-[#e2e8f0] origin-bottom z-10"
+                      style={{ transform: `translateX(-50%) rotate(${lineAngle}deg)` }}
+                    />
+                    
+                    {/* Segment Content */}
+                    <div 
+                      className="absolute inset-0 flex items-start justify-center pt-[20px] z-20"
+                      style={{ transform: `rotate(${angle}deg)` }}
+                    >
+                    <span 
+                      className="text-[15px] font-bold text-[#1e293b] w-[20px] text-center"
+                      style={{ 
+                        transform: 'rotate(180deg)',
+                        writingMode: 'vertical-rl',
+                        textOrientation: 'mixed'
+                      }}
+                    >
+                      {seg.label === "Try again" ? (
+                         <span className="text-[12px] inline-block mt-4">{seg.label}</span>
+                      ) : (
+                         <span className="inline-block mt-4">{seg.label}</span>
+                      )}
+                    </span>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* Center Start Button */}
+            <div 
+              onClick={handleSpin}
+              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80px] h-[80px] bg-gradient-to-b from-[#94a3b8] to-[#475569] rounded-full flex items-center justify-center cursor-pointer shadow-[0_0_15px_rgba(0,0,0,0.3)] z-30 border-[4px] border-[#3b82f6] hover:scale-105 active:scale-95 transition-all"
+            >
+              {/* Pointer Triangle */}
+              <div className="absolute -top-[14px] left-1/2 -translate-x-1/2 w-0 h-0 border-l-[10px] border-l-transparent border-r-[10px] border-r-transparent border-b-[16px] border-b-[#3b82f6]"></div>
+              
+              <span className="text-white font-bold text-[16px] drop-shadow-md">Start</span>
+            </div>
+            
+          </div>
+        </div>
+
+        {/* Recent Wins */}
+        <div className="mt-8">
+          <div className="flex items-center gap-2 mb-4 px-1">
+            <History className="text-[#3b82f6]" size={18} />
+            <h3 className="font-bold text-[#1e3a8a] text-[16px]">Recent Wins</h3>
+          </div>
+
+          <div className="space-y-3">
+            {spinData?.recentWins?.length > 0 ? (
+              spinData.recentWins.map((win) => (
+                <div key={win.id} className="bg-white rounded-[16px] p-4 border border-gray-100 shadow-sm flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className={`w-12 h-12 rounded-[12px] flex items-center justify-center ${Number(win.reward_earned) > 0 ? 'bg-[#dcfce7]' : 'bg-gray-100'}`}>
+                      <Gift className={Number(win.reward_earned) > 0 ? 'text-[#16a34a]' : 'text-gray-400'} size={20} />
+                    </div>
+                    <div>
+                      <h4 className="text-[15px] font-bold text-[#1e293b]">{win.prize.name}</h4>
+                      <p className="text-[12px] text-gray-500 mt-0.5">{dayjs(win.created_at).format('MMM DD, HH:mm')}</p>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <div className={`text-[15px] font-bold ${Number(win.reward_earned) > 0 ? 'text-[#16a34a]' : 'text-gray-500'}`}>
+                      {Number(win.reward_earned) > 0 ? `+$${Number(win.reward_earned).toFixed(2)}` : '0.00'}
+                    </div>
+                    <div className="text-[12px] text-gray-400 mt-0.5">
+                      {win.spin_type === 'free' ? 'Free Spin' : `-$${cost.toFixed(2)}`}
+                    </div>
+                  </div>
+                </div>
+              ))
+            ) : (
+              <div className="text-center py-6 text-gray-400 bg-white rounded-[16px] border border-gray-100 text-sm">
+                No recent wins yet
+              </div>
+            )}
+          </div>
+        </div>
+
+      </div>
+
+      {/* Floating Help Button */}
+      <button 
+        onClick={() => setIsHowToPlayOpen(true)}
+        className="fixed bottom-[80px] right-4 w-[60px] h-[60px] bg-[#3b82f6] rounded-full shadow-[0_4px_16px_rgba(59,130,246,0.5)] flex items-center justify-center z-40 hover:scale-105 active:scale-95 transition-transform"
+      >
+        <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center">
+          <span className="text-[#3b82f6] font-bold text-[18px]">?</span>
+        </div>
+      </button>
+
+      <HowToPlayModal isOpen={isHowToPlayOpen} setIsOpen={setIsHowToPlayOpen} />
+    </div>
+  );
+}

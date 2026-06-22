@@ -43,7 +43,7 @@ export default function WhatsAppModal() {
       <DialogContent className="sm:max-w-[360px] p-0 overflow-hidden bg-white rounded-[24px] border-0 shadow-2xl">
         <button 
           onClick={() => setIsOpen(false)}
-          className="absolute top-4 right-4 w-7 h-7 bg-gray-100 rounded-full flex items-center justify-center text-gray-500 hover:bg-gray-200 transition-colors z-10"
+          className="absolute top-4 right-4 w-7 h-7 bg-gray-100 rounded-full flex items-center justify-center cursor-pointer text-gray-500 hover:bg-gray-200 transition-colors z-10"
         >
           <X size={14} />
         </button>

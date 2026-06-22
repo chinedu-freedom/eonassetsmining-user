@@ -136,7 +136,7 @@ export default function WalletPage() {
                <Loader2 className="w-5 h-5 animate-spin text-[#cbd5e1]" />
             ) : transactions.length > 0 ? (
                <div className="w-full space-y-3">
-                 {transactions.slice(0, 5).map((tx) => (
+                 {transactions.slice(0, 10).map((tx) => (
                    <div key={tx.id} className="flex justify-between items-center bg-[#f8f9fa] rounded-xl p-3 border border-gray-100">
                      <div className="flex items-center gap-3">
                         <div className={`w-8 h-8 rounded-full flex items-center justify-center ${tx.type === 'DEPOSIT' ? 'bg-green-100 text-green-600' : tx.type === 'WITHDRAWAL' ? 'bg-red-100 text-red-600' : 'bg-blue-100 text-blue-600'}`}>

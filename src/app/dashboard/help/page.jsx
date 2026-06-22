@@ -18,18 +18,30 @@ import {
   Download,
   Upload,
   ShieldCheck,
-  ChevronDown
+  ChevronDown,
+  ChevronUp
 } from "lucide-react";
+import { useFetchData } from "@/hooks/useApi";
 
 export default function HelpCenterPage() {
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState("");
+  const [openFaq, setOpenFaq] = useState(1); // Default to first FAQ open
+  const { data: settingsRes } = useFetchData("/settings", ["platform-settings"]);
+  const settings = settingsRes?.settings || {};
+
+  const handleLink = (link) => {
+    if (link) {
+      window.open(link, "_blank");
+    }
+  };
 
   const faqs = [
     {
       id: 1,
       title: "How do I make a deposit?",
       desc: "Learn about deposit methods...",
+      answer: "To make a deposit, go to the Recharge page, select your preferred payment method, enter the amount, and follow the instructions. Your balance will be updated automatically once the payment is confirmed.",
       icon: Download,
       iconBg: "bg-[#d1fae5]",
       iconColor: "text-[#059669]"
@@ -38,6 +50,7 @@ export default function HelpCenterPage() {
       id: 2,
       title: "How long do withdrawals take?",
       desc: "Withdrawal processing times...",
+      answer: "Withdrawals typically take between 10 minutes to 24 hours to process depending on the selected payment method and network congestion. Crypto withdrawals are usually the fastest.",
       icon: Upload,
       iconBg: "bg-[#fee2e2]",
       iconColor: "text-[#ef4444]"
@@ -46,6 +59,7 @@ export default function HelpCenterPage() {
       id: 3,
       title: "Is my account secure?",
       desc: "Security measures we use...",
+      answer: "Yes, your account is highly secure. We use industry-standard encryption protocols, and you can further secure your account by verifying your email and setting up a secure withdrawal pin.",
       icon: ShieldCheck,
       iconBg: "bg-[#dbeafe]",
       iconColor: "text-[#2563eb]"
@@ -54,11 +68,18 @@ export default function HelpCenterPage() {
       id: 4,
       title: "How does the referral program work?",
       desc: "Earn commissions by inviting...",
+      answer: "Our referral program allows you to earn commissions from the investments of users you invite. The commission is credited instantly to your account when your referral makes a successful investment.",
       icon: Users,
       iconBg: "bg-[#f3e8ff]",
       iconColor: "text-[#9333ea]"
     }
   ];
+
+  const filteredFaqs = faqs.filter(faq => 
+    faq.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
+    faq.desc.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    faq.answer.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   return (
     <div className="flex flex-col h-full bg-[#f8f9fa] overflow-y-auto [&::-webkit-scrollbar]:hidden ">
@@ -107,14 +128,20 @@ export default function HelpCenterPage() {
             <h3 className="text-[#1e3a8a] text-[13px] font-bold">Contact Support</h3>
           </div>
           <div className="grid grid-cols-2 gap-3">
-            <button className="bg-white rounded-[16px] border border-gray-100 shadow-[0_2px_8px_-4px_rgba(0,0,0,0.05)] p-4 flex flex-col items-center text-center hover:bg-gray-50 transition-colors">
+            <button 
+              onClick={() => handleLink(settings.telegram_support)}
+              className="bg-white rounded-[16px] border border-gray-100 shadow-[0_2px_8px_-4px_rgba(0,0,0,0.05)] p-4 flex flex-col items-center text-center hover:bg-gray-50 transition-colors"
+            >
               <div className="w-[42px] h-[42px] bg-[#eff6ff] rounded-full flex items-center justify-center text-[#2563eb] mb-2.5">
                 <Send size={20} className="fill-[#2563eb] -ml-0.5" />
               </div>
               <span className="text-[#0f172a] text-[13px] font-bold mb-0.5">Telegram</span>
               <span className="text-gray-500 text-[11px]">Fast response</span>
             </button>
-            <button className="bg-white rounded-[16px] border border-gray-100 shadow-[0_2px_8px_-4px_rgba(0,0,0,0.05)] p-4 flex flex-col items-center text-center hover:bg-gray-50 transition-colors">
+            <button 
+              onClick={() => handleLink(settings.whatsapp_support)}
+              className="bg-white rounded-[16px] border border-gray-100 shadow-[0_2px_8px_-4px_rgba(0,0,0,0.05)] p-4 flex flex-col items-center text-center hover:bg-gray-50 transition-colors"
+            >
               <div className="w-[42px] h-[42px] bg-[#dcfce7] rounded-full flex items-center justify-center text-[#16a34a] mb-2.5">
                 <Phone size={20} className="fill-[#16a34a]" />
               </div>
@@ -131,14 +158,20 @@ export default function HelpCenterPage() {
             <h3 className="text-[#1e3a8a] text-[13px] font-bold">Join Our Community</h3>
           </div>
           <div className="grid grid-cols-2 gap-3">
-            <button className="bg-white rounded-[16px] border border-gray-100 shadow-[0_2px_8px_-4px_rgba(0,0,0,0.05)] p-4 flex flex-col items-center text-center hover:bg-gray-50 transition-colors">
+            <button 
+              onClick={() => handleLink(settings.telegram_community)}
+              className="bg-white rounded-[16px] border border-gray-100 shadow-[0_2px_8px_-4px_rgba(0,0,0,0.05)] p-4 flex flex-col items-center text-center hover:bg-gray-50 transition-colors"
+            >
               <div className="w-[42px] h-[42px] bg-[#eff6ff] rounded-[14px] flex items-center justify-center text-[#2563eb] mb-2.5">
                 <Send size={20} className="fill-[#2563eb] -ml-0.5" />
               </div>
               <span className="text-[#0f172a] text-[13px] font-bold mb-0.5">Channel</span>
               <span className="text-gray-500 text-[11px]">News & Updates</span>
             </button>
-            <button className="bg-white rounded-[16px] border border-gray-100 shadow-[0_2px_8px_-4px_rgba(0,0,0,0.05)] p-4 flex flex-col items-center text-center hover:bg-gray-50 transition-colors">
+            <button 
+              onClick={() => handleLink(settings.telegram_group)}
+              className="bg-white rounded-[16px] border border-gray-100 shadow-[0_2px_8px_-4px_rgba(0,0,0,0.05)] p-4 flex flex-col items-center text-center hover:bg-gray-50 transition-colors"
+            >
               <div className="w-[42px] h-[42px] bg-[#eff6ff] rounded-[14px] flex items-center justify-center text-[#2563eb] mb-2.5">
                 <Users size={20} className="fill-[#2563eb]" />
               </div>
@@ -156,12 +189,16 @@ export default function HelpCenterPage() {
           </div>
           <div className="grid grid-cols-4 gap-2">
             {[
-              { icon: Wallet, label: "Deposit" },
-              { icon: CreditCard, label: "Withdraw" },
-              { icon: Wallet, label: "Wallet" },
-              { icon: Clock, label: "History" }
+              { icon: Wallet, label: "Deposit", action: () => router.push("/dashboard/wallet/deposit") },
+              { icon: CreditCard, label: "Withdraw", action: () => router.push("/dashboard/wallet/withdraw") },
+              { icon: Wallet, label: "Wallet", action: () => router.push("/dashboard/wallet") },
+              { icon: Clock, label: "History", action: () => router.push("/dashboard/account/history") }
             ].map((action, idx) => (
-              <button key={idx} className="bg-white rounded-[12px] border border-gray-100 shadow-[0_2px_8px_-4px_rgba(0,0,0,0.05)] p-2.5 flex flex-col items-center justify-center gap-2 hover:bg-gray-50 transition-colors">
+              <button 
+                key={idx} 
+                onClick={action.action}
+                className="bg-white rounded-[12px] border border-gray-100 shadow-[0_2px_8px_-4px_rgba(0,0,0,0.05)] p-2.5 flex flex-col items-center justify-center gap-2 hover:bg-gray-50 transition-colors"
+              >
                 <div className="text-[#3b82f6]">
                   <action.icon size={18} className="fill-[#3b82f6]/20" />
                 </div>
@@ -178,20 +215,44 @@ export default function HelpCenterPage() {
             <h3 className="text-[#1e3a8a] text-[13px] font-bold">Frequently Asked Questions</h3>
           </div>
           <div className="space-y-2.5">
-            {faqs.map(faq => (
-              <button key={faq.id} className="w-full bg-white rounded-[16px] border border-gray-100 shadow-[0_2px_8px_-4px_rgba(0,0,0,0.05)] p-3 flex items-center justify-between hover:bg-gray-50 transition-colors text-left">
-                <div className="flex items-center gap-3.5">
-                  <div className={`w-10 h-10 rounded-[12px] flex items-center justify-center shrink-0 ${faq.iconBg} ${faq.iconColor}`}>
-                    <faq.icon size={18} />
-                  </div>
-                  <div>
-                    <h4 className="text-[#0f172a] text-[13px] font-bold mb-0.5">{faq.title}</h4>
-                    <p className="text-gray-400 text-[11px]">{faq.desc}</p>
-                  </div>
+            {filteredFaqs.length === 0 ? (
+              <div className="bg-white rounded-[16px] border border-gray-100 p-6 text-center shadow-[0_2px_8px_-4px_rgba(0,0,0,0.05)]">
+                <p className="text-gray-500 text-[13px]">No FAQs found matching "{searchQuery}"</p>
+              </div>
+            ) : (
+              filteredFaqs.map(faq => {
+                const isOpen = openFaq === faq.id;
+              return (
+                <div 
+                  key={faq.id} 
+                  className={`w-full bg-white rounded-[16px] border ${isOpen ? 'border-[#3b82f6] shadow-[0_2px_12px_-4px_rgba(59,130,246,0.15)]' : 'border-gray-100 shadow-[0_2px_8px_-4px_rgba(0,0,0,0.05)]'} transition-all text-left overflow-hidden`}
+                >
+                  <button 
+                    onClick={() => setOpenFaq(isOpen ? null : faq.id)}
+                    className="w-full p-3 flex items-center justify-between hover:bg-gray-50/50 transition-colors"
+                  >
+                    <div className="flex items-center gap-3.5">
+                      <div className={`w-10 h-10 rounded-[12px] flex items-center justify-center shrink-0 ${faq.iconBg} ${faq.iconColor}`}>
+                        <faq.icon size={18} />
+                      </div>
+                      <div className="text-left">
+                        <h4 className="text-[#0f172a] text-[13px] font-bold mb-0.5">{faq.title}</h4>
+                        <p className="text-gray-400 text-[11px]">{faq.desc}</p>
+                      </div>
+                    </div>
+                    {isOpen ? <ChevronUp size={16} className="text-[#3b82f6] shrink-0 ml-2" /> : <ChevronDown size={16} className="text-gray-300 shrink-0 ml-2" />}
+                  </button>
+                  
+                  {isOpen && (
+                    <div className="px-4 pb-4">
+                      <p className="text-[#64748b] text-[13px] leading-relaxed pt-2">
+                        {faq.answer}
+                      </p>
+                    </div>
+                  )}
                 </div>
-                <ChevronDown size={16} className="text-gray-300 shrink-0 ml-2" />
-              </button>
-            ))}
+              );
+            }))}
           </div>
         </div>
 

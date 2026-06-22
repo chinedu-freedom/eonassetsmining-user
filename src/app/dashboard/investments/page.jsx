@@ -22,7 +22,7 @@ export default function MyInvestmentsPage() {
           </button>
           <h1 className="text-[#1e3a8a] text-[15px] font-bold">My Investments</h1>
         </div>
-        <Link href="/dashboard/mining" className="w-8 h-8 bg-[#4082F6] rounded-xl flex items-center justify-center text-white hover:bg-blue-600 transition-colors shadow-sm">
+        <Link href="/dashboard/mining" className="w-8 h-8 bg-[#4082F6] rounded-md flex items-center justify-center text-white hover:bg-blue-600 transition-colors shadow-sm">
           <Plus size={16} />
         </Link>
       </div>
@@ -51,17 +51,17 @@ export default function MyInvestmentsPage() {
         </div>
 
         {/* Stats Card */}
-        <div className="bg-[#4082F6] rounded-[16px] p-[20px] text-white shadow-[0_4px_14px_rgba(59,130,246,0.3)] flex justify-between items-center">
+        <div className="bg-[#4082F6] rounded-lg px-4 py-2 text-white shadow-[0_4px_14px_rgba(59,130,246,0.3)] flex justify-between items-center">
           <div className="text-center flex-1">
-            <div className="text-[18px] font-bold tracking-tight mb-1">$0.00</div>
+            <div className="text-[18px] font-bold tracking-tight">$0.00</div>
             <div className="text-[10px] text-white/80">Total Invested</div>
           </div>
           <div className="text-center flex-1 border-x border-white/20">
-            <div className="text-[18px] font-bold tracking-tight mb-1">0</div>
+            <div className="text-[18px] font-bold tracking-tight">0</div>
             <div className="text-[10px] text-white/80 capitalize">{activeTab}</div>
           </div>
           <div className="text-center flex-1">
-            <div className="text-[18px] font-bold tracking-tight mb-1">$0.00</div>
+            <div className="text-[18px] font-bold tracking-tight">$0.00</div>
             <div className="text-[10px] text-white/80">Est. Monthly</div>
           </div>
         </div>

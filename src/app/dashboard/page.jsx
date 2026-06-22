@@ -206,7 +206,7 @@ export default function DashboardPage() {
               <span className="text-[10px] text-[#1e293b] font-medium">My Team</span>
             </div>
             
-            <div className="flex flex-col items-center gap-1.5 cursor-pointer group relative mt-1">
+            <div onClick={() => router.push('/dashboard/spin')} className="flex flex-col items-center gap-1.5 cursor-pointer group relative mt-1">
               <div className="absolute -top-1.5 right-0.5 bg-gradient-to-r from-red-500 to-rose-500 text-white text-[7px] font-bold px-1 py-[1px] rounded z-10 shadow-sm animate-pulse">
                 HOT
               </div>
@@ -226,7 +226,7 @@ export default function DashboardPage() {
               <span className="text-[10px] text-[#1e293b] font-medium text-center leading-tight">Download App</span>
             </div>
 
-            <div className="flex flex-col items-center gap-1.5 cursor-pointer group mt-1">
+            <div onClick={() => router.push('/dashboard/treasure')} className="flex flex-col items-center gap-1.5 cursor-pointer group mt-1">
               <div className="w-10 h-10 bg-[#eff6ff] rounded-xl flex items-center justify-center group-hover:bg-[#dbeafe] transition-colors shadow-sm">
                 <Gift className="text-[#3b82f6]" size={20} />
               </div>

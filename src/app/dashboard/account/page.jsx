@@ -27,12 +27,15 @@ import {
   CheckCircle2
 } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { clearAuthToken } from "@/config/axiosInstance";
 
 // Dynamic languages are now fetched from backend
 
 import { useFetchData } from "@/hooks/useApi";
 
 export default function AccountPage() {
+  const router = useRouter();
   const [currency, setCurrency] = useState("USDT");
   const [showBalance, setShowBalance] = useState(true);
   const [showLanguageModal, setShowLanguageModal] = useState(false);
@@ -270,6 +273,12 @@ export default function AccountPage() {
                 key={index} 
                 href={item.href}
                 onClick={(e) => {
+                  if (item.label === "Logout") {
+                    e.preventDefault();
+                    clearAuthToken();
+                    router.push("/");
+                    return;
+                  }
                   if (isDownload) {
                     e.preventDefault();
                     setShowToast(true);
