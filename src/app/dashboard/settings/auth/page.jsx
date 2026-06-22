@@ -140,8 +140,7 @@ export default function AuthenticationSettingsPage() {
                 disabled={isVerifying}
                 className="w-full flex items-center justify-center gap-2 bg-[#2563eb] hover:bg-blue-700 disabled:bg-blue-400 text-white font-bold text-[15px] py-3.5 rounded-[12px] transition-colors shadow-sm"
               >
-                {isVerifying && <Loader2 size={18} className="animate-spin" />}
-                {isVerifying ? "Verifying..." : "Verify"}
+                {isVerifying ? <Loader2 size={18} className="animate-spin" /> : "Verify"}
               </button>
 
               <div className="text-center pt-2">
