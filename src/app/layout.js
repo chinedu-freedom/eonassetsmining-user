@@ -23,6 +23,7 @@ export default function RootLayout({ children }) {
   return (
       <html
       lang="en"
+      suppressHydrationWarning
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased translate-no-popup`}
     >
       <head>
@@ -45,7 +46,7 @@ export default function RootLayout({ children }) {
           .goog-text-highlight { background-color: transparent !important; box-shadow: none !important; }
         `}</style>
       </head>
-      <body className="min-h-full flex flex-col">
+      <body className="min-h-full flex flex-col" suppressHydrationWarning>
         <div id="google_translate_element" style={{ display: 'none' }}></div>
         <Providers>
           {children}

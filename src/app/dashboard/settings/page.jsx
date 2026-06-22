@@ -11,10 +11,13 @@ import {
   Trash2,
   ChevronRight
 } from "lucide-react";
+import { useFetchData } from "@/hooks/useApi";
 
 export default function SettingsPage() {
   const router = useRouter();
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const { data: userRes } = useFetchData("/users/me", ["profile"]);
+  const hasPin = !!userRes?.user?.has_withdrawal_pin;
 
   const menuItems = [
     {
@@ -32,7 +35,9 @@ export default function SettingsPage() {
       icon: Lock,
       iconBg: "bg-[#eff6ff]",
       iconColor: "text-[#3b82f6]",
-      badge: { text: "Not Set", bg: "bg-[#fef3c7]", color: "text-[#d97706]" },
+      badge: hasPin 
+        ? { text: "Set", bg: "bg-green-100", color: "text-green-700" }
+        : { text: "Not Set", bg: "bg-[#fef3c7]", color: "text-[#d97706]" },
       href: "/dashboard/settings/payment"
     },
     {
@@ -118,8 +123,14 @@ export default function SettingsPage() {
 
       {/* Delete Confirmation Modal */}
       {showDeleteModal && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
-          <div className="bg-white rounded-[20px] w-full max-w-[320px] p-5 shadow-xl animate-in fade-in zoom-in-95 duration-200">
+        <div 
+          onClick={() => setShowDeleteModal(false)}
+          className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm"
+        >
+          <div 
+            onClick={(e) => e.stopPropagation()}
+            className="bg-white rounded-[20px] w-full max-w-[320px] p-5 shadow-xl animate-in fade-in zoom-in-95 duration-200"
+          >
             <div className="flex flex-col items-center text-center">
               <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center text-red-500 mb-4">
                 <Trash2 size={24} />
@@ -136,8 +147,22 @@ export default function SettingsPage() {
                   Cancel
                 </button>
                 <button
-                  onClick={() => {
-                    // TODO: Handle actual delete logic here
+                  onClick={async () => {
+                    try {
+                      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/me`, {
+                        method: 'DELETE',
+                        headers: {
+                          'Authorization': `Bearer ${localStorage.getItem('token')}`
+                        }
+                      });
+                      if (res.ok) {
+                        localStorage.removeItem('token');
+                        localStorage.removeItem('user');
+                        window.location.href = '/login';
+                      }
+                    } catch (error) {
+                      console.error('Failed to delete account:', error);
+                    }
                     setShowDeleteModal(false);
                   }}
                   className="flex-1 py-2.5 rounded-[12px] bg-red-500 text-white font-bold text-[13px] hover:bg-red-600 transition-colors shadow-sm"

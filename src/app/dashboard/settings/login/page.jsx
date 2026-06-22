@@ -10,20 +10,55 @@ import {
   Eye,
   EyeOff,
   Info,
-  Check
+  Check,
+  Loader2
 } from "lucide-react";
+import { usePut } from "@/hooks/useApi";
+import { toast } from "sonner";
 
 export default function SecuritySettingsPage() {
   const router = useRouter();
+  const { mutate: updatePassword, isPending } = usePut("/users/me/password");
 
   // State for toggling password visibility
   const [showCurrent, setShowCurrent] = useState(false);
   const [showNew, setShowNew] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
+  
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Form submission logic
+    
+    if (newPassword.length < 8) {
+      toast.error("Password must be at least 8 characters long");
+      return;
+    }
+    
+    if (!/(?=.*[a-zA-Z])(?=.*[0-9])/.test(newPassword)) {
+      toast.error("Password must contain both letters and numbers");
+      return;
+    }
+
+    if (newPassword === currentPassword) {
+      toast.error("Please do not reuse your current password");
+      return;
+    }
+
+    if (newPassword !== confirmPassword) {
+      toast.error("New passwords do not match");
+      return;
+    }
+
+    updatePassword({ currentPassword, newPassword }, {
+      onSuccess: () => {
+        setCurrentPassword("");
+        setNewPassword("");
+        setConfirmPassword("");
+      }
+    });
   };
 
   return (
@@ -62,6 +97,8 @@ export default function SecuritySettingsPage() {
               <div className="relative">
                 <input
                   type={showCurrent ? "text" : "password"}
+                  value={currentPassword}
+                  onChange={(e) => setCurrentPassword(e.target.value)}
                   placeholder="Enter your login password"
                   className="w-full bg-white border border-gray-200 rounded-[10px] pl-3.5 pr-10 py-2.5 text-[13px] text-gray-800 placeholder-[#94a3b8] focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all"
                 />
@@ -83,6 +120,8 @@ export default function SecuritySettingsPage() {
               <div className="relative">
                 <input
                   type={showNew ? "text" : "password"}
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
                   placeholder="Enter your new password"
                   className="w-full bg-white border border-gray-200 rounded-[10px] pl-3.5 pr-10 py-2.5 text-[13px] text-gray-800 placeholder-[#94a3b8] focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all"
                 />
@@ -104,6 +143,8 @@ export default function SecuritySettingsPage() {
               <div className="relative">
                 <input
                   type={showConfirm ? "text" : "password"}
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
                   placeholder="Re-enter your new password"
                   className="w-full bg-white border border-gray-200 rounded-[10px] pl-3.5 pr-10 py-2.5 text-[13px] text-gray-800 placeholder-[#94a3b8] focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all"
                 />
@@ -119,12 +160,22 @@ export default function SecuritySettingsPage() {
 
             <button
               type="submit"
-              className="w-full bg-[#2563eb] hover:bg-blue-700 text-white font-bold text-[14px] py-3 rounded-[10px] transition-colors shadow-sm flex items-center justify-center gap-2"
+              disabled={isPending}
+              className="w-full bg-[#2563eb] hover:bg-blue-700 disabled:bg-blue-400 text-white font-bold text-[14px] py-3 rounded-[10px] transition-colors shadow-sm flex items-center justify-center gap-2"
             >
-              Save Changes
-              <div className="w-[14px] h-[14px] bg-white rounded-full flex items-center justify-center">
-                <Check size={10} className="text-[#2563eb] stroke-[4]" />
-              </div>
+              {isPending ? (
+                <>
+                  <Loader2 size={18} className="animate-spin" />
+                  Saving...
+                </>
+              ) : (
+                <>
+                  Save Changes
+                  <div className="w-[14px] h-[14px] bg-white rounded-full flex items-center justify-center">
+                    <Check size={10} className="text-[#2563eb] stroke-[4]" />
+                  </div>
+                </>
+              )}
             </button>
           </form>
         </div>

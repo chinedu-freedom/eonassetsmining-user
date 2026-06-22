@@ -2,16 +2,39 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, AlertTriangle } from "lucide-react";
+import { ArrowLeft, AlertTriangle, Eye, EyeOff, Loader2 } from "lucide-react";
+import { usePut, useFetchData } from "@/hooks/useApi";
+import { toast } from "sonner";
 
 export default function PaymentSettingsPage() {
   const router = useRouter();
+  const { data: userRes } = useFetchData("/users/me", ["profile"]);
+  const hasPin = !!userRes?.user?.has_withdrawal_pin;
+
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [showNew, setShowNew] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
+  
+  // Pass ["profile"] so the query invalidates and updates the "hasPin" UI automatically
+  const { mutate: updatePayment, isPending } = usePut("/users/me/payment", ["profile"]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Form submission logic
+    if (!newPassword.trim() || !confirmPassword.trim()) {
+      toast.error("Please fill in both password fields");
+      return;
+    }
+    if (newPassword !== confirmPassword) {
+      toast.error("Passwords do not match");
+      return;
+    }
+    updatePayment({ newPassword }, {
+      onSuccess: () => {
+        setNewPassword("");
+        setConfirmPassword("");
+      }
+    });
   };
 
   return (
@@ -35,39 +58,65 @@ export default function PaymentSettingsPage() {
             Set a separate password for withdrawals to add an extra layer of security to your account.
           </p>
 
-          <div className="inline-flex items-center gap-1.5 bg-[#fef3c7] text-[#d97706] px-3 py-1.5 rounded-full text-[11px] font-medium mb-6">
-            <AlertTriangle size={14} className="fill-[#d97706] text-white" />
-            Password Not Set
-          </div>
+          {!hasPin ? (
+            <div className="inline-flex items-center gap-1.5 bg-[#fef3c7] text-[#d97706] px-3 py-1.5 rounded-full text-[11px] font-medium mb-6">
+              <AlertTriangle size={14} className="fill-[#d97706] text-white" />
+              Password Not Set
+            </div>
+          ) : (
+            <div className="inline-flex items-center gap-1.5 bg-green-100 text-green-700 px-3 py-1.5 rounded-full text-[11px] font-medium mb-6">
+              <AlertTriangle size={14} className="fill-green-600 text-white" />
+              Password Set
+            </div>
+          )}
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-1.5">
               <label className="block text-[#334155] text-[12.5px] font-medium">New Password</label>
-              <input
-                type="password"
-                value={newPassword}
-                onChange={(e) => setNewPassword(e.target.value)}
-                placeholder="••••••••"
-                className="w-full bg-white border border-gray-200 rounded-[10px] px-3.5 py-2.5 text-[14px] text-gray-800 placeholder-gray-400 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all"
-              />
+              <div className="relative">
+                <input
+                  type={showNew ? "text" : "password"}
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                  placeholder="••••••••"
+                  className="w-full bg-white border border-gray-200 rounded-[10px] pl-3.5 pr-10 py-2.5 text-[14px] text-gray-800 placeholder-gray-400 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowNew(!showNew)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                >
+                  {showNew ? <EyeOff size={16} /> : <Eye size={16} />}
+                </button>
+              </div>
             </div>
 
             <div className="space-y-1.5 pb-2">
               <label className="block text-[#334155] text-[12.5px] font-medium">Confirm Password</label>
-              <input
-                type="password"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                placeholder="••••••••"
-                className="w-full bg-white border border-gray-200 rounded-[10px] px-3.5 py-2.5 text-[14px] text-gray-800 placeholder-gray-400 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all"
-              />
+              <div className="relative">
+                <input
+                  type={showConfirm ? "text" : "password"}
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  placeholder="••••••••"
+                  className="w-full bg-white border border-gray-200 rounded-[10px] pl-3.5 pr-10 py-2.5 text-[14px] text-gray-800 placeholder-gray-400 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowConfirm(!showConfirm)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                >
+                  {showConfirm ? <EyeOff size={16} /> : <Eye size={16} />}
+                </button>
+              </div>
             </div>
 
             <button
               type="submit"
-              className="w-full bg-[#2563eb] hover:bg-blue-700 text-white font-bold text-[14px] py-3 rounded-[12px] transition-colors shadow-sm"
+              disabled={isPending}
+              className="w-full flex justify-center items-center gap-2 bg-[#2563eb] hover:bg-blue-700 disabled:bg-blue-400 text-white font-bold text-[14px] py-3 rounded-[12px] transition-colors shadow-sm"
             >
-              Set Password
+              {isPending ? <Loader2 size={20} className="animate-spin" /> : "Set Password"}
             </button>
           </form>
 

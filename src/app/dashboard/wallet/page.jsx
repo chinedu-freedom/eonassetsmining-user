@@ -3,12 +3,15 @@
 import { useState } from "react";
 import { Wallet, Eye, EyeOff, ChevronDown, ChevronUp, Download, Upload, Clock, ArrowRight, Receipt, Loader2, ArrowUpRight, ArrowDownLeft } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useFetchData } from "@/hooks/useApi";
 import { format } from "date-fns";
+import { toast } from "react-hot-toast";
 
 export default function WalletPage() {
   const [currency, setCurrency] = useState("USDT");
   const [showBalance, setShowBalance] = useState(true);
+  const router = useRouter();
 
   const toggleCurrency = () => {
     setCurrency(prev => prev === "USDT" ? "NGN" : "USDT");
@@ -39,6 +42,15 @@ export default function WalletPage() {
     total: formatMoney(totalBalance, currency),
     main: formatMoney(mainBalance, currency),
     gift: formatMoney(giftBalance, currency)
+  };
+
+  const handleAction = (actionPath) => {
+    if (user && !user.email_verified) {
+      toast.error("Please verify your email to perform this action");
+      router.push("/dashboard/settings/auth");
+      return;
+    }
+    router.push(actionPath);
   };
 
   return (
@@ -92,10 +104,16 @@ export default function WalletPage() {
 
           {/* Actions */}
           <div className="flex gap-2.5">
-            <button className="flex-1 bg-white text-[#1e3a8a] flex items-center justify-center gap-1.5 py-2 rounded-[8px] text-[11px] font-bold hover:bg-gray-50 transition-colors shadow-sm">
+            <button 
+              onClick={() => handleAction("/dashboard/wallet/deposit")}
+              className="flex-1 bg-white text-[#1e3a8a] flex items-center justify-center gap-1.5 py-2 rounded-[8px] text-[11px] font-bold hover:bg-gray-50 transition-colors shadow-sm"
+            >
               <Download size={12} /> Deposit
             </button>
-            <button className="flex-1 bg-white/20 text-white flex items-center justify-center gap-1.5 py-2 rounded-[8px] text-[11px] font-bold hover:bg-white/30 transition-colors border border-white/10">
+            <button 
+              onClick={() => handleAction("/dashboard/wallet/withdraw")}
+              className="flex-1 bg-white/20 text-white flex items-center justify-center gap-1.5 py-2 rounded-[8px] text-[11px] font-bold hover:bg-white/30 transition-colors border border-white/10"
+            >
               <Upload size={12} /> Withdraw
             </button>
           </div>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { 
   ArrowLeft, 
@@ -13,18 +13,45 @@ import {
   DollarSign,
   Diamond
 } from "lucide-react";
+import QRCode from "react-qr-code";
+import { useFetchData } from "@/hooks/useApi";
 
 export default function InvitePage() {
   const router = useRouter();
   const [copied, setCopied] = useState("");
+  const [invitationLink, setInvitationLink] = useState("");
 
-  const invitationCode = "7MQ4AL";
-  const invitationLink = "https://eonassetsmining.com/ref/7MQ4AL";
+  const { data: userRes, isLoading } = useFetchData("/users/me", ["user-profile"]);
+  const user = userRes?.user;
+  
+  const invitationCode = user?.referral_code || "------";
+
+  useEffect(() => {
+    if (invitationCode && invitationCode !== "------") {
+      setInvitationLink(`${window.location.origin}/register?ref=${invitationCode}`);
+    }
+  }, [invitationCode]);
 
   const handleCopy = (text, type) => {
     navigator.clipboard.writeText(text);
     setCopied(type);
     setTimeout(() => setCopied(""), 2000);
+  };
+
+  const handleShare = async () => {
+    if (navigator.share && invitationLink) {
+      try {
+        await navigator.share({
+          title: 'Join EonAssets',
+          text: 'Use my invitation code to join EonAssets and start earning!',
+          url: invitationLink,
+        });
+      } catch (err) {
+        console.error('Error sharing:', err);
+      }
+    } else {
+      handleCopy(invitationLink, "link");
+    }
   };
 
   return (
@@ -74,9 +101,18 @@ export default function InvitePage() {
         </p>
 
         {/* QR Code */}
-        <div className="bg-white p-2.5 rounded-[16px] mb-5 shadow-lg">
+        <div className="bg-white p-2.5 rounded-[16px] mb-5 shadow-lg relative">
+          {isLoading && (
+            <div className="absolute inset-0 flex items-center justify-center bg-white/80 backdrop-blur-sm z-10 rounded-[16px]">
+              <div className="w-6 h-6 border-2 border-[#1e3a8a] border-t-transparent rounded-full animate-spin"></div>
+            </div>
+          )}
           <div className="w-[130px] h-[130px] flex items-center justify-center rounded-[10px] overflow-hidden">
-            <QrCode size={130} strokeWidth={1} className="text-[#0f172a]" />
+            {invitationLink ? (
+              <QRCode value={invitationLink} size={130} style={{ height: "auto", maxWidth: "100%", width: "100%" }} />
+            ) : (
+              <QrCode size={130} strokeWidth={1} className="text-[#0f172a]/20" />
+            )}
           </div>
         </div>
 
@@ -113,7 +149,7 @@ export default function InvitePage() {
 
         {/* Actions */}
         <div className="w-full flex gap-2 mb-5">
-          <button className="flex-1 bg-[#3b82f6] text-white flex items-center justify-center gap-1.5 py-2.5 rounded-[10px] text-[12px] font-bold hover:bg-[#2563eb] active:scale-[0.98] transition-all shadow-md">
+          <button onClick={handleShare} className="flex-1 bg-[#3b82f6] text-white flex items-center justify-center gap-1.5 py-2.5 rounded-[10px] text-[12px] font-bold hover:bg-[#2563eb] active:scale-[0.98] transition-all shadow-md">
             <Share2 size={14} /> Share Link
           </button>
           <button 

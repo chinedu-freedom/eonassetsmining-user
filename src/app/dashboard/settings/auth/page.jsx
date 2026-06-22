@@ -1,29 +1,58 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { useFetchData, usePost } from "@/hooks/useApi";
+import { toast } from "react-hot-toast";
 import {
   ArrowLeft,
   ShieldAlert,
   ShieldCheck,
   AlertTriangle,
-  CheckCircle2
+  CheckCircle2,
+  Loader2
 } from "lucide-react";
 
 export default function AuthenticationSettingsPage() {
   const router = useRouter();
 
+  const { data: userProfile, isLoading: isProfileLoading, refetch } = useFetchData("/users/me");
+
   // 1 = unverified, 2 = enter code, 3 = verified
   const [step, setStep] = useState(1);
   const [code, setCode] = useState("");
 
+  const { mutate: sendCode, isPending: isSending } = usePost("/users/me/send-verification");
+  const { mutate: verifyCode, isPending: isVerifying } = usePost("/users/me/verify-email");
+
+  useEffect(() => {
+    if (userProfile?.user && userProfile.user.email_verified) {
+      setStep(3);
+    }
+  }, [userProfile]);
+
   const handleSendCode = () => {
-    setStep(2);
+    sendCode({}, {
+      onSuccess: (res) => {
+        toast.success(res.message || "Verification code sent to your email!");
+        setStep(2);
+      }
+    });
   };
 
   const handleVerify = (e) => {
     e.preventDefault();
-    setStep(3);
+    if (!code || code.length !== 6) {
+      toast.error("Please enter a valid 6-digit code");
+      return;
+    }
+    verifyCode({ code }, {
+      onSuccess: (res) => {
+        toast.success(res.message || "Email verified successfully!");
+        setStep(3);
+        refetch();
+      }
+    });
   };
 
   return (
@@ -57,9 +86,13 @@ export default function AuthenticationSettingsPage() {
             <h2 className="text-[#0f172a] text-[20px] font-bold mb-1.5">
               {step < 3 ? "Verify Your Email" : "Email Verified"}
             </h2>
-            <p className="text-[#64748b] text-[14px] mb-4">
-              chinedufreedom02@gmail.com
-            </p>
+            {isProfileLoading ? (
+               <div className="h-4 bg-gray-200 rounded animate-pulse w-48 mb-4"></div>
+            ) : (
+               <p className="text-[#64748b] text-[14px] mb-4">
+                 {userProfile?.user?.email}
+               </p>
+            )}
 
             {/* Pill Badge */}
             <div className="mb-8">
@@ -81,9 +114,10 @@ export default function AuthenticationSettingsPage() {
           {step === 1 && (
             <button
               onClick={handleSendCode}
-              className="w-full bg-[#2563eb] hover:bg-blue-700 text-white font-bold text-[15px] py-3.5 rounded-[12px] transition-colors shadow-sm"
+              disabled={isSending}
+              className="w-full bg-[#2563eb] hover:bg-blue-700 disabled:bg-blue-400 flex items-center justify-center gap-2 text-white font-bold text-[15px] py-3.5 rounded-[12px] transition-colors shadow-sm"
             >
-              Send Verification Code
+              {isSending ?  <Loader2 size={18} className="animate-spin" /> : "Send Verification Code"     }
             </button>
           )}
 
@@ -103,14 +137,24 @@ export default function AuthenticationSettingsPage() {
 
               <button
                 type="submit"
-                className="w-full bg-[#2563eb] hover:bg-blue-700 text-white font-bold text-[15px] py-3.5 rounded-[12px] transition-colors shadow-sm"
+                disabled={isVerifying}
+                className="w-full flex items-center justify-center gap-2 bg-[#2563eb] hover:bg-blue-700 disabled:bg-blue-400 text-white font-bold text-[15px] py-3.5 rounded-[12px] transition-colors shadow-sm"
               >
-                Verify
+                {isVerifying && <Loader2 size={18} className="animate-spin" />}
+                {isVerifying ? "Verifying..." : "Verify"}
               </button>
 
               <div className="text-center pt-2">
                 <p className="text-[13px] text-gray-500">
-                  Didn't receive the code? <button type="button" className="text-[#3b82f6] hover:underline font-medium ml-1">Resend</button>
+                  Didn't receive the code? 
+                  <button 
+                    type="button" 
+                    onClick={handleSendCode} 
+                    disabled={isSending}
+                    className="text-[#3b82f6] hover:underline disabled:opacity-50 font-medium ml-1"
+                  >
+                    Resend
+                  </button>
                 </p>
               </div>
             </form>

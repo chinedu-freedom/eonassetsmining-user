@@ -1,9 +1,11 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { ArrowLeft, Wallet, X, Loader2 } from "lucide-react";
 import Link from "next/link";
 import { useFetchData } from "@/hooks/useApi";
+import { toast } from "react-hot-toast";
 
 export default function MiningPlansPage() {
   const [selectedPlan, setSelectedPlan] = useState(null);
@@ -11,7 +13,9 @@ export default function MiningPlansPage() {
   const [investmentAmount, setInvestmentAmount] = useState("");
 
   const { data: plansRes, isLoading } = useFetchData("/plans", ["plans"]);
+  const { data: userRes } = useFetchData("/users/me", ["user"]);
   const plans = Array.isArray(plansRes?.data) ? plansRes.data : [];
+  const router = useRouter();
 
   const balances = {
     main: 0.60,
@@ -19,6 +23,11 @@ export default function MiningPlansPage() {
   };
 
   const handleMineClick = (plan) => {
+    if (userRes?.user && !userRes.user.email_verified) {
+      toast.error("Please verify your email to perform this action");
+      router.push("/dashboard/settings/auth");
+      return;
+    }
     setSelectedPlan(plan);
     setBalanceSource("main");
     setInvestmentAmount("");

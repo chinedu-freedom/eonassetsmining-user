@@ -16,6 +16,7 @@ const getErrorMessage = (error) => {
   const data = error?.response?.data;
   if (data?.errors && Array.isArray(data.errors)) return data.errors.join(", ");
   if (data?.message) return data.message;
+  if (data?.error) return data.error;
   return error?.message || "Something went wrong. Please try again.";
 };
 
@@ -101,7 +102,7 @@ export const usePost = (endpoint, queryKey, isFormData = false) => {
       const res = await postData(endpoint, data, shouldUseFormData);
 
       if (res?.success === false) {
-        throw new Error(res.message || "Request failed");
+        throw new Error(res.message || res.error || "Request failed");
       }
 
       return res;
@@ -130,7 +131,7 @@ export const usePut = (endpoint, queryKey) => {
   return useMutation({
     mutationFn: async (data) => {
       const res = await updateData(endpoint, data);
-      if (!res?.success) throw new Error(res.message || "Update failed");
+      if (!res?.success) throw new Error(res.message || res.error || "Update failed");
       return res;
     },
     onSuccess: (res) => {
@@ -174,7 +175,7 @@ export const usePatch = (endpoint, queryKey, isFormData = false) => {
         const res = await patchData(url, dataToSend, isFormData);
 
         if (res?.success === false) {
-          throw new Error(res.message || "Patch failed");
+          throw new Error(res.message || res.error || "Patch failed");
         }
 
         return res;
@@ -212,7 +213,7 @@ export const useDelete = (endpoint, queryKey) => {
       const res = await deleteData(url);
 
       if (!res?.success) {
-        throw new Error(res.message || "Delete failed");
+        throw new Error(res.message || res.error || "Delete failed");
       }
 
       return res;

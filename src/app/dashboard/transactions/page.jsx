@@ -10,8 +10,10 @@ import {
   Download,
   Upload,
   Gift,
-  Inbox
+  Inbox,
+  Loader2
 } from "lucide-react";
+import { useFetchData } from "@/hooks/useApi";
 
 export default function TransactionsPage() {
   const router = useRouter();
@@ -22,39 +24,60 @@ export default function TransactionsPage() {
     { id: "Deposits", label: "Deposits", icon: Download },
     { id: "Withdrawals", label: "Withdrawals", icon: Upload },
     { id: "Commission", label: "Commission", icon: Gift },
+    { id: "Rewards", label: "Rewards", icon: Gift },
+    { id: "Investments", label: "Investments", icon: BarChart2 },
   ];
 
-  const transactions = [
-    {
-      id: 1,
-      title: "Daily Check-in - Day 1",
-      date: "27 May, 2026 • 10:12 AM",
-      amount: "+$0.10",
-      status: "SUCCESS",
-      type: "Commission",
-      iconBg: "bg-amber-100",
-      iconColor: "text-amber-500",
-      icon: Gift
-    },
-    {
-      id: 2,
-      title: "Welcome Bonus",
-      date: "27 May, 2026 • 10:11 AM",
-      amount: "+$5.00",
-      status: "SUCCESS",
-      type: "Commission",
-      iconBg: "bg-amber-100",
-      iconColor: "text-amber-500",
-      icon: Gift
+  const getTransactionMeta = (type) => {
+    const t = (type || "").toLowerCase();
+    if (t.includes('deposit')) return { category: 'Deposits', icon: Download, iconBg: "bg-blue-100", iconColor: "text-blue-500" };
+    if (t.includes('withdraw')) return { category: 'Withdrawals', icon: Upload, iconBg: "bg-red-100", iconColor: "text-red-500" };
+    if (t.includes('commission') || t.includes('referral')) return { category: 'Commission', icon: Gift, iconBg: "bg-amber-100", iconColor: "text-amber-500" };
+    if (t.includes('reward') || t.includes('gift') || t.includes('bonus') || t.includes('spin') || t.includes('task') || t.includes('checkin') || t.includes('admin_credit')) return { category: 'Rewards', icon: Gift, iconBg: "bg-green-100", iconColor: "text-green-500" };
+    if (t.includes('invest') || t.includes('plan')) return { category: 'Investments', icon: BarChart2, iconBg: "bg-purple-100", iconColor: "text-purple-500" };
+    return { category: 'Others', icon: FileText, iconBg: "bg-gray-100", iconColor: "text-gray-500" };
+  };
+
+  const { data: txRes, isLoading } = useFetchData("/users/transactions", ["transactions"]);
+  const rawTransactions = txRes?.transactions || [];
+
+  const transactions = rawTransactions.map(tx => {
+    const meta = getTransactionMeta(tx.type);
+    
+    // Determine sign: if it's an investment or withdrawal, it's typically a debit (-)
+    // Actually balance_after - balance_before is more reliable
+    const diff = parseFloat(tx.balance_after) - parseFloat(tx.balance_before);
+    let amountStr = "";
+    if (diff > 0) {
+      amountStr = `+$${Math.abs(diff).toFixed(2)}`;
+    } else if (diff < 0) {
+      amountStr = `-$${Math.abs(diff).toFixed(2)}`;
+    } else {
+      amountStr = `$${parseFloat(tx.amount).toFixed(2)}`;
     }
-  ];
+
+    return {
+      id: tx.id,
+      title: tx.description || tx.type,
+      date: new Date(tx.created_at).toLocaleString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric' }),
+      amount: amountStr,
+      status: "SUCCESS",
+      type: meta.category,
+      iconBg: meta.iconBg,
+      iconColor: meta.iconColor,
+      icon: meta.icon
+    };
+  });
 
   const filteredTransactions = activeTab === "All"
     ? transactions
     : transactions.filter(t => t.type === activeTab);
 
+  const totalVolume = rawTransactions.reduce((acc, tx) => acc + Math.abs(parseFloat(tx.balance_after) - parseFloat(tx.balance_before) || parseFloat(tx.amount)), 0);
+  const totalCount = rawTransactions.length;
+
   return (
-    <div className="flex flex-col h-full bg-[#f8f9fa] overflow-y-auto [&::-webkit-scrollbar]:hidden ">
+    <div className="flex flex-col h-full bg-[#f8f9fa] overflow-y-auto [&::-webkit-scrollbar]:hidden pb-10">
 
       {/* Header */}
       <div className="bg-white px-4 py-3 flex items-center gap-2.5 sticky top-0 z-20 shadow-sm border-b border-gray-100">
@@ -75,7 +98,9 @@ export default function TransactionsPage() {
             <div className="w-8 h-8 bg-purple-100 rounded-[8px] flex items-center justify-center text-[#a855f7] mb-3">
               <BarChart2 size={16} />
             </div>
-            <div className="text-[#0f172a] font-bold text-[18px] mb-0.5">$5.10</div>
+            <div className="text-[#0f172a] font-bold text-[18px] mb-0.5">
+              ${totalVolume.toFixed(2)}
+            </div>
             <div className="text-gray-400 text-[11px]">Total Volume</div>
           </div>
 
@@ -83,7 +108,7 @@ export default function TransactionsPage() {
             <div className="w-8 h-8 bg-[#dbeafe] rounded-[8px] flex items-center justify-center text-[#3b82f6] mb-3">
               <FileText size={16} />
             </div>
-            <div className="text-[#0f172a] font-bold text-[18px] mb-0.5">2</div>
+            <div className="text-[#0f172a] font-bold text-[18px] mb-0.5">{totalCount}</div>
             <div className="text-gray-400 text-[11px]">Transactions</div>
           </div>
         </div>
@@ -111,7 +136,12 @@ export default function TransactionsPage() {
 
         {/* Transaction List */}
         <div className="mt-2">
-          {filteredTransactions.length > 0 ? (
+          {isLoading ? (
+            <div className="flex flex-col items-center justify-center py-10">
+              <Loader2 className="w-8 h-8 animate-spin text-[#3b82f6] mb-2" />
+              <span className="text-[12px] text-gray-500">Loading transactions...</span>
+            </div>
+          ) : filteredTransactions.length > 0 ? (
             <div className="space-y-2.5">
               {filteredTransactions.map(tx => (
                 <div
@@ -134,12 +164,12 @@ export default function TransactionsPage() {
                       <tx.icon size={18} />
                     </div>
                     <div>
-                      <div className="text-[#0f172a] font-bold text-[13px] mb-0.5">{tx.title}</div>
+                      <div className="text-[#0f172a] font-bold text-[13px] mb-0.5 max-w-[150px] truncate" title={tx.title}>{tx.title}</div>
                       <div className="text-gray-400 text-[10px]">{tx.date}</div>
                     </div>
                   </div>
                   <div className="flex flex-col items-end gap-1">
-                    <div className={`font-bold text-[13px] ${tx.amount.startsWith('+') ? 'text-[#10b981]' : 'text-red-500'}`}>
+                    <div className={`font-bold text-[13px] ${tx.amount.startsWith('+') ? 'text-[#10b981]' : (tx.amount.startsWith('-') ? 'text-red-500' : 'text-gray-600')}`}>
                       {tx.amount}
                     </div>
                     <div className="bg-[#dcfce7] text-[#16a34a] px-2 py-0.5 rounded text-[8px] font-bold tracking-widest">
