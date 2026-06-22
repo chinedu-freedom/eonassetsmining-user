@@ -1,8 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { Wallet, Eye, EyeOff, ChevronDown, ChevronUp, Download, Upload, Clock, ArrowRight, Receipt } from "lucide-react";
+import { Wallet, Eye, EyeOff, ChevronDown, ChevronUp, Download, Upload, Clock, ArrowRight, Receipt, Loader2, ArrowUpRight, ArrowDownLeft } from "lucide-react";
 import Link from "next/link";
+import { useFetchData } from "@/hooks/useApi";
+import { format } from "date-fns";
 
 export default function WalletPage() {
   const [currency, setCurrency] = useState("USDT");
@@ -12,20 +14,32 @@ export default function WalletPage() {
     setCurrency(prev => prev === "USDT" ? "NGN" : "USDT");
   };
 
-  const balances = {
-    USDT: {
-      total: "$5.10",
-      main: "$0.60",
-      gift: "$4.50"
-    },
-    NGN: {
-      total: "₦6,938.78",
-      main: "₦816.32",
-      gift: "₦6,122.46"
+  const { data: userRes, isLoading: loadingUser } = useFetchData("/users/me", ["user"]);
+  const { data: txRes, isLoading: loadingTx } = useFetchData("/users/transactions", ["transactions"]);
+
+  const user = userRes?.user || {};
+  const transactions = txRes?.transactions || [];
+
+  const mainBalance = Number(user.balance || 0);
+  const giftBalance = Number(user.gift_balance || 0);
+  const totalBalance = mainBalance + giftBalance;
+
+  // Assuming a static exchange rate for now
+  const EXCHANGE_RATE = 1400;
+
+  const formatMoney = (amount, curr) => {
+    if (curr === "USDT") {
+      return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(amount);
+    } else {
+      return new Intl.NumberFormat('en-NG', { style: 'currency', currency: 'NGN' }).format(amount * EXCHANGE_RATE);
     }
   };
 
-  const currentBalance = balances[currency];
+  const currentBalance = {
+    total: formatMoney(totalBalance, currency),
+    main: formatMoney(mainBalance, currency),
+    gift: formatMoney(giftBalance, currency)
+  };
 
   return (
     <div className="flex flex-col h-full bg-[#f8f9fa] overflow-y-auto  [&::-webkit-scrollbar]:hidden">
@@ -54,7 +68,7 @@ export default function WalletPage() {
           {/* Main Balance */}
           <div className="flex items-center gap-2 mb-4">
             <span className="text-[24px] font-bold tracking-tight">
-              {showBalance ? currentBalance.total : "****"}
+              {loadingUser ? <Loader2 className="w-5 h-5 animate-spin" /> : showBalance ? currentBalance.total : "****"}
             </span>
             <button
               onClick={() => setShowBalance(!showBalance)}
@@ -68,11 +82,11 @@ export default function WalletPage() {
           <div className="flex gap-2.5 mb-3.5">
             <div className="bg-white/20 rounded-lg p-2 flex-1 border border-white/5">
               <div className="text-[7px] font-bold text-white/80 uppercase tracking-wide mb-1">Main Balance</div>
-              <div className="text-[12px] font-bold">{showBalance ? currentBalance.main : "****"}</div>
+              <div className="text-[12px] font-bold">{loadingUser ? "..." : showBalance ? currentBalance.main : "****"}</div>
             </div>
             <div className="bg-white/20 rounded-lg p-2 flex-1 border border-white/5">
               <div className="text-[7px] font-bold text-white/80 uppercase tracking-wide mb-1">Gift Balance</div>
-              <div className="text-[12px] font-bold">{showBalance ? currentBalance.gift : "****"}</div>
+              <div className="text-[12px] font-bold">{loadingUser ? "..." : showBalance ? currentBalance.gift : "****"}</div>
             </div>
           </div>
 
@@ -99,11 +113,38 @@ export default function WalletPage() {
             </Link>
           </div>
 
-          <div className="flex-1 flex flex-col items-center justify-center gap-2">
-            <div className="w-10 h-10 bg-[#f1f5f9] rounded-xl flex items-center justify-center border border-gray-100 shadow-sm">
-              <Receipt size={18} className="text-[#cbd5e1]" />
-            </div>
-            <span className="text-[11px] text-[#94a3b8] font-medium">No transactions yet</span>
+          <div className="flex-1 flex flex-col items-center justify-center gap-2 min-h-[100px]">
+            {loadingTx ? (
+               <Loader2 className="w-5 h-5 animate-spin text-[#cbd5e1]" />
+            ) : transactions.length > 0 ? (
+               <div className="w-full space-y-3">
+                 {transactions.slice(0, 5).map((tx) => (
+                   <div key={tx.id} className="flex justify-between items-center bg-[#f8f9fa] rounded-xl p-3 border border-gray-100">
+                     <div className="flex items-center gap-3">
+                        <div className={`w-8 h-8 rounded-full flex items-center justify-center ${tx.type === 'DEPOSIT' ? 'bg-green-100 text-green-600' : tx.type === 'WITHDRAWAL' ? 'bg-red-100 text-red-600' : 'bg-blue-100 text-blue-600'}`}>
+                          {tx.type === 'DEPOSIT' ? <ArrowDownLeft size={14} /> : tx.type === 'WITHDRAWAL' ? <ArrowUpRight size={14} /> : <Receipt size={14} />}
+                        </div>
+                        <div>
+                          <div className="text-[12px] font-bold text-gray-800 capitalize">{tx.type.replace('_', ' ').toLowerCase()}</div>
+                          <div className="text-[9px] text-gray-400">{format(new Date(tx.created_at), 'MMM dd, yyyy HH:mm')}</div>
+                        </div>
+                     </div>
+                     <div className="text-right">
+                        <div className={`text-[13px] font-bold ${tx.type === 'DEPOSIT' || tx.type.includes('reward') ? 'text-green-500' : 'text-red-500'}`}>
+                          {tx.type === 'DEPOSIT' || tx.type.includes('reward') ? '+' : '-'}${Number(tx.amount).toFixed(2)}
+                        </div>
+                     </div>
+                   </div>
+                 ))}
+               </div>
+            ) : (
+               <>
+                 <div className="w-10 h-10 bg-[#f1f5f9] rounded-xl flex items-center justify-center border border-gray-100 shadow-sm">
+                   <Receipt size={18} className="text-[#cbd5e1]" />
+                 </div>
+                 <span className="text-[11px] text-[#94a3b8] font-medium">No transactions yet</span>
+               </>
+            )}
           </div>
         </div>
       </div>

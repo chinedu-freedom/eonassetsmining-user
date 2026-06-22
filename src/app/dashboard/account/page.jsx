@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { 
   User, 
   Globe, 
@@ -28,26 +28,9 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 
-const languages = [
-  { code: 'EN', name: 'English', sub: 'English', short: 'GB' },
-  { code: 'ES', name: 'Español', sub: 'Spanish', short: 'ES' },
-  { code: 'FR', name: 'Français', sub: 'French', short: 'FR' },
-  { code: 'DE', name: 'Deutsch', sub: 'German', short: 'DE' },
-  { code: 'IT', name: 'Italiano', sub: 'Italian', short: 'IT' },
-  { code: 'PT', name: 'Português', sub: 'Portuguese', short: 'BR' },
-  { code: 'RU', name: 'Русский', sub: 'Russian', short: 'RU' },
-  { code: 'ZH', name: '中文', sub: 'Chinese', short: 'CN' },
-  { code: 'JA', name: '日本語', sub: 'Japanese', short: 'JP' },
-  { code: 'KO', name: '한국어', sub: 'Korean', short: 'KR' },
-  { code: 'AR', name: 'العربية', sub: 'Arabic', short: 'SA' },
-  { code: 'HI', name: 'हिन्दी', sub: 'Hindi', short: 'IN' },
-  { code: 'ID', name: 'Bahasa Indonesia', sub: 'Indonesian', short: 'ID' },
-  { code: 'TR', name: 'Türkçe', sub: 'Turkish', short: 'TR' },
-  { code: 'VI', name: 'Tiếng Việt', sub: 'Vietnamese', short: 'VN' },
-  { code: 'TH', name: 'ไทย', sub: 'Thai', short: 'TH' },
-  { code: 'NL', name: 'Nederlands', sub: 'Dutch', short: 'NL' },
-  { code: 'PL', name: 'Polski', sub: 'Polish', short: 'PL' }
-];
+// Dynamic languages are now fetched from backend
+
+import { useFetchData } from "@/hooks/useApi";
 
 export default function AccountPage() {
   const [currency, setCurrency] = useState("USDT");
@@ -57,6 +40,40 @@ export default function AccountPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [showToast, setShowToast] = useState(false);
   const [profilePic, setProfilePic] = useState(null);
+
+  const { data: userProfileResponse, isLoading: isLoadingProfile } = useFetchData("/users/me", ["user-profile"]);
+  const userProfile = userProfileResponse?.user;
+
+  const { data: languagesResponse } = useFetchData("/auth/languages", ["languages"]);
+  const dynamicLanguages = languagesResponse?.data || [];
+
+  const [liveExchangeRate, setLiveExchangeRate] = useState(null);
+
+  useEffect(() => {
+    if (userProfile?.language?.language_code) {
+      setCurrentLang(userProfile.language.language_code);
+    }
+  }, [userProfile?.language]);
+
+  useEffect(() => {
+    const fetchLiveRate = async () => {
+      if (userProfile?.country) {
+        const targetCurrency = userProfile.country.currency?.trim() ? userProfile.country.currency : "NGN";
+        if (targetCurrency !== 'USDT' && targetCurrency !== 'USD') {
+          try {
+            const res = await fetch(`https://api.exchangerate-api.com/v4/latest/USD`);
+            const data = await res.json();
+            if (data && data.rates && data.rates[targetCurrency]) {
+              setLiveExchangeRate(data.rates[targetCurrency]);
+            }
+          } catch (error) {
+            console.error("Failed to fetch live exchange rate:", error);
+          }
+        }
+      }
+    };
+    fetchLiveRate();
+  }, [userProfile?.country]);
 
   const handleProfilePicChange = (e) => {
     const file = e.target.files[0];
@@ -70,25 +87,31 @@ export default function AccountPage() {
   };
 
   const toggleCurrency = () => {
-    setCurrency(prev => prev === "USDT" ? "NGN" : "USDT");
+    if (!userProfile?.country) return;
+    const localCurrency = userProfile.country.currency?.trim() ? userProfile.country.currency : "NGN";
+    setCurrency(prev => prev === "USDT" ? localCurrency : "USDT");
   };
 
-  const balances = {
-    USDT: {
-      total: "$5.10",
-      deposit: "$0.00",
-      withdraw: "$0.00",
-      income: "$5.10"
-    },
-    NGN: {
-      total: "₦6,938.78",
-      deposit: "₦0.00",
-      withdraw: "₦0.00",
-      income: "₦6,938.78"
+  // Convert balance based on selected currency
+  const getDisplayValue = (amountUSD) => {
+    const usd = parseFloat(amountUSD || 0);
+    
+    if (currency === "USDT") {
+      return `$${usd.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    } else {
+      const exchangeRate = liveExchangeRate !== null ? liveExchangeRate : parseFloat(userProfile?.country?.exchange_rate || 1);
+      const localBalance = usd * exchangeRate;
+      const symbol = userProfile?.country?.currency_symbol || "";
+      return `${symbol}${localBalance.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
     }
   };
 
-  const currentBalance = balances[currency];
+  const balanceValues = {
+    total: getDisplayValue(userProfile?.balance),
+    deposit: getDisplayValue(userProfile?.statistics?.total_deposit),
+    withdraw: getDisplayValue(userProfile?.statistics?.total_withdrawal),
+    income: getDisplayValue(userProfile?.statistics?.total_income)
+  };
 
   const menuItems = [
     { icon: Info, label: "About Us", href: "/dashboard/about", color: "text-[#3b82f6]", bg: "bg-[#eff6ff]" },
@@ -103,9 +126,9 @@ export default function AccountPage() {
   return (
     <div className="flex flex-col h-full bg-[#f8f9fa] overflow-y-auto  [&::-webkit-scrollbar]:hidden">
       {/* Header */}
-      <div className="bg-white px-4 pt-4 pb-3 flex justify-between items-center z-10 sticky top-0 shadow-sm border-b border-gray-100">
-        <div className="flex items-center gap-2.5">
-          <label className="relative w-10 h-10 bg-[#3b82f6] rounded-full flex items-center justify-center text-white shadow-sm cursor-pointer overflow-hidden group shrink-0">
+      <div className="bg-white px-4 pt-4 pb-3 flex justify-between items-center rounded-b-[20px] shadow-sm z-10 sticky top-0">
+        <div className="flex items-center gap-2">
+          <label className="relative w-9 h-9 bg-gradient-to-br from-[#1e3a8a] to-[#0f172a] rounded-full flex items-center justify-center text-white shadow-sm cursor-pointer overflow-hidden group shrink-0">
             {profilePic ? (
               <img src={profilePic} alt="Profile" className="w-full h-full object-cover" />
             ) : (
@@ -122,19 +145,23 @@ export default function AccountPage() {
             />
           </label>
           <div>
-            <h1 className="text-[#1e3a8a] text-[15px] font-bold leading-tight">Spark</h1>
-            <p className="text-gray-400 text-[10px] mt-0.5">chinedufreedom10@gmail.com</p>
+            <h1 className="text-[#1e3a8a] text-[15px] font-bold leading-tight">{userProfile?.full_name || "..."}</h1>
+            <p className="text-gray-400 text-[10px] mt-0.5">{userProfile?.email || "..."}</p>
           </div>
         </div>
-        <div className="flex items-center gap-1.5">
+        <div className="flex items-center gap-2">
           <button 
             onClick={() => setShowLanguageModal(true)}
-            className="flex items-center gap-1 bg-gray-50 px-2 py-1.5 rounded-lg text-[10px] font-bold text-gray-500 hover:bg-gray-100 transition-colors border border-gray-100"
+            className="flex items-center gap-1 bg-white border border-gray-200 px-2.5 py-1 rounded-full text-[11px] font-bold text-[#1e3a8a] shadow-sm hover:bg-gray-50 transition-colors"
           >
-            <Globe size={12} className="text-[#3b82f6]" /> {currentLang}
+            <Globe size={13} className="text-[#3b82f6]" />
+            {currentLang}
           </button>
-          <Link href="/dashboard/help" className="w-7 h-7 bg-gray-50 rounded-lg flex items-center justify-center text-[#3b82f6] hover:bg-gray-100 transition-colors border border-gray-100">
-            <MessageCircle size={12} fill="currentColor" className="opacity-80" />
+          <Link 
+            href="/dashboard/help"
+            className="bg-[#eff6ff] p-1.5 rounded-full text-[#3b82f6] hover:bg-[#dbeafe] transition-colors"
+          >
+            <MessageCircle size={16} />
           </Link>
         </div>
       </div>
@@ -142,46 +169,41 @@ export default function AccountPage() {
       <div className="px-4 pt-4 pb-4 space-y-4 max-w-[480px] mx-auto w-full">
         
         {/* Total Balance Card */}
-        <div className="bg-gradient-to-br from-[#1e3a8a] to-[#0f172a] rounded-[24px] p-1.5 shadow-lg border border-white/10 relative overflow-hidden">
+        <div className="bg-gradient-to-br from-[#1e3a8a] to-[#0f172a] rounded-2xl p-[18px] text-white shadow-lg relative overflow-hidden border border-white/10">
           {/* Background decoration */}
           <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/3 blur-2xl pointer-events-none"></div>
           
-          <div className="bg-white/5 rounded-[20px] p-[16px] text-white relative z-10">
-            {/* Top section */}
-            <div className="flex justify-between items-start mb-1">
-              <span className="text-[10px] text-white/90">Total Balance</span>
-              <button 
-                onClick={toggleCurrency}
-                className="flex items-center gap-1 bg-white/20 px-2 py-1 rounded text-[9px] font-bold hover:bg-white/30 transition-colors"
-              >
-                {currency} {currency === "USDT" ? <ChevronDown size={10} /> : <ChevronUp size={10} />}
-              </button>
-            </div>
+          <div className="flex justify-between items-start mb-2 relative z-10">
+            <p className="text-white/80 text-[13px] font-medium">Total Balance</p>
+            <button 
+              onClick={toggleCurrency}
+              className="bg-white/10 px-2 py-1 rounded-md text-[11px] font-bold flex items-center gap-1 hover:bg-white/20 transition-colors backdrop-blur-sm border border-white/10"
+            >
+              {currency} <span className="text-[7px] opacity-70">▼</span>
+            </button>
+          </div>
+          
+          <div className="flex items-center gap-2 mb-5 relative z-10">
+            <h2 className="text-[28px] font-bold tracking-wider leading-none">
+              {showBalance ? balanceValues.total : "****"}
+            </h2>
+            <button 
+              onClick={() => setShowBalance(!showBalance)}
+              className="text-white/60 hover:text-white transition-colors ml-1"
+            >
+              {showBalance ? <Eye size={18} /> : <EyeOff size={18} />}
+            </button>
+          </div>
 
-            {/* Main Balance */}
-            <div className="flex items-center gap-2 mb-5">
-              <span className="text-[24px] font-bold tracking-tight">
-                {showBalance ? currentBalance.total : "****"}
-              </span>
-              <button 
-                onClick={() => setShowBalance(!showBalance)}
-                className="text-white/80 hover:text-white transition-colors p-1"
-              >
-                {showBalance ? <Eye size={14} /> : <EyeOff size={14} />}
-              </button>
-            </div>
-
-            {/* Actions */}
-            <div className="flex gap-2.5 mt-2 relative z-10">
-              <Link href="/dashboard/wallet?tab=deposit" className="flex-1 bg-white text-[#1e3a8a] py-2 rounded-[12px] text-[11px] font-bold flex items-center justify-center gap-1.5 hover:bg-gray-50 transition-colors shadow-sm">
-                <Wallet size={14} />
-                Deposit
-              </Link>
-              <Link href="/dashboard/wallet?tab=withdraw" className="flex-1 bg-white/10 text-white py-2 rounded-[12px] text-[11px] font-bold flex items-center justify-center gap-1.5 hover:bg-white/20 transition-colors border border-white/15 backdrop-blur-sm">
-                <CreditCard size={14} />
-                Withdraw
-              </Link>
-            </div>
+          <div className="flex gap-2.5 relative z-10">
+            <Link href="/dashboard/wallet?tab=deposit" className="flex-1 bg-white text-[#1e3a8a] py-2 rounded-lg text-[13px] font-semibold flex items-center justify-center gap-1.5 hover:bg-gray-50 transition-colors shadow-md">
+              <Wallet size={16} />
+              Deposit
+            </Link>
+            <Link href="/dashboard/wallet?tab=withdraw" className="flex-1 bg-white/10 text-white py-2 rounded-lg text-[13px] font-semibold flex items-center justify-center gap-1.5 hover:bg-white/20 transition-colors border border-white/15 backdrop-blur-sm">
+              <CreditCard size={16} />
+              Withdraw
+            </Link>
           </div>
         </div>
 
@@ -201,7 +223,7 @@ export default function AccountPage() {
                 </div>
                 <span className="text-[8px] font-bold text-gray-400 uppercase tracking-wider">Total Deposit</span>
               </div>
-              <div className="text-[13px] font-bold text-[#0f172a] ml-1">{showBalance ? currentBalance.deposit : "****"}</div>
+              <div className="text-[13px] font-bold text-[#0f172a] ml-1">{showBalance ? balanceValues.deposit : "****"}</div>
             </div>
 
             {/* Total Withdraw */}
@@ -212,7 +234,7 @@ export default function AccountPage() {
                 </div>
                 <span className="text-[8px] font-bold text-gray-400 uppercase tracking-wider">Total Withdraw</span>
               </div>
-              <div className="text-[13px] font-bold text-[#0f172a] ml-1">{showBalance ? currentBalance.withdraw : "****"}</div>
+              <div className="text-[13px] font-bold text-[#0f172a] ml-1">{showBalance ? balanceValues.withdraw : "****"}</div>
             </div>
 
             {/* Total Income */}
@@ -223,7 +245,7 @@ export default function AccountPage() {
                 </div>
                 <span className="text-[8px] font-bold text-gray-400 uppercase tracking-wider">Total Income</span>
               </div>
-              <div className="text-[13px] font-bold text-[#0f172a] ml-1">{showBalance ? currentBalance.income : "****"}</div>
+              <div className="text-[13px] font-bold text-[#0f172a] ml-1">{showBalance ? balanceValues.income : "****"}</div>
             </div>
 
             {/* Team Members */}
@@ -234,7 +256,7 @@ export default function AccountPage() {
                 </div>
                 <span className="text-[8px] font-bold text-gray-400 uppercase tracking-wider">Team Members</span>
               </div>
-              <div className="text-[13px] font-bold text-[#0f172a] ml-1">0</div>
+              <div className="text-[13px] font-bold text-[#0f172a] ml-1">{userProfile?.statistics?.team_members || 0}</div>
             </div>
           </div>
         </div>
@@ -284,7 +306,7 @@ export default function AccountPage() {
           ></div>
 
           {/* Modal Content */}
-          <div className="relative bg-white w-full max-w-[480px] mx-auto rounded-t-[24px] overflow-hidden flex flex-col max-h-[85vh] animate-in slide-in-from-bottom-full duration-300">
+          <div className="relative bg-white w-full max-w-[480px] mx-auto rounded-t-[24px] overflow-hidden flex flex-col h-[75vh] animate-in slide-in-from-bottom-full duration-300">
             
             {/* Header */}
             <div className="bg-[#2563eb] p-5 flex justify-between items-center text-white">
@@ -311,16 +333,44 @@ export default function AccountPage() {
 
             {/* Language List */}
             <div className="p-4 space-y-3 overflow-y-auto flex-1">
-              {languages
-                .filter(l => l.name.toLowerCase().includes(searchQuery.toLowerCase()) || l.sub.toLowerCase().includes(searchQuery.toLowerCase()))
+              {dynamicLanguages
+                .filter(l => l.native_name.toLowerCase().includes(searchQuery.toLowerCase()) || l.language_name.toLowerCase().includes(searchQuery.toLowerCase()))
                 .map((lang) => {
-                const isSelected = currentLang === lang.code;
+                const isSelected = currentLang === lang.language_code;
                 return (
                   <button
-                    key={lang.code}
-                    onClick={() => {
-                      setCurrentLang(lang.code);
-                      setTimeout(() => setShowLanguageModal(false), 200);
+                    key={lang.id}
+                    onClick={async () => {
+                      setCurrentLang(lang.language_code);
+                      const targetCode = lang.language_code.toLowerCase();
+                      
+                      // Set Google Translate cookies
+                      document.cookie = `googtrans=/en/${targetCode}; path=/`;
+                      document.cookie = `googtrans=/en/${targetCode}; path=/; domain=${window.location.hostname}`;
+                      
+                      if (targetCode === 'en') {
+                        document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
+                        document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=${window.location.hostname}`;
+                      }
+
+                      // Save to backend
+                      try {
+                        await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api'}/users/me/language`, {
+                          method: 'PUT',
+                          headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${localStorage.getItem('token')}`
+                          },
+                          body: JSON.stringify({ language_code: lang.language_code })
+                        });
+                      } catch (error) {
+                        console.error('Failed to update language preference', error);
+                      }
+
+                      setTimeout(() => {
+                        setShowLanguageModal(false);
+                        window.location.reload();
+                      }, 200);
                     }}
                     className={`w-full flex items-center justify-between p-3 rounded-[12px] border transition-colors ${
                       isSelected 
@@ -330,7 +380,7 @@ export default function AccountPage() {
                   >
                     <div className="flex items-center gap-3">
                       <div className="relative w-10 h-10 bg-white border border-gray-100 rounded-xl flex items-center justify-center text-[12px] font-bold text-gray-400 shadow-sm">
-                        {lang.short}
+                        {lang.language_code.substring(0, 2).toUpperCase()}
                         {isSelected && (
                           <div className="absolute -top-1 -right-1 bg-white rounded-full">
                             <CheckCircle2 size={14} className="text-[#10b981]" fill="#fff" />
@@ -338,8 +388,8 @@ export default function AccountPage() {
                         )}
                       </div>
                       <div className="text-left">
-                        <div className="text-[13px] font-bold text-[#0f172a]">{lang.name}</div>
-                        <div className="text-[11px] text-gray-500">{lang.sub}</div>
+                        <div className="text-[13px] font-bold text-[#0f172a]">{lang.native_name}</div>
+                        <div className="text-[11px] text-gray-500">{lang.language_name}</div>
                       </div>
                     </div>
                     <ChevronRight size={16} className={isSelected ? 'text-[#3b82f6]' : 'text-gray-300'} />

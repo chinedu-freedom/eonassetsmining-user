@@ -13,11 +13,30 @@ import {
   Image as ImageIcon,
   Zap,
   Activity,
-  X
+  X,
+  Euro,
+  PoundSterling,
+  JapaneseYen,
+  Coins,
+  Gem,
+  Loader2
 } from "lucide-react";
+
+import { useFetchData } from "@/hooks/useApi";
 
 export default function AboutPage() {
   const router = useRouter();
+
+  const { data: slidersRes, isLoading: isLoadingSliders } = useFetchData("/sliders?display_location=about", ["about-sliders"]);
+  
+  const aboutImages = Array.isArray(slidersRes?.sliders) ? slidersRes.sliders : [];
+  const sortedImages = [...aboutImages].sort((a, b) => a.display_order - b.display_order);
+  
+  const mainImage = sortedImages.length > 0 ? sortedImages[0] : null;
+  const gridImages = sortedImages.slice(1, 5);
+
+  const { data: teamRes, isLoading: isLoadingTeam } = useFetchData("/team-members", ["about-team-members"]);
+  const teamMembers = Array.isArray(teamRes?.teamMembers) ? teamRes.teamMembers : [];
 
   return (
     <div className="flex flex-col h-full bg-[#f8f9fa] overflow-y-auto [&::-webkit-scrollbar]:hidden">
@@ -35,27 +54,13 @@ export default function AboutPage() {
       <div className="px-4 py-3 max-w-[480px] mx-auto w-full space-y-4">
         
         {/* Hero Section */}
-        <div className="relative bg-[#3b82f6] rounded-[20px] pt-6 pb-12 px-4 text-center text-white overflow-hidden shadow-sm">
-          {/* Floating icons background effect */}
-          <div className="absolute top-4 left-4 w-6 h-6 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm">
-            <Bitcoin size={12} />
-          </div>
-          <div className="absolute top-1/2 left-3 w-5 h-5 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm">
-            <DollarSign size={10} />
-          </div>
-          <div className="absolute top-6 right-6 w-6 h-6 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm">
-            <Layers size={10} />
-          </div>
-          <div className="absolute bottom-8 right-4 w-5 h-5 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm">
-            <Zap size={10} />
-          </div>
-
-          <div className="inline-flex items-center gap-1 bg-white/20 px-2.5 py-1 rounded-full text-[9px] font-bold backdrop-blur-sm mb-3">
+        <div className="relative bg-[#3b82f6] rounded-[16px] pt-6 pb-12 px-4 text-center text-white overflow-hidden shadow-sm">
+          <div className="inline-flex items-center gap-1 bg-white/20 px-2.5 py-1 rounded-full text-[9px] font-bold backdrop-blur-sm mb-3 relative z-10">
             <ShieldCheck size={10} /> Trusted Platform
           </div>
           
-          <h2 className="text-[20px] font-black mb-1.5 leading-tight">Welcome to EonAssets</h2>
-          <p className="text-[10px] text-white/90 leading-relaxed max-w-[250px] mx-auto mb-1">
+          <h2 className="text-[20px] font-black mb-1.5 leading-tight relative z-10">Welcome to EonAssets</h2>
+          <p className="text-[10px] text-white/90 leading-relaxed max-w-[250px] mx-auto mb-1 relative z-10">
             Your trusted partner for smart investments. We blend deep liquidity, smart automation, and an easy-to-use interface so anyone can grow consistently.
           </p>
         </div>
@@ -84,29 +89,49 @@ export default function AboutPage() {
             </div>
             <h3 className="text-[#1e3a8a] font-bold text-[13px]">Our Journey</h3>
           </div>
-          {/* Main large placeholder */}
-          <div className="w-full h-[200px] bg-white rounded-[16px] flex items-center justify-center border border-gray-200 shadow-sm overflow-hidden relative group cursor-pointer">
-            <div className="absolute inset-0 bg-gray-50 flex flex-col items-center justify-center gap-2 group-hover:bg-gray-100 transition-colors">
-              <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center shadow-sm text-gray-400">
-                <ImageIcon size={14} />
-              </div>
-              <span className="text-[10px] font-medium text-gray-500">Journey Image Area</span>
+          
+          {isLoadingSliders ? (
+            <div className="w-full h-[200px] bg-white rounded-[16px] flex flex-col items-center justify-center border border-gray-200 shadow-sm">
+              <Loader2 className="w-6 h-6 animate-spin text-blue-500 mb-2" />
+              <span className="text-[10px] text-gray-400">Loading our journey...</span>
             </div>
-          </div>
-        </div>
+          ) : (
+            <>
+              {/* Main large placeholder */}
+              <div className="w-full h-[200px] bg-white rounded-[16px] flex items-center justify-center border border-gray-200 shadow-sm overflow-hidden relative group cursor-pointer">
+                {mainImage?.image ? (
+                  <img src={mainImage.image} alt={mainImage.title || "Journey Image"} className="w-full h-full object-cover" />
+                ) : (
+                  <div className="absolute inset-0 bg-gray-50 flex flex-col items-center justify-center gap-2 group-hover:bg-gray-100 transition-colors">
+                    <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center shadow-sm text-gray-400">
+                      <ImageIcon size={14} />
+                    </div>
+                    <span className="text-[10px] font-medium text-gray-500">Journey Image Area</span>
+                  </div>
+                )}
+              </div>
 
-        {/* 4 Grid Images */}
-        <div className="grid grid-cols-2 gap-2 mt-2">
-          {[1, 2, 3, 4].map((i) => (
-            <div key={i} className="aspect-[4/3] bg-white rounded-[12px] flex items-center justify-center border border-gray-200 shadow-sm relative group cursor-pointer overflow-hidden">
-              <div className="absolute inset-0 bg-gray-50 flex flex-col items-center justify-center gap-1.5 group-hover:bg-gray-100 transition-colors">
-                <div className="w-7 h-7 bg-white rounded-full flex items-center justify-center shadow-sm text-gray-400">
-                  <ImageIcon size={12} />
+              {/* 4 Grid Images */}
+              {gridImages.length > 0 && (
+                <div className="grid grid-cols-2 gap-2 mt-2">
+                  {gridImages.map((img, idx) => (
+                    <div key={img.id || idx} className="aspect-[4/3] bg-white rounded-[12px] flex items-center justify-center border border-gray-200 shadow-sm relative group cursor-pointer overflow-hidden">
+                      {img.image ? (
+                        <img src={img.image} alt={img.title || `Promo Image ${idx + 1}`} className="w-full h-full object-cover" />
+                      ) : (
+                        <div className="absolute inset-0 bg-gray-50 flex flex-col items-center justify-center gap-1.5 group-hover:bg-gray-100 transition-colors">
+                          <div className="w-7 h-7 bg-white rounded-full flex items-center justify-center shadow-sm text-gray-400">
+                            <ImageIcon size={12} />
+                          </div>
+                          <span className="text-[9px] font-medium text-gray-500">Promo Image {idx + 1}</span>
+                        </div>
+                      )}
+                    </div>
+                  ))}
                 </div>
-                <span className="text-[9px] font-medium text-gray-500">Promo Image {i}</span>
-              </div>
-            </div>
-          ))}
+              )}
+            </>
+          )}
         </div>
 
         {/* Why Choose EonAssets */}
@@ -166,37 +191,46 @@ export default function AboutPage() {
 
         {/* Meet Our Team */}
         <div className="mt-6 text-center">
-          <h3 className="text-[#1e3a8a] font-bold text-[14px] mb-1">Meet Our Team</h3>
-          <p className="text-gray-500 text-[11px] mb-4">The experts behind your success</p>
+          <h3 className="text-[#1e3a8a] font-bold text-[16px]">Meet Our Team</h3>
+          <p className="text-gray-500 font-medium text-[12px] mb-4">The experts behind your success</p>
 
-          <div className="flex justify-between items-center px-1">
-            <div className="flex flex-col items-center">
-              <div className="w-12 h-12 bg-[#f97316] rounded-full flex items-center justify-center text-white mb-1.5 shadow-sm">
-                <Bitcoin size={24} />
-              </div>
-              <div className="text-[#0f172a] font-bold text-[11px] mb-0.5">John Smith</div>
-              <div className="text-gray-400 text-[9px]">CEO & Founder</div>
+          {isLoadingTeam ? (
+            <div className="flex flex-col items-center justify-center py-4">
+              <Loader2 className="w-6 h-6 animate-spin text-[#3b82f6] mb-2" />
+              <span className="text-[10px] text-gray-400">Loading team...</span>
             </div>
-            
-            <div className="flex flex-col items-center">
-              <div className="w-12 h-12 bg-black rounded-full flex items-center justify-center text-white mb-1.5 shadow-sm">
-                <X size={24} strokeWidth={2.5} />
-              </div>
-              <div className="text-[#0f172a] font-bold text-[11px] mb-0.5">Sarah Johnson</div>
-              <div className="text-gray-400 text-[9px]">CTO</div>
-            </div>
-
-            <div className="flex flex-col items-center">
-              <div className="w-12 h-12 bg-[#eab308] rounded-full flex items-center justify-center text-black mb-1.5 shadow-sm">
-                <div className="relative">
-                  <div className="w-4 h-4 rotate-45 border-2 border-black box-border"></div>
-                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-1 h-1 bg-black rounded-[1px]"></div>
+          ) : (
+            <div className="flex justify-between items-start px-2">
+              {teamMembers.slice(0, 3).map((member, idx) => (
+                <div key={member.id || idx} className="flex flex-col items-center flex-1">
+                  <div className="w-[60px] h-[60px] rounded-full mb-2 shadow-[0_4px_12px_rgba(0,0,0,0.08)] border-[3px] border-white bg-gray-100 flex items-center justify-center shrink-0 relative overflow-hidden">
+                    {member.image ? (
+                      <img src={member.image} alt={member.name} className="w-full h-full object-cover" />
+                    ) : (
+                      idx === 0 ? (
+                        <div className="w-full h-full bg-[#f97316] flex items-center justify-center text-white absolute inset-0">
+                          <Bitcoin size={32} />
+                        </div>
+                      ) : idx === 1 ? (
+                        <div className="w-full h-full bg-black flex items-center justify-center text-white absolute inset-0">
+                          <X size={32} strokeWidth={2.5} />
+                        </div>
+                      ) : (
+                        <div className="w-full h-full bg-[#eab308] flex items-center justify-center text-black absolute inset-0">
+                          <div className="relative">
+                            <div className="w-[22px] h-[22px] rotate-45 border-[2.5px] border-black box-border"></div>
+                            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[6px] h-[6px] bg-black rounded-[1px]"></div>
+                          </div>
+                        </div>
+                      )
+                    )}
+                  </div>
+                  <div className="text-[#0f172a] font-bold text-[12px] mb-0.5 whitespace-nowrap overflow-hidden text-ellipsis w-[90px] text-center">{member.name}</div>
+                  <div className="text-gray-500 text-[10px] text-center w-[90px] leading-tight">{member.position}</div>
                 </div>
-              </div>
-              <div className="text-[#0f172a] font-bold text-[11px] mb-0.5">Mike Williams</div>
-              <div className="text-gray-400 text-[9px]">Operations</div>
+              ))}
             </div>
-          </div>
+          )}
         </div>
 
         {/* CTA */}

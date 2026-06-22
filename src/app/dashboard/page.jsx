@@ -1,10 +1,11 @@
 "use client";
 
-import { useState } from "react";
-import { Globe, MessageCircle, Eye, EyeOff, Wallet, CreditCard, Volume2, HelpCircle, CheckSquare, Users, Loader, Download, Gift, Calendar, Activity, ArrowDown, DollarSign, BadgeCheck, BarChart2, ChevronRight, X, Lock, Coins, Search, CheckCircle2 } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Globe, MessageCircle, Eye, EyeOff, Wallet, CreditCard, Volume2, HelpCircle, CheckSquare, Users, Loader, Loader2, Download, Gift, Calendar, Activity, ArrowDown, DollarSign, BadgeCheck, BarChart2, ChevronRight, X, Lock, Coins, Search, CheckCircle2 } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-
+import { useFetchData } from "@/hooks/useApi";
+import WhatsAppModal from "@/components/WhatsAppModal";
 const activities = [
   { type: "deposit", name: "", text: "deposited", amount: "+$1,910", iconBg: "bg-green-100", iconCol: "text-green-600", Icon: ArrowDown },
   { type: "profit", name: "henry***", text: "earned profit", amount: "+$138", iconBg: "bg-emerald-100", iconCol: "text-emerald-600", Icon: DollarSign },
@@ -14,51 +15,83 @@ const activities = [
 ];
 const doubledActivities = [...activities, ...activities];
 
-const languages = [
-  { code: 'EN', name: 'English', sub: 'English', short: 'GB' },
-  { code: 'ES', name: 'Español', sub: 'Spanish', short: 'ES' },
-  { code: 'FR', name: 'Français', sub: 'French', short: 'FR' },
-  { code: 'DE', name: 'Deutsch', sub: 'German', short: 'DE' },
-  { code: 'IT', name: 'Italiano', sub: 'Italian', short: 'IT' },
-  { code: 'PT', name: 'Português', sub: 'Portuguese', short: 'BR' },
-  { code: 'RU', name: 'Русский', sub: 'Russian', short: 'RU' },
-  { code: 'ZH', name: '中文', sub: 'Chinese', short: 'CN' },
-  { code: 'JA', name: '日本語', sub: 'Japanese', short: 'JP' },
-  { code: 'KO', name: '한국어', sub: 'Korean', short: 'KR' },
-  { code: 'AR', name: 'العربية', sub: 'Arabic', short: 'SA' },
-  { code: 'HI', name: 'हिन्दी', sub: 'Hindi', short: 'IN' },
-  { code: 'ID', name: 'Bahasa Indonesia', sub: 'Indonesian', short: 'ID' },
-  { code: 'TR', name: 'Türkçe', sub: 'Turkish', short: 'TR' },
-  { code: 'VI', name: 'Tiếng Việt', sub: 'Vietnamese', short: 'VN' },
-  { code: 'TH', name: 'ไทย', sub: 'Thai', short: 'TH' },
-  { code: 'NL', name: 'Nederlands', sub: 'Dutch', short: 'NL' },
-  { code: 'PL', name: 'Polski', sub: 'Polish', short: 'PL' }
-];
+
 
 export default function DashboardPage() {
   const router = useRouter();
   const [currency, setCurrency] = useState("USDT");
   const [showBalance, setShowBalance] = useState(false);
-  const [showDailyModal, setShowDailyModal] = useState(false);
   const [showToast, setShowToast] = useState(false);
   const [showLanguageModal, setShowLanguageModal] = useState(false);
   const [currentLang, setCurrentLang] = useState("EN");
   const [searchQuery, setSearchQuery] = useState("");
 
+  const { data: partnersResponse, isLoading: isLoadingPartners } = useFetchData("/partners", ["partners"]);
+  const partnersData = partnersResponse?.partners || [];
+
+  const { data: userProfileResponse, isLoading: isLoadingProfile } = useFetchData("/users/me", ["user-profile"]);
+  const userProfile = userProfileResponse?.user;
+
+  const { data: marketResponse, isLoading: isLoadingMarket } = useFetchData("/live-market", ["live-market"]);
+  const marketData = marketResponse?.assets || [];
+  const isMarketVisible = marketResponse?.isVisible ?? true;
+
+  const { data: languagesResponse } = useFetchData("/auth/languages", ["languages"]);
+  const dynamicLanguages = languagesResponse?.data || [];
+
+  const [liveExchangeRate, setLiveExchangeRate] = useState(null);
+
   const toggleCurrency = () => {
-    setCurrency(prev => prev === "USDT" ? "NGN" : "USDT");
+    if (!userProfile?.country) return;
+    const localCurrency = userProfile.country.currency?.trim() ? userProfile.country.currency : "NGN";
+    setCurrency(prev => prev === "USDT" ? localCurrency : "USDT");
   };
 
-  const balances = {
-    USDT: {
-      total: "$5.10"
-    },
-    NGN: {
-      total: "₦6,938.78"
+  useEffect(() => {
+    if (userProfile?.language?.language_code) {
+      setCurrentLang(userProfile.language.language_code);
+    }
+  }, [userProfile?.language]);
+
+  // Fetch live exchange rate when user profile loads
+  useEffect(() => {
+    const fetchLiveRate = async () => {
+      if (userProfile?.country) {
+        const targetCurrency = userProfile.country.currency?.trim() ? userProfile.country.currency : "NGN";
+        if (targetCurrency !== 'USDT' && targetCurrency !== 'USD') {
+          try {
+            const res = await fetch(`https://api.exchangerate-api.com/v4/latest/USD`);
+            const data = await res.json();
+            if (data && data.rates && data.rates[targetCurrency]) {
+              setLiveExchangeRate(data.rates[targetCurrency]);
+            }
+          } catch (error) {
+            console.error("Failed to fetch live exchange rate:", error);
+          }
+        }
+      }
+    };
+    fetchLiveRate();
+  }, [userProfile?.country]);
+
+  // Convert balance based on selected currency
+  const getDisplayBalance = () => {
+    if (!userProfile) return "$0.00";
+    
+    const balanceUSD = parseFloat(userProfile.balance || 0);
+    
+    if (currency === "USDT") {
+      return `$${balanceUSD.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    } else {
+      // Use live exchange rate if available, fallback to database static rate, then fallback to 1
+      const exchangeRate = liveExchangeRate !== null ? liveExchangeRate : parseFloat(userProfile.country?.exchange_rate || 1);
+      const localBalance = balanceUSD * exchangeRate;
+      const symbol = userProfile.country?.currency_symbol || "";
+      return `${symbol}${localBalance.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
     }
   };
 
-  const currentBalance = balances[currency];
+  const currentBalanceTotal = getDisplayBalance();
 
   return (
     <div className="flex flex-col h-full bg-[#f8f9fa] overflow-y-auto  [&::-webkit-scrollbar]:hidden">
@@ -107,7 +140,7 @@ export default function DashboardPage() {
           
           <div className="flex items-center gap-2 mb-5 relative z-10">
             <h2 className="text-[28px] font-bold tracking-wider leading-none">
-              {showBalance ? currentBalance.total : "****"}
+              {showBalance ? currentBalanceTotal : "****"}
             </h2>
             <button 
               onClick={() => setShowBalance(!showBalance)}
@@ -211,7 +244,7 @@ export default function DashboardPage() {
 
         {/* Daily Check-in */}
         <div 
-          onClick={() => setShowDailyModal(true)}
+          onClick={() => window.dispatchEvent(new Event('open-daily-checkin'))}
           className="bg-gradient-to-r from-[#3b82f6] to-[#2563eb] rounded-[16px] py-3 px-4 flex items-center justify-between text-white shadow-sm shadow-blue-500/20 cursor-pointer hover:shadow-md transition-all"
         >
           <div className="flex items-center gap-2.5">
@@ -268,297 +301,94 @@ export default function DashboardPage() {
             <h3 className="font-semibold text-[#1e3a8a] text-[14px]">Our Partners & Exchanges</h3>
           </div>
           
-          <div className="bg-white rounded-[18px] p-3.5 shadow-sm border border-gray-100">
-            <div className="grid grid-cols-4 gap-y-5 gap-x-2">
-              <div className="flex flex-col items-center gap-1.5">
-                <div className="w-12 h-12 bg-gray-50 border border-gray-100 rounded-[14px] flex items-center justify-center shadow-sm">
-                  <div className="w-7 h-7 bg-[#F3BA2F] rounded-full flex items-center justify-center text-white font-bold text-sm">B</div>
-                </div>
-                <span className="text-[10px] text-gray-500 font-medium">Binance</span>
+          <div className="bg-white rounded-[18px] p-3.5 shadow-sm border border-gray-100 min-h-[80px]">
+            {isLoadingPartners ? (
+              <div className="flex items-center justify-center h-full py-4">
+                <Loader2 className="w-6 h-6 animate-spin text-blue-500" />
               </div>
-              <div className="flex flex-col items-center gap-1.5">
-                <div className="w-12 h-12 bg-gray-50 border border-gray-100 rounded-[14px] flex items-center justify-center shadow-sm">
-                  <div className="w-7 h-7 bg-black rounded flex items-center justify-center text-[#F3BA2F] font-bold text-[10px]">BYBIT</div>
-                </div>
-                <span className="text-[10px] text-gray-500 font-medium">Bybit</span>
+            ) : partnersData.length === 0 ? (
+              <div className="flex flex-col items-center justify-center py-4 text-center">
+                <p className="text-xs text-gray-500">No partners to display</p>
               </div>
-              <div className="flex flex-col items-center gap-1.5">
-                <div className="w-12 h-12 bg-gray-50 border border-gray-100 rounded-[14px] flex items-center justify-center shadow-sm">
-                  <div className="w-7 h-7 bg-[#0052FF] rounded-full flex items-center justify-center text-white font-bold text-sm">C</div>
-                </div>
-                <span className="text-[10px] text-gray-500 font-medium">Coinbase</span>
+            ) : (
+              <div className="grid grid-cols-4 gap-y-5 gap-x-2">
+                {partnersData.map((partner) => (
+                  <div key={partner.id} className="flex flex-col items-center gap-1.5 mt-1">
+                    <div className="w-12 h-12 bg-gray-50 border border-gray-100 rounded-[14px] flex items-center justify-center shadow-sm overflow-hidden p-2">
+                      {partner.logo ? (
+                        <img src={partner.logo} alt={partner.partner_name} className="w-full h-full object-contain" />
+                      ) : (
+                        <div className="w-7 h-7 bg-blue-500 rounded-full flex items-center justify-center text-white font-bold text-sm">
+                          {partner.partner_name.charAt(0).toUpperCase()}
+                        </div>
+                      )}
+                    </div>
+                    <span className="text-[10px] text-gray-500 font-medium text-center truncate w-full px-1">{partner.partner_name}</span>
+                  </div>
+                ))}
               </div>
-              <div className="flex flex-col items-center gap-1.5">
-                <div className="w-12 h-12 bg-gray-50 border border-gray-100 rounded-[14px] flex items-center justify-center shadow-sm">
-                  <div className="w-7 h-7 bg-[#24A17C] rounded flex items-center justify-center text-white font-bold text-sm">K</div>
-                </div>
-                <span className="text-[10px] text-gray-500 font-medium">KuCoin</span>
-              </div>
-              <div className="flex flex-col items-center gap-1.5 mt-1">
-                <div className="w-12 h-12 bg-gray-50 border border-gray-100 rounded-[14px] flex items-center justify-center shadow-sm">
-                  <div className="w-7 h-7 bg-[#E82127] rounded flex items-center justify-center text-white font-bold text-sm">T</div>
-                </div>
-                <span className="text-[10px] text-gray-500 font-medium">Tesla</span>
-              </div>
-              <div className="flex flex-col items-center gap-1.5 mt-1">
-                <div className="w-12 h-12 bg-gray-50 border border-gray-100 rounded-[14px] flex items-center justify-center shadow-sm">
-                  <div className="w-7 h-7 bg-[#1754FF] text-white rounded flex items-center justify-center font-bold text-[10px]">G</div>
-                </div>
-                <span className="text-[10px] text-gray-500 font-medium">Gate.io</span>
-              </div>
-              <div className="flex flex-col items-center gap-1.5 mt-1">
-                <div className="w-12 h-12 bg-gray-50 border border-gray-100 rounded-[14px] flex items-center justify-center shadow-sm">
-                  <div className="w-7 h-7 bg-[#2775CA] rounded-full flex items-center justify-center text-white font-bold text-sm">U</div>
-                </div>
-                <span className="text-[10px] text-gray-500 font-medium">USDC</span>
-              </div>
-              <div className="flex flex-col items-center gap-1.5 mt-1">
-                <div className="w-12 h-12 bg-gray-50 border border-gray-100 rounded-[14px] flex items-center justify-center shadow-sm">
-                  <div className="w-7 h-7 bg-[#26A17B] rounded-full flex items-center justify-center text-white font-bold text-sm">₮</div>
-                </div>
-                <span className="text-[10px] text-gray-500 font-medium">Tether</span>
-              </div>
-            </div>
+            )}
           </div>
         </div>
 
         {/* Live Market */}
-        <div className="bg-white rounded-[18px] p-3.5 shadow-sm border border-gray-100">
-          <div className="flex justify-between items-center mb-4">
-            <div className="flex items-center gap-1.5">
-              <BarChart2 className="text-[#3b82f6]" size={16} />
-              <h3 className="font-semibold text-[#1e3a8a] text-[14px]">Live Market</h3>
+        {isMarketVisible && (
+          <div className="bg-white rounded-[18px] p-3.5 shadow-sm border border-gray-100">
+            <div className="flex justify-between items-center mb-4">
+              <div className="flex items-center gap-1.5">
+                <BarChart2 className="text-[#3b82f6]" size={16} />
+                <h3 className="font-semibold text-[#1e3a8a] text-[14px]">Live Market</h3>
+              </div>
+              <div className="flex items-center gap-1.5 text-[11px] text-green-500 font-medium">
+                <span className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></span>
+                Live
+              </div>
             </div>
-            <div className="flex items-center gap-1.5 text-[11px] text-green-500 font-medium">
-              <span className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></span>
-              Live
+
+            <div className="space-y-3">
+              {isLoadingMarket ? (
+                <div className="flex items-center justify-center py-6">
+                  <Loader2 className="w-6 h-6 animate-spin text-blue-500" />
+                </div>
+              ) : marketData.length === 0 ? (
+                <div className="flex flex-col items-center justify-center py-6 text-center">
+                  <p className="text-xs text-gray-500">No live market data available</p>
+                </div>
+              ) : (
+                marketData.map((asset, index) => {
+                  const isPositive = parseFloat(asset.price_change_24h) >= 0;
+                  return (
+                    <div key={asset.id} className={`flex items-center justify-between py-1 ${index !== marketData.length - 1 ? 'border-b border-gray-50 pb-2.5' : 'pb-1'}`}>
+                      <div className="flex items-center gap-2.5">
+                        <div className="w-8 h-8 rounded-full flex items-center justify-center overflow-hidden">
+                          {asset.logo_url ? (
+                            <img src={asset.logo_url} alt={asset.symbol} className="w-full h-full object-contain" />
+                          ) : (
+                            <span className="text-gray-600 font-bold text-sm bg-gray-50 w-full h-full flex items-center justify-center">{asset.symbol.charAt(0)}</span>
+                          )}
+                        </div>
+                        <div>
+                          <p className="text-[13px] font-semibold text-[#1e293b] leading-tight mb-0.5">{asset.symbol}</p>
+                          <p className="text-[11px] text-gray-400 leading-tight">{asset.name}</p>
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <div className="font-semibold text-[#1e293b] text-[13px] mb-0.5">${parseFloat(asset.current_price || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 4 })}</div>
+                        <div className={`text-[9px] font-bold px-1 py-0.5 rounded ml-auto w-fit ${isPositive ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-600'}`}>
+                          {isPositive ? '+' : ''}{parseFloat(asset.price_change_24h || 0).toFixed(2)}%
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })
+              )}
             </div>
           </div>
-
-          <div className="space-y-3">
-            {/* BTC */}
-            <div className="flex items-center justify-between py-1 border-b border-gray-50 pb-2.5">
-              <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 bg-[#F7931A] rounded-full flex items-center justify-center text-white font-bold text-sm shadow-sm">₿</div>
-                <div>
-                  <p className="text-[13px] font-semibold text-[#1e293b] leading-tight mb-0.5">BTC</p>
-                  <p className="text-[11px] text-gray-400 leading-tight">Bitcoin</p>
-                </div>
-              </div>
-              <div className="text-right">
-                <div className="font-semibold text-[#1e293b] text-[13px] mb-0.5">$0.0000</div>
-                <div className="bg-green-100 text-green-600 text-[9px] font-bold px-1 py-0.5 rounded ml-auto w-fit">+0.00%</div>
-              </div>
-            </div>
-
-            {/* ETH */}
-            <div className="flex items-center justify-between py-1 border-b border-gray-50 pb-2.5">
-              <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 bg-[#627EEA] rounded-full flex items-center justify-center text-white font-bold text-sm shadow-sm">⧫</div>
-                <div>
-                  <p className="text-[13px] font-semibold text-[#1e293b] leading-tight mb-0.5">ETH</p>
-                  <p className="text-[11px] text-gray-400 leading-tight">Ethereum</p>
-                </div>
-              </div>
-              <div className="text-right">
-                <div className="font-semibold text-[#1e293b] text-[13px] mb-0.5">$0.0000</div>
-                <div className="bg-green-100 text-green-600 text-[9px] font-bold px-1 py-0.5 rounded ml-auto w-fit">+0.00%</div>
-              </div>
-            </div>
-
-            {/* BNB */}
-            <div className="flex items-center justify-between py-1 border-b border-gray-50 pb-2.5">
-              <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 bg-[#F3BA2F] rounded-full flex items-center justify-center text-white font-bold text-sm shadow-sm">B</div>
-                <div>
-                  <p className="text-[13px] font-semibold text-[#1e293b] leading-tight mb-0.5">BNB</p>
-                  <p className="text-[11px] text-gray-400 leading-tight">BNB</p>
-                </div>
-              </div>
-              <div className="text-right">
-                <div className="font-semibold text-[#1e293b] text-[13px] mb-0.5">$0.0000</div>
-                <div className="bg-green-100 text-green-600 text-[9px] font-bold px-1 py-0.5 rounded ml-auto w-fit">+0.00%</div>
-              </div>
-            </div>
-
-            {/* SOL */}
-            <div className="flex items-center justify-between py-1 border-b border-gray-50 pb-2.5">
-              <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 bg-gradient-to-tr from-[#9945FF] to-[#14F195] rounded-full flex items-center justify-center text-white font-bold text-sm shadow-sm">S</div>
-                <div>
-                  <p className="text-[13px] font-semibold text-[#1e293b] leading-tight mb-0.5">SOL</p>
-                  <p className="text-[11px] text-gray-400 leading-tight">Solana</p>
-                </div>
-              </div>
-              <div className="text-right">
-                <div className="font-semibold text-[#1e293b] text-[13px] mb-0.5">$0.0000</div>
-                <div className="bg-green-100 text-green-600 text-[9px] font-bold px-1 py-0.5 rounded ml-auto w-fit">+0.00%</div>
-              </div>
-            </div>
-
-            {/* XRP */}
-            <div className="flex items-center justify-between py-1 border-b border-gray-50 pb-2.5">
-              <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 bg-white border border-gray-200 rounded-full flex items-center justify-center text-black font-bold text-sm shadow-sm">X</div>
-                <div>
-                  <p className="text-[13px] font-semibold text-[#1e293b] leading-tight mb-0.5">XRP</p>
-                  <p className="text-[11px] text-gray-400 leading-tight">Ripple</p>
-                </div>
-              </div>
-              <div className="text-right">
-                <div className="font-semibold text-[#1e293b] text-[13px] mb-0.5">$0.0000</div>
-                <div className="bg-green-100 text-green-600 text-[9px] font-bold px-1 py-0.5 rounded ml-auto w-fit">+0.00%</div>
-              </div>
-            </div>
-
-            {/* DOGE */}
-            <div className="flex items-center justify-between py-1 border-b border-gray-50 pb-2.5">
-              <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 bg-[#C2A633] rounded-full flex items-center justify-center text-white font-bold text-sm shadow-sm">Ð</div>
-                <div>
-                  <p className="text-[13px] font-semibold text-[#1e293b] leading-tight mb-0.5">DOGE</p>
-                  <p className="text-[11px] text-gray-400 leading-tight">Dogecoin</p>
-                </div>
-              </div>
-              <div className="text-right">
-                <div className="font-semibold text-[#1e293b] text-[13px] mb-0.5">$0.0000</div>
-                <div className="bg-green-100 text-green-600 text-[9px] font-bold px-1 py-0.5 rounded ml-auto w-fit">+0.00%</div>
-              </div>
-            </div>
-
-            {/* ADA */}
-            <div className="flex items-center justify-between py-1 border-b border-gray-50 pb-2.5">
-              <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 bg-[#0033AD] rounded-full flex items-center justify-center text-white font-bold text-sm shadow-sm">A</div>
-                <div>
-                  <p className="text-[13px] font-semibold text-[#1e293b] leading-tight mb-0.5">ADA</p>
-                  <p className="text-[11px] text-gray-400 leading-tight">Cardano</p>
-                </div>
-              </div>
-              <div className="text-right">
-                <div className="font-semibold text-[#1e293b] text-[13px] mb-0.5">$0.0000</div>
-                <div className="bg-green-100 text-green-600 text-[9px] font-bold px-1 py-0.5 rounded ml-auto w-fit">+0.00%</div>
-              </div>
-            </div>
-
-            {/* AVAX */}
-            <div className="flex items-center justify-between py-1 pb-1">
-              <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 bg-[#E84142] rounded-full flex items-center justify-center text-white font-bold text-sm shadow-sm">▲</div>
-                <div>
-                  <p className="text-[13px] font-semibold text-[#1e293b] leading-tight mb-0.5">AVAX</p>
-                  <p className="text-[11px] text-gray-400 leading-tight">Avalanche</p>
-                </div>
-              </div>
-              <div className="text-right">
-                <div className="font-semibold text-[#1e293b] text-[13px] mb-0.5">$0.0000</div>
-                <div className="bg-green-100 text-green-600 text-[9px] font-bold px-1 py-0.5 rounded ml-auto w-fit">+0.00%</div>
-              </div>
-            </div>
-
-          </div>
-        </div>
+        )}
 
       </div>
 
-      {/* Daily Rewards Modal */}
-      {showDailyModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#0f172a]/60 backdrop-blur-sm p-4">
-          <div className="bg-white w-full max-w-[340px] rounded-[24px] overflow-hidden flex flex-col relative animate-in zoom-in-95 duration-200 shadow-2xl">
-            {/* Close Button */}
-            <button 
-              onClick={() => setShowDailyModal(false)}
-              className="absolute top-4 right-4 w-7 h-7 bg-gray-100 hover:bg-gray-200 rounded-full flex items-center justify-center text-gray-500 transition-colors z-10"
-            >
-              <X size={14} />
-            </button>
 
-            {/* Header */}
-            <div className="pt-8 pb-6 px-6 flex flex-col items-center text-center">
-              <div className="text-[32px] leading-none mb-3 drop-shadow-md">🎁</div>
-              <h3 className="font-bold text-[#0f172a] text-[18px] mb-1">Daily Rewards</h3>
-              <p className="text-gray-500 text-[11px]">Check in for 7 days to get maximum rewards</p>
-            </div>
-
-            {/* Days Grid */}
-            <div className="px-6 pb-6 space-y-3">
-              {/* Row 1 (Days 1-4) */}
-              <div className="grid grid-cols-4 gap-2">
-                {/* Day 1 (Active) */}
-                <div className="border border-[#3b82f6] bg-blue-50/30 rounded-[12px] p-2 flex flex-col items-center justify-center gap-1.5 shadow-sm">
-                  <span className="text-[#3b82f6] text-[8px] font-bold uppercase tracking-wider">Day 1</span>
-                  <div className="w-7 h-7 bg-[#f59e0b] rounded-full flex items-center justify-center shadow-inner">
-                    <Coins size={14} className="text-white" />
-                  </div>
-                  <span className="text-[#3b82f6] text-[11px] font-bold">+$0.10</span>
-                </div>
-                {/* Day 2 */}
-                <div className="border border-gray-100 bg-gray-50/50 rounded-[12px] p-2 flex flex-col items-center justify-center gap-1.5">
-                  <span className="text-gray-400 text-[8px] font-bold uppercase tracking-wider">Day 2</span>
-                  <div className="w-7 h-7 rounded-full flex items-center justify-center">
-                    <Lock size={16} className="text-gray-300" />
-                  </div>
-                  <span className="text-gray-400 text-[11px] font-bold">+$0.20</span>
-                </div>
-                {/* Day 3 */}
-                <div className="border border-gray-100 bg-gray-50/50 rounded-[12px] p-2 flex flex-col items-center justify-center gap-1.5">
-                  <span className="text-gray-400 text-[8px] font-bold uppercase tracking-wider">Day 3</span>
-                  <div className="w-7 h-7 rounded-full flex items-center justify-center">
-                    <Lock size={16} className="text-gray-300" />
-                  </div>
-                  <span className="text-gray-400 text-[11px] font-bold">+$0.02</span>
-                </div>
-                {/* Day 4 */}
-                <div className="border border-gray-100 bg-gray-50/50 rounded-[12px] p-2 flex flex-col items-center justify-center gap-1.5">
-                  <span className="text-gray-400 text-[8px] font-bold uppercase tracking-wider">Day 4</span>
-                  <div className="w-7 h-7 rounded-full flex items-center justify-center">
-                    <Lock size={16} className="text-gray-300" />
-                  </div>
-                  <span className="text-gray-400 text-[11px] font-bold">+$0.10</span>
-                </div>
-              </div>
-
-              {/* Row 2 (Days 5-7) */}
-              <div className="grid grid-cols-4 gap-2">
-                {/* Day 5 */}
-                <div className="border border-gray-100 bg-gray-50/50 rounded-[12px] p-2 flex flex-col items-center justify-center gap-1.5 col-start-1">
-                  <span className="text-gray-400 text-[8px] font-bold uppercase tracking-wider">Day 5</span>
-                  <div className="w-7 h-7 rounded-full flex items-center justify-center">
-                    <Lock size={16} className="text-gray-300" />
-                  </div>
-                  <span className="text-gray-400 text-[11px] font-bold">+$0.30</span>
-                </div>
-                {/* Day 6 */}
-                <div className="border border-gray-100 bg-gray-50/50 rounded-[12px] p-2 flex flex-col items-center justify-center gap-1.5">
-                  <span className="text-gray-400 text-[8px] font-bold uppercase tracking-wider">Day 6</span>
-                  <div className="w-7 h-7 rounded-full flex items-center justify-center">
-                    <Lock size={16} className="text-gray-300" />
-                  </div>
-                  <span className="text-gray-400 text-[11px] font-bold">+$0.40</span>
-                </div>
-                {/* Day 7 */}
-                <div className="border border-gray-100 bg-gray-50/50 rounded-[12px] p-2 flex flex-col items-center justify-center gap-1.5">
-                  <span className="text-gray-400 text-[8px] font-bold uppercase tracking-wider">Day 7</span>
-                  <div className="w-7 h-7 rounded-full flex items-center justify-center">
-                    <Lock size={16} className="text-gray-300" />
-                  </div>
-                  <span className="text-gray-400 text-[11px] font-bold">+$0.50</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Action Button */}
-            <div className="p-6 pt-2">
-              <button 
-                className="w-full bg-[#3b82f6] text-white font-bold py-3.5 rounded-[12px] hover:bg-blue-600 transition-colors text-[14px] shadow-sm"
-              >
-                Claim Day 1
-              </button>
-            </div>
-            
-          </div>
-        </div>
-      )}
       {/* Language Modal (Bottom Sheet) */}
       {showLanguageModal && (
         <div className="fixed inset-0 z-50 flex flex-col justify-end">
@@ -569,7 +399,7 @@ export default function DashboardPage() {
           ></div>
 
           {/* Modal Content */}
-          <div className="relative bg-white w-full max-w-[480px] mx-auto rounded-t-[24px] overflow-hidden flex flex-col max-h-[85vh] animate-in slide-in-from-bottom-full duration-300">
+          <div className="relative bg-white w-full max-w-[480px] mx-auto rounded-t-[24px] overflow-hidden flex flex-col h-[75vh] animate-in slide-in-from-bottom-full duration-300">
             
             {/* Header */}
             <div className="bg-[#2563eb] p-5 flex justify-between items-center text-white">
@@ -596,16 +426,44 @@ export default function DashboardPage() {
 
             {/* Language List */}
             <div className="p-4 space-y-3 overflow-y-auto flex-1">
-              {languages
-                .filter(l => l.name.toLowerCase().includes(searchQuery.toLowerCase()) || l.sub.toLowerCase().includes(searchQuery.toLowerCase()))
+              {dynamicLanguages
+                .filter(l => l.native_name.toLowerCase().includes(searchQuery.toLowerCase()) || l.language_name.toLowerCase().includes(searchQuery.toLowerCase()))
                 .map((lang) => {
-                const isSelected = currentLang === lang.code;
+                const isSelected = currentLang === lang.language_code;
                 return (
                   <button
-                    key={lang.code}
-                    onClick={() => {
-                      setCurrentLang(lang.code);
-                      setTimeout(() => setShowLanguageModal(false), 200);
+                    key={lang.language_code}
+                    onClick={async () => {
+                      setCurrentLang(lang.language_code);
+                      const targetCode = lang.language_code.toLowerCase();
+                      
+                      // Set Google Translate cookies
+                      document.cookie = `googtrans=/en/${targetCode}; path=/`;
+                      document.cookie = `googtrans=/en/${targetCode}; path=/; domain=${window.location.hostname}`;
+                      
+                      if (targetCode === 'en') {
+                        document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
+                        document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=${window.location.hostname}`;
+                      }
+
+                      // Save to backend
+                      try {
+                        await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api'}/users/me/language`, {
+                          method: 'PUT',
+                          headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${localStorage.getItem('token')}`
+                          },
+                          body: JSON.stringify({ language_code: lang.language_code })
+                        });
+                      } catch (error) {
+                        console.error('Failed to update language preference', error);
+                      }
+
+                      setTimeout(() => {
+                        setShowLanguageModal(false);
+                        window.location.reload();
+                      }, 200);
                     }}
                     className={`w-full flex items-center justify-between p-3 rounded-[12px] border transition-colors ${
                       isSelected 
@@ -615,7 +473,7 @@ export default function DashboardPage() {
                   >
                     <div className="flex items-center gap-3">
                       <div className="relative w-10 h-10 bg-white border border-gray-100 rounded-xl flex items-center justify-center text-[12px] font-bold text-gray-400 shadow-sm">
-                        {lang.short}
+                        {lang.language_code.substring(0, 2).toUpperCase()}
                         {isSelected && (
                           <div className="absolute -top-1 -right-1 bg-white rounded-full">
                             <CheckCircle2 size={14} className="text-[#10b981]" fill="#fff" />
@@ -623,8 +481,8 @@ export default function DashboardPage() {
                         )}
                       </div>
                       <div className="text-left">
-                        <div className="text-[13px] font-bold text-[#0f172a]">{lang.name}</div>
-                        <div className="text-[11px] text-gray-500">{lang.sub}</div>
+                        <div className="text-[13px] font-bold text-[#0f172a]">{lang.native_name}</div>
+                        <div className="text-[11px] text-gray-500">{lang.language_name}</div>
                       </div>
                     </div>
                     <ChevronRight size={16} className={isSelected ? 'text-[#3b82f6]' : 'text-gray-300'} />
@@ -643,6 +501,7 @@ export default function DashboardPage() {
         </div>
       )}
 
+      <WhatsAppModal />
     </div>
   );
 }

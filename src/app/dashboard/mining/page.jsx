@@ -1,40 +1,17 @@
 "use client";
 
 import { useState } from "react";
-import { ArrowLeft, Wallet, X } from "lucide-react";
+import { ArrowLeft, Wallet, X, Loader2 } from "lucide-react";
 import Link from "next/link";
+import { useFetchData } from "@/hooks/useApi";
 
 export default function MiningPlansPage() {
   const [selectedPlan, setSelectedPlan] = useState(null);
   const [balanceSource, setBalanceSource] = useState("main"); // "main" or "gift"
   const [investmentAmount, setInvestmentAmount] = useState("");
 
-  const plans = [
-    {
-      id: 1,
-      name: "Core",
-      days: 10,
-      dailyRate: 4.0,
-      min: 10.00,
-      max: 9999.00,
-    },
-    {
-      id: 2,
-      name: "Edge",
-      days: 3,
-      dailyRate: 2.0,
-      min: 5.00,
-      max: 2999.00,
-    },
-    {
-      id: 3,
-      name: "Genesis",
-      days: 30,
-      dailyRate: 5.0,
-      min: 30.00,
-      max: 49999.00,
-    }
-  ];
+  const { data: plansRes, isLoading } = useFetchData("/plans", ["plans"]);
+  const plans = Array.isArray(plansRes?.data) ? plansRes.data : [];
 
   const balances = {
     main: 0.60,
@@ -53,8 +30,8 @@ export default function MiningPlansPage() {
 
   // Calculations
   const amount = parseFloat(investmentAmount) || 0;
-  const dailyIncome = selectedPlan ? (amount * selectedPlan.dailyRate) / 100 : 0;
-  const totalReturn = selectedPlan ? (dailyIncome * selectedPlan.days) : 0;
+  const dailyIncome = selectedPlan ? (amount * Number(selectedPlan.daily_income)) / 100 : 0;
+  const totalReturn = selectedPlan ? (dailyIncome * selectedPlan.duration) : 0;
 
   // Format currency helper
   const formatCurrency = (val) => {
@@ -78,7 +55,16 @@ export default function MiningPlansPage() {
 
       {/* Plans List */}
       <div className="px-4 pt-4 pb-4 space-y-3 max-w-[480px] mx-auto w-full">
-        {plans.map((plan) => (
+        {isLoading ? (
+          <div className="flex flex-col items-center justify-center py-12 text-gray-500">
+            <Loader2 className="w-8 h-8 animate-spin mb-3 text-[#3b82f6]" />
+            <p className="text-sm font-medium">Loading mining plans...</p>
+          </div>
+        ) : plans.length === 0 ? (
+          <div className="flex flex-col items-center justify-center py-12 text-gray-500">
+            <p className="text-sm font-medium">No mining plans available.</p>
+          </div>
+        ) : plans.map((plan) => (
           <div key={plan.id} className="bg-white rounded-[16px] p-[16px] border border-gray-100 shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)]">
             <div className="flex items-center justify-between mb-2">
               <div className="flex items-center gap-2.5 w-1/3">
@@ -86,28 +72,32 @@ export default function MiningPlansPage() {
                 <div className="w-[42px] h-[42px] bg-[#020617] rounded-full flex items-center justify-center shadow-inner relative overflow-hidden shrink-0">
                   <div className="absolute inset-0 bg-gradient-to-b from-blue-500/20 to-transparent"></div>
                   {/* Inner glowing card representation */}
-                  <div className="w-[18px] h-[26px] border border-blue-400/50 rounded flex flex-col items-center justify-center bg-[#0f172a] z-10 shadow-[0_0_8px_rgba(59,130,246,0.5)]">
-                    <span className="text-blue-400 text-[9px] font-bold leading-none">{plan.days}</span>
-                    <span className="text-white text-[4px] opacity-80 uppercase mt-0.5">Days</span>
-                  </div>
+                  {plan.image ? (
+                    <img src={plan.image} alt={plan.name} className="w-full h-full object-cover z-10" />
+                  ) : (
+                    <div className="w-[18px] h-[26px] border border-blue-400/50 rounded flex flex-col items-center justify-center bg-[#0f172a] z-10 shadow-[0_0_8px_rgba(59,130,246,0.5)]">
+                      <span className="text-blue-400 text-[9px] font-bold leading-none">{plan.duration}</span>
+                      <span className="text-white text-[4px] opacity-80 uppercase mt-0.5">Days</span>
+                    </div>
+                  )}
                 </div>
 
                 <h2 className="text-[#0f172a] font-bold text-[15px]">{plan.name}</h2>
               </div>
 
               <div className="text-center w-1/3">
-                <span className="text-[#1e3a8a] font-bold text-[12px]">{plan.days} days</span>
+                <span className="text-[#1e3a8a] font-bold text-[12px]">{plan.duration} days</span>
               </div>
 
               <div className="text-right w-1/3">
-                <div className="text-[#22c55e] font-bold text-[20px] leading-none mb-1 tracking-tight">{plan.dailyRate.toFixed(1)}%</div>
+                <div className="text-[#22c55e] font-bold text-[20px] leading-none mb-1 tracking-tight">{Number(plan.daily_income).toFixed(1)}%</div>
                 <div className="text-gray-400 text-[10px]">daily</div>
               </div>
             </div>
 
             <div className="text-right mb-3">
               <p className="text-[10px] text-gray-400 font-medium tracking-tight">
-                Min: <span className="text-[#3b82f6]">{formatCurrency(plan.min)}</span> | Max: <span className="text-[#3b82f6]">{formatCurrency(plan.max)}</span>
+                Min: <span className="text-[#3b82f6] font-bold">{formatCurrency(Number(plan.min_investment))}</span> | Max: <span className="text-[#3b82f6] font-bold">{formatCurrency(Number(plan.max_investment))}</span>
               </p>
             </div>
 
@@ -133,14 +123,18 @@ export default function MiningPlansPage() {
               <div className="flex items-center gap-3">
                 <div className="w-[42px] h-[42px] bg-[#020617] rounded-full flex items-center justify-center shadow-inner relative overflow-hidden shrink-0">
                   <div className="absolute inset-0 bg-gradient-to-b from-blue-500/20 to-transparent"></div>
-                  <div className="w-[18px] h-[26px] border border-blue-400/50 rounded flex flex-col items-center justify-center bg-[#0f172a] z-10 shadow-[0_0_8px_rgba(59,130,246,0.5)]">
-                    <span className="text-blue-400 text-[9px] font-bold leading-none">{selectedPlan.days}</span>
-                    <span className="text-white text-[4px] opacity-80 uppercase mt-0.5">Days</span>
-                  </div>
+                  {selectedPlan.image ? (
+                    <img src={selectedPlan.image} alt={selectedPlan.name} className="w-full h-full object-cover z-10" />
+                  ) : (
+                    <div className="w-[18px] h-[26px] border border-blue-400/50 rounded flex flex-col items-center justify-center bg-[#0f172a] z-10 shadow-[0_0_8px_rgba(59,130,246,0.5)]">
+                      <span className="text-blue-400 text-[9px] font-bold leading-none">{selectedPlan.duration}</span>
+                      <span className="text-white text-[4px] opacity-80 uppercase mt-0.5">Days</span>
+                    </div>
+                  )}
                 </div>
                 <div>
                   <h3 className="font-bold text-[#0f172a] text-[15px] leading-tight">{selectedPlan.name}</h3>
-                  <p className="text-gray-500 text-[11px] mt-0.5">{selectedPlan.days} days • {selectedPlan.dailyRate.toFixed(1)}% daily</p>
+                  <p className="text-gray-500 text-[11px] mt-0.5">{selectedPlan.duration} days • {Number(selectedPlan.daily_income).toFixed(1)}% daily</p>
                 </div>
               </div>
               <button
@@ -153,18 +147,17 @@ export default function MiningPlansPage() {
 
             <div className="overflow-y-auto p-4 space-y-5 [&::-webkit-scrollbar]:hidden">
 
-              {/* Summary Stats */}
               <div className="flex justify-between items-center bg-[#f8f9fa] rounded-[12px] p-3 border border-gray-100">
                 <div className="text-center">
-                  <div className="text-[#22c55e] font-bold text-[13px]">{selectedPlan.dailyRate.toFixed(1)}%</div>
+                  <div className="text-[#22c55e] font-bold text-[13px]">{Number(selectedPlan.daily_income).toFixed(1)}%</div>
                   <div className="text-gray-400 text-[9px] mt-0.5">Daily Rate</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-[#3b82f6] font-bold text-[13px]">{selectedPlan.days} days</div>
+                  <div className="text-[#3b82f6] font-bold text-[13px]">{selectedPlan.duration} days</div>
                   <div className="text-gray-400 text-[9px] mt-0.5">Revenue Days</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-[#3b82f6] font-bold text-[13px]">{(selectedPlan.dailyRate * selectedPlan.days).toFixed(1)}%</div>
+                  <div className="text-[#3b82f6] font-bold text-[13px]">{(Number(selectedPlan.daily_income) * selectedPlan.duration).toFixed(1)}%</div>
                   <div className="text-gray-400 text-[9px] mt-0.5">Total Yield</div>
                 </div>
               </div>
@@ -200,7 +193,7 @@ export default function MiningPlansPage() {
               <div>
                 <div className="flex justify-between items-end mb-2">
                   <label className="text-gray-500 text-[11px]">Investment Amount</label>
-                  <span className="text-gray-400 text-[9px]">Min: {formatCurrency(selectedPlan.min)} | Max: {formatCurrency(selectedPlan.max)}</span>
+                  <span className="text-gray-400 text-[9px]">Min: {formatCurrency(Number(selectedPlan.min_investment))} | Max: {formatCurrency(Number(selectedPlan.max_investment))}</span>
                 </div>
                 <input
                   type="number"
