@@ -14,6 +14,11 @@ export default function SpinPage() {
   const [rotation, setRotation] = useState(0);
   const [isHowToPlayOpen, setIsHowToPlayOpen] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
+  
+  // Custom Result Modal State
+  const [showResultModal, setShowResultModal] = useState(false);
+  const [resultData, setResultData] = useState({ isWin: false, amount: 0, message: "" });
+  
   const audioCtxRef = useRef(null);
 
   // Initialize audio context
@@ -31,31 +36,105 @@ export default function SpinPage() {
     };
   }, []);
 
-  const playTick = () => {
+  const playTone = (freq, duration, type = 'sine', vol = 0.3) => {
     if (isMuted || !audioCtxRef.current) return;
     try {
-      const ctx = audioCtxRef.current;
-      if (ctx.state === 'suspended') ctx.resume();
-
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-      
-      osc.connect(gain);
-      gain.connect(ctx.destination);
-      
-      osc.type = 'triangle';
-      osc.frequency.setValueAtTime(800, ctx.currentTime);
-      osc.frequency.exponentialRampToValueAtTime(300, ctx.currentTime + 0.05);
-      
-      gain.gain.setValueAtTime(0.1, ctx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.05);
-      
-      osc.start(ctx.currentTime);
-      osc.stop(ctx.currentTime + 0.05);
-    } catch (e) {
-      // Ignore audio errors during rapid playback
-    }
+        const ctx = audioCtxRef.current;
+        if (ctx.state === 'suspended') ctx.resume();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.frequency.value = freq;
+        osc.type = type;
+        gain.gain.setValueAtTime(vol, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + duration);
+        osc.start();
+        osc.stop(ctx.currentTime + duration);
+    } catch(e) {}
   };
+  
+  const playTick = () => playTone(1200, 0.03, 'square', 0.15);
+  const playSpinStart = () => playTone(300, 0.3, 'sine', 0.2);
+  const playWin = () => {
+      setTimeout(() => playTone(523, 0.15, 'sine', 0.4), 0);
+      setTimeout(() => playTone(659, 0.15, 'sine', 0.4), 100);
+      setTimeout(() => playTone(784, 0.3, 'sine', 0.5), 200);
+  };
+  
+  // Confetti setup
+  const confettiCanvasRef = useRef(null);
+  const confettiRef = useRef(null);
+
+  useEffect(() => {
+    if (!confettiCanvasRef.current) return;
+    class Confetti {
+        constructor(canvas) {
+            this.canvas = canvas;
+            this.ctx = canvas.getContext('2d');
+            this.particles = [];
+            this.running = false;
+        }
+        resize() {
+            this.canvas.width = window.innerWidth;
+            this.canvas.height = window.innerHeight;
+        }
+        launch(count = 150) {
+            this.resize();
+            this.canvas.style.display = 'block';
+            this.particles = [];
+            const colors = ['#3b82f6', '#22c55e', '#f59e0b', '#ef4444', '#8b5cf6', '#06b6d4'];
+            for (let i = 0; i < count; i++) {
+                this.particles.push({
+                    x: Math.random() * this.canvas.width,
+                    y: -20 - Math.random() * 200,
+                    size: Math.random() * 10 + 4,
+                    speedY: Math.random() * 4 + 2,
+                    speedX: (Math.random() - 0.5) * 6,
+                    rotation: Math.random() * 360,
+                    rotSpeed: (Math.random() - 0.5) * 15,
+                    color: colors[Math.floor(Math.random() * colors.length)],
+                    shape: Math.random() > 0.5 ? 'rect' : 'circle'
+                });
+            }
+            this.running = true;
+            this.animate();
+        }
+        animate() {
+            if (!this.running) return;
+            this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+            let active = 0;
+            this.particles.forEach(p => {
+                if (p.y < this.canvas.height + 50) {
+                    active++;
+                    p.y += p.speedY;
+                    p.x += p.speedX;
+                    p.rotation += p.rotSpeed;
+                    p.speedY += 0.15;
+                    this.ctx.save();
+                    this.ctx.translate(p.x, p.y);
+                    this.ctx.rotate(p.rotation * Math.PI / 180);
+                    this.ctx.fillStyle = p.color;
+                    if (p.shape === 'rect') {
+                        this.ctx.fillRect(-p.size/2, -p.size/4, p.size, p.size/2);
+                    } else {
+                        this.ctx.beginPath();
+                        this.ctx.arc(0, 0, p.size/2, 0, Math.PI * 2);
+                        this.ctx.fill();
+                    }
+                    this.ctx.restore();
+                }
+            });
+            if (active > 0) {
+                requestAnimationFrame(() => this.animate());
+            } else {
+                this.running = false;
+                this.canvas.style.display = 'none';
+            }
+        }
+    }
+    confettiRef.current = new Confetti(confettiCanvasRef.current);
+  }, []);
   
   // Fetch spin data
   const { data: spinRes, isLoading, refetch } = useFetchData('/users/spin');
@@ -83,7 +162,7 @@ export default function SpinPage() {
         });
       } else {
         displaySegments.push({
-          label: "???",
+          label: "0.00",
           color: i % 2 === 0 ? "#fefefe" : "#fdf6e3",
           id: `empty-${i}`,
           value: 0,
@@ -154,6 +233,8 @@ export default function SpinPage() {
         
         setRotation(newRotation);
 
+        playSpinStart();
+
         // Play ticking sound while spinning
         let tickCount = 0;
         const tickInterval = setInterval(() => {
@@ -168,11 +249,22 @@ export default function SpinPage() {
         setTimeout(() => {
           setIsSpinning(false);
           clearInterval(tickInterval);
-          if (rewardAmount > 0) {
-            toast.success(`You won ${res.data.prize.name}!`);
-          } else {
-            toast.error(`Better luck next time!`);
+          
+          const isWin = rewardAmount > 0;
+
+          if (isWin) {
+            playWin();
+            confettiRef.current?.launch(100);
           }
+          
+          // Set custom modal data instead of just toast
+          setResultData({
+            isWin: isWin,
+            amount: rewardAmount,
+            message: res.data.prize.name
+          });
+          setShowResultModal(true);
+          
           refetch(); // Reload data to update balances and history
         }, 4000); // 4 seconds spin duration
       },
@@ -368,6 +460,64 @@ export default function SpinPage() {
       </button>
 
       <HowToPlayModal isOpen={isHowToPlayOpen} setIsOpen={setIsHowToPlayOpen} />
+
+      {/* Spin Result Modal */}
+      {showResultModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
+          <div className="bg-white rounded-[24px] p-8 w-full max-w-[320px] flex flex-col items-center text-center shadow-[0_25px_50px_rgba(0,0,0,0.25)] animate-in zoom-in-95 duration-200">
+            
+            <div 
+              className={`w-20 h-20 rounded-full flex items-center justify-center mb-5 text-[40px]`}
+              style={{ background: resultData.isWin ? 'linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%)' : 'linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%)' }}
+            >
+              {resultData.isWin ? "🎉" : "😔"}
+            </div>
+            
+            <h2 className="text-[#1e293b] text-[24px] font-bold mb-2">
+              {resultData.isWin ? "You Won!" : "Try Again"}
+            </h2>
+            
+            {resultData.isWin ? (
+              <div className="flex flex-col items-center gap-2 mb-2">
+                <p className="text-[#16a34a] text-[36px] font-extrabold leading-none">
+                  +${resultData.amount.toFixed(2)}
+                </p>
+                <p className="text-[#64748b] text-[14px]">
+                  {resultData.message}
+                </p>
+                <p className="text-[#3b82f6] text-[13px] mt-2 mb-4 flex items-center gap-1.5 font-medium">
+                  <span className="w-4 h-4 rounded-full bg-[#3b82f6] text-white flex items-center justify-center text-[10px]">✓</span>
+                  Added to your balance
+                </p>
+              </div>
+            ) : (
+              <div className="flex flex-col items-center gap-2 mb-6">
+                <p className="text-[#64748b] text-[18px]">
+                  Better luck next time!
+                </p>
+                <p className="text-[#64748b] text-[14px]">
+                  {resultData.message}
+                </p>
+              </div>
+            )}
+            
+            <button 
+              onClick={() => setShowResultModal(false)}
+              className="w-full bg-gradient-to-br from-[#3b82f6] to-[#2563eb] text-white font-semibold rounded-[12px] py-3.5 hover:-translate-y-0.5 hover:shadow-[0_8px_20px_rgba(59,130,246,0.3)] active:translate-y-0 transition-all"
+            >
+              Continue
+            </button>
+            
+          </div>
+        </div>
+      )}
+
+      {/* Confetti Canvas */}
+      <canvas 
+        ref={confettiCanvasRef} 
+        className="fixed top-0 left-0 w-full h-full pointer-events-none z-[9998]"
+        style={{ display: 'none' }}
+      />
     </div>
   );
 }

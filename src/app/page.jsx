@@ -115,7 +115,7 @@ export default function LoginPage() {
               <Controller
                 name="keepMeLoggedIn"
                 control={control}
-                defaultValue={!!rememberedEmail}
+                defaultValue={false}
                 render={({ field }) => (
                   <label className="flex items-center space-x-2">
                     <Checkbox

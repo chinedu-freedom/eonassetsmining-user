@@ -57,7 +57,7 @@ export default function MiningPlansPage() {
           </Link>
           <h1 className="text-[#1e3a8a] text-[15px] font-bold">Products</h1>
         </div>
-        <Link href="/dashboard/investments" className="w-8 h-8 bg-[#4082F6] rounded-xl flex items-center justify-center text-white hover:bg-blue-600 transition-colors shadow-sm">
+        <Link href="/dashboard/investments" className="w-8 h-8 bg-[#4082F6] rounded-md flex items-center justify-center text-white hover:bg-blue-600 transition-colors shadow-sm">
           <Wallet size={14} />
         </Link>
       </div>

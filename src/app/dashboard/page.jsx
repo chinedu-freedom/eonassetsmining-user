@@ -3,8 +3,11 @@
 import { useState, useEffect } from "react";
 import { Globe, MessageCircle, Eye, EyeOff, Wallet, CreditCard, Volume2, HelpCircle, CheckSquare, Users, Loader, Loader2, Download, Gift, Calendar, Activity, ArrowDown, DollarSign, BadgeCheck, BarChart2, ChevronRight, X, Lock, Coins, Search, CheckCircle2 } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useFetchData } from "@/hooks/useApi";
+import { usePWA } from "@/components/PWAProvider";
+import { toast } from "sonner";
 import WhatsAppModal from "@/components/WhatsAppModal";
 const activities = [
   { type: "deposit", name: "", text: "deposited", amount: "+$1,910", iconBg: "bg-green-100", iconCol: "text-green-600", Icon: ArrowDown },
@@ -19,6 +22,7 @@ const doubledActivities = [...activities, ...activities];
 
 export default function DashboardPage() {
   const router = useRouter();
+  const { isInstallable, installPWA } = usePWA();
   const [currency, setCurrency] = useState("USDT");
   const [showBalance, setShowBalance] = useState(false);
   const [showToast, setShowToast] = useState(false);
@@ -151,14 +155,14 @@ export default function DashboardPage() {
           </div>
 
           <div className="flex gap-2.5 relative z-10">
-            <button className="flex-1 bg-white text-[#1e3a8a] py-2 rounded-lg text-[13px] font-semibold flex items-center justify-center gap-1.5 hover:bg-gray-50 transition-colors shadow-md">
+            <Link href="?depositModal=true" className="flex-1 bg-white text-[#1e3a8a] py-2 rounded-lg text-[13px] font-semibold flex items-center justify-center gap-1.5 hover:bg-gray-50 transition-colors shadow-md">
               <Wallet size={16} />
               Deposit
-            </button>
-            <button className="flex-1 bg-white/10 text-white py-2 rounded-lg text-[13px] font-semibold flex items-center justify-center gap-1.5 hover:bg-white/20 transition-colors border border-white/15 backdrop-blur-sm">
+            </Link>
+            <Link href="/dashboard/wallet/withdraw" className="flex-1 bg-white/10 text-white py-2 rounded-lg text-[13px] font-semibold flex items-center justify-center gap-1.5 hover:bg-white/20 transition-colors border border-white/15 backdrop-blur-sm">
               <CreditCard size={16} />
               Withdraw
-            </button>
+            </Link>
           </div>
         </div>
 
@@ -217,7 +221,13 @@ export default function DashboardPage() {
             </div>
 
             <div 
-              onClick={() => { setShowToast(true); setTimeout(() => setShowToast(false), 3000); }} 
+              onClick={() => { 
+                if (isInstallable) {
+                  installPWA();
+                } else {
+                  toast.info("To install on iOS: tap Share, then 'Add to Home Screen'. On Android, it may already be installed.");
+                }
+              }} 
               className="flex flex-col items-center gap-1.5 cursor-pointer group mt-1"
             >
               <div className="w-10 h-10 bg-[#eff6ff] rounded-xl flex items-center justify-center group-hover:bg-[#dbeafe] transition-colors shadow-sm">

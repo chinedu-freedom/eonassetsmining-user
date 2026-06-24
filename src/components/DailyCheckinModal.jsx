@@ -95,8 +95,8 @@ export default function DailyCheckinModal() {
           </div>
           
           <h2 className="text-xl font-bold text-gray-900 mb-1">Daily Rewards</h2>
-          <p className="text-sm text-gray-500 mb-8 text-center">
-            Check in for 7 days to get maximum rewards
+          <p className="text-sm text-gray-500 mb-8 text-center px-4">
+            Check in for 7 consecutive days to get maximum rewards. Missing a day resets your streak!
           </p>
           
           <div className="grid grid-cols-4 gap-3 w-full mb-4">

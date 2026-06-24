@@ -33,9 +33,12 @@ import { clearAuthToken } from "@/config/axiosInstance";
 // Dynamic languages are now fetched from backend
 
 import { useFetchData } from "@/hooks/useApi";
+import { usePWA } from "@/components/PWAProvider";
+import { toast } from "sonner";
 
 export default function AccountPage() {
   const router = useRouter();
+  const { isInstallable, installPWA } = usePWA();
   const [currency, setCurrency] = useState("USDT");
   const [showBalance, setShowBalance] = useState(true);
   const [showLanguageModal, setShowLanguageModal] = useState(false);
@@ -199,11 +202,11 @@ export default function AccountPage() {
           </div>
 
           <div className="flex gap-2.5 relative z-10">
-            <Link href="/dashboard/wallet?tab=deposit" className="flex-1 bg-white text-[#1e3a8a] py-2 rounded-lg text-[13px] font-semibold flex items-center justify-center gap-1.5 hover:bg-gray-50 transition-colors shadow-md">
+            <Link href="?depositModal=true" className="flex-1 bg-white text-[#1e3a8a] py-2 rounded-lg text-[13px] font-semibold flex items-center justify-center gap-1.5 hover:bg-gray-50 transition-colors shadow-md">
               <Wallet size={16} />
               Deposit
             </Link>
-            <Link href="/dashboard/wallet?tab=withdraw" className="flex-1 bg-white/10 text-white py-2 rounded-lg text-[13px] font-semibold flex items-center justify-center gap-1.5 hover:bg-white/20 transition-colors border border-white/15 backdrop-blur-sm">
+            <Link href="/dashboard/wallet/withdraw" className="flex-1 bg-white/10 text-white py-2 rounded-lg text-[13px] font-semibold flex items-center justify-center gap-1.5 hover:bg-white/20 transition-colors border border-white/15 backdrop-blur-sm">
               <CreditCard size={16} />
               Withdraw
             </Link>
@@ -281,8 +284,12 @@ export default function AccountPage() {
                   }
                   if (isDownload) {
                     e.preventDefault();
-                    setShowToast(true);
-                    setTimeout(() => setShowToast(false), 3000);
+                    if (isInstallable) {
+                      installPWA();
+                    } else {
+                      // Fallback toast if already installed or on iOS
+                      toast.info("To install on iOS: tap Share, then 'Add to Home Screen'. On Android, it may already be installed.");
+                    }
                   }
                 }}
                 className={`flex items-center justify-between px-4 py-3.5 hover:bg-gray-50 transition-colors ${

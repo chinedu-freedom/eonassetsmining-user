@@ -1,5 +1,6 @@
 import BottomNav from "@/components/BottomNav";
 import DailyCheckinModal from "@/components/DailyCheckinModal";
+import DepositModal from "@/components/DepositModal";
 
 export default function DashboardLayout({ children }) {
   return (
@@ -7,6 +8,7 @@ export default function DashboardLayout({ children }) {
       <div className="w-full max-w-[480px] bg-[#f8f9fa] min-h-screen relative shadow-2xl overflow-hidden pb-[80px]">
         {children}
         <DailyCheckinModal />
+        <DepositModal />
       </div>
       <BottomNav />
     </div>

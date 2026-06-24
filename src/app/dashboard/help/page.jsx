@@ -189,7 +189,7 @@ export default function HelpCenterPage() {
           </div>
           <div className="grid grid-cols-4 gap-2">
             {[
-              { icon: Wallet, label: "Deposit", action: () => router.push("/dashboard/wallet/deposit") },
+              { icon: Wallet, label: "Deposit", action: () => router.push("?depositModal=true") },
               { icon: CreditCard, label: "Withdraw", action: () => router.push("/dashboard/wallet/withdraw") },
               { icon: Wallet, label: "Wallet", action: () => router.push("/dashboard/wallet") },
               { icon: Clock, label: "History", action: () => router.push("/dashboard/account/history") }
