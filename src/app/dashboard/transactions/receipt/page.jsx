@@ -35,7 +35,7 @@ function ReceiptContent() {
       const canvas = await html2canvas(receiptRef.current, { scale: 2 });
       const image = canvas.toDataURL("image/png", 1.0);
       const link = document.createElement("a");
-      link.download = `EonAssets-${title}-Receipt.png`;
+      link.download = `Polychainapp-${title}-Receipt.png`;
       link.href = image;
       link.click();
     } catch (error) {
@@ -54,7 +54,7 @@ function ReceiptContent() {
         format: [canvas.width, canvas.height]
       });
       pdf.addImage(imgData, "PNG", 0, 0, canvas.width, canvas.height);
-      pdf.save(`EonAssets-${title}-Receipt.pdf`);
+      pdf.save(`Polychainapp-${title}-Receipt.pdf`);
     } catch (error) {
       console.error("Failed to generate PDF", error);
     }
@@ -66,11 +66,11 @@ function ReceiptContent() {
       <div className="bg-[#f8f9fa] px-4 py-4 flex items-center gap-3 sticky top-0 z-20">
         <button 
           onClick={() => router.back()}
-          className="w-9 h-9 bg-white border border-gray-200 rounded-[10px] flex items-center justify-center transition-colors text-gray-700 shadow-sm hover:bg-gray-50 shrink-0"
+          className="w-9 h-9 bg-white border border-gray-200 rounded-[10px] flex items-center justify-center transition-colors text-gray-700 shadow-sm hover:bg-gray-50 shrink-0 cursor-pointer"
         >
           <ArrowLeft size={16} />
         </button>
-        <h1 className="text-[#1e3a8a] text-[15px] font-bold truncate max-w-[260px]">{receiptTitle}</h1>
+        <h1 className="text-[#4c1d95] text-[15px] font-bold truncate max-w-[260px]">{receiptTitle}</h1>
       </div>
 
       <div className="px-4 max-w-[480px] mx-auto w-full flex-1 flex flex-col items-center pt-6">
@@ -82,13 +82,13 @@ function ReceiptContent() {
         >
           {/* Watermarks */}
           <div className="absolute inset-0 pointer-events-none flex flex-col items-center justify-center gap-12 z-0 opacity-[0.03]">
-             <span className="text-[32px] font-bold tracking-wider text-[#1e3a8a] whitespace-nowrap -rotate-45">EonAssets</span>
-             <span className="text-[32px] font-bold tracking-wider text-[#1e3a8a] whitespace-nowrap -rotate-45 ml-24">EonAssets</span>
-             <span className="text-[32px] font-bold tracking-wider text-[#1e3a8a] whitespace-nowrap -rotate-45 -ml-24">EonAssets</span>
+             <span className="text-[32px] font-bold tracking-wider text-[#4c1d95] whitespace-nowrap -rotate-45">Polychainapp</span>
+             <span className="text-[32px] font-bold tracking-wider text-[#4c1d95] whitespace-nowrap -rotate-45 ml-24">Polychainapp</span>
+             <span className="text-[32px] font-bold tracking-wider text-[#4c1d95] whitespace-nowrap -rotate-45 -ml-24">Polychainapp</span>
           </div>
 
           <div className="w-full flex justify-between items-center mb-6 relative z-10">
-            <div className="text-[#1e3a8a] font-bold text-[14px]">EonAssets</div>
+            <div className="text-[#4c1d95] font-bold text-[14px]">Polychainapp</div>
             <div className="text-gray-400 text-[10px] truncate max-w-[150px]">{receiptTitle}</div>
           </div>
 
@@ -131,9 +131,9 @@ function ReceiptContent() {
             </div>
           </div>
 
-          <div className="w-full bg-[#f0f9ff] border-l-[3px] border-[#3b82f6] rounded-r-[8px] p-3 mt-2 relative z-10">
+          <div className="w-full bg-[#f0f9ff] border-l-[3px] border-[#8b5cf6] rounded-r-[8px] p-3 mt-2 relative z-10">
             <p className="text-[#64748b] text-[10px] leading-relaxed">
-              Transaction processed by <span className="font-bold text-[#0f172a]">EonAssets</span>. Thank you for being a valued member of our platform.
+              Transaction processed by <span className="font-bold text-[#0f172a]">Polychainapp</span>. Thank you for being a valued member of our platform.
             </p>
           </div>
         </div>
@@ -144,13 +144,13 @@ function ReceiptContent() {
         <div className="max-w-[480px] mx-auto w-full flex gap-3">
           <button 
             onClick={handleShareAsImage}
-            className="flex-1 bg-white border border-blue-100 text-[#3b82f6] flex items-center justify-center gap-2 py-3.5 rounded-[12px] text-[13px] font-medium hover:bg-blue-50 active:scale-[0.98] transition-all shadow-sm"
+            className="flex-1 bg-white border border-purple-100 text-[#8b5cf6] flex items-center justify-center gap-2 py-3.5 rounded-[12px] text-[13px] font-medium hover:bg-purple-50 active:scale-[0.98] transition-all shadow-sm cursor-pointer"
           >
             <ImageIcon size={16} /> Share as image
           </button>
           <button 
             onClick={handleShareAsPDF}
-            className="flex-1 bg-white border border-blue-100 text-[#3b82f6] flex items-center justify-center gap-2 py-3.5 rounded-[12px] text-[13px] font-medium hover:bg-blue-50 active:scale-[0.98] transition-all shadow-sm"
+            className="flex-1 bg-white border border-purple-100 text-[#8b5cf6] flex items-center justify-center gap-2 py-3.5 rounded-[12px] text-[13px] font-medium hover:bg-purple-50 active:scale-[0.98] transition-all shadow-sm cursor-pointer"
           >
             <FileText size={16} /> Share as PDF
           </button>

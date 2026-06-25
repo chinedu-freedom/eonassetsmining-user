@@ -30,7 +30,7 @@ export default function TransactionsPage() {
 
   const getTransactionMeta = (type) => {
     const t = (type || "").toLowerCase();
-    if (t.includes('deposit')) return { category: 'Deposits', icon: Download, iconBg: "bg-blue-100", iconColor: "text-blue-500" };
+    if (t.includes('deposit')) return { category: 'Deposits', icon: Download, iconBg: "bg-purple-100", iconColor: "text-purple-500" };
     if (t.includes('withdraw')) return { category: 'Withdrawals', icon: Upload, iconBg: "bg-red-100", iconColor: "text-red-500" };
     if (t.includes('commission') || t.includes('referral')) return { category: 'Commission', icon: Gift, iconBg: "bg-amber-100", iconColor: "text-amber-500" };
     if (t.includes('reward') || t.includes('gift') || t.includes('bonus') || t.includes('spin') || t.includes('task') || t.includes('checkin') || t.includes('admin_credit')) return { category: 'Rewards', icon: Gift, iconBg: "bg-green-100", iconColor: "text-green-500" };
@@ -83,11 +83,11 @@ export default function TransactionsPage() {
       <div className="bg-white px-4 py-3 flex items-center gap-2.5 sticky top-0 z-20 shadow-sm border-b border-gray-100">
         <button
           onClick={() => router.back()}
-          className="w-7 h-7 bg-gray-50 hover:bg-gray-100 rounded-full flex items-center justify-center transition-colors text-gray-600"
+          className="w-7 h-7 bg-gray-50 hover:bg-gray-100 rounded-full flex items-center justify-center transition-colors text-gray-600 cursor-pointer"
         >
           <ArrowLeft size={16} />
         </button>
-        <h1 className="text-[#1e3a8a] text-[15px] font-bold">Transactions</h1>
+        <h1 className="text-[#4c1d95] text-[15px] font-bold">Transactions</h1>
       </div>
 
       <div className="px-4 py-4 max-w-[480px] mx-auto w-full space-y-4">
@@ -105,7 +105,7 @@ export default function TransactionsPage() {
           </div>
 
           <div className="bg-white rounded-[16px] p-4 border border-gray-100 shadow-[0_2px_8px_-4px_rgba(0,0,0,0.05)] flex flex-col">
-            <div className="w-8 h-8 bg-[#dbeafe] rounded-[8px] flex items-center justify-center text-[#3b82f6] mb-3">
+            <div className="w-8 h-8 bg-[#ede9fe] rounded-[8px] flex items-center justify-center text-[#8b5cf6] mb-3">
               <FileText size={16} />
             </div>
             <div className="text-[#0f172a] font-bold text-[18px] mb-0.5">{totalCount}</div>
@@ -122,8 +122,8 @@ export default function TransactionsPage() {
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`flex items-center gap-1.5 px-3.5 py-2 rounded-full whitespace-nowrap text-[12px] font-bold transition-all ${isActive
-                    ? 'bg-[#2563eb] text-white shadow-[0_4px_10px_rgba(37,99,235,0.25)]'
+                className={`flex items-center gap-1.5 px-3.5 py-2 rounded-full whitespace-nowrap text-[12px] font-bold transition-all cursor-pointer ${isActive
+                    ? 'bg-[#8b5cf6] text-white shadow-[0_4px_10px_rgba(37,99,235,0.25)]'
                     : 'bg-white text-gray-500 border border-gray-200 hover:bg-gray-50'
                   }`}
               >
@@ -138,7 +138,7 @@ export default function TransactionsPage() {
         <div className="mt-2">
           {isLoading ? (
             <div className="flex flex-col items-center justify-center py-10">
-              <Loader2 className="w-8 h-8 animate-spin text-[#3b82f6] mb-2" />
+              <Loader2 className="w-8 h-8 animate-spin text-[#8b5cf6] mb-2" />
               <span className="text-[12px] text-gray-500">Loading transactions...</span>
             </div>
           ) : filteredTransactions.length > 0 ? (
@@ -184,7 +184,7 @@ export default function TransactionsPage() {
               <div className="w-12 h-12 bg-gray-100 rounded-2xl flex items-center justify-center text-gray-400 mb-3">
                 <Inbox size={24} />
               </div>
-              <h3 className="text-[#1e3a8a] font-bold text-[14px] mb-1">No Transactions Yet</h3>
+              <h3 className="text-[#4c1d95] font-bold text-[14px] mb-1">No Transactions Yet</h3>
               <p className="text-gray-400 text-[11px]">Your transaction history will appear here</p>
             </div>
           )}

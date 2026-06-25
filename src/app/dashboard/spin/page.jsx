@@ -12,6 +12,8 @@ export default function SpinPage() {
   const router = useRouter();
   const [isSpinning, setIsSpinning] = useState(false);
   const [rotation, setRotation] = useState(0);
+  const wheelRef = useRef(null);
+  const rotationRef = useRef(0);
   const [isHowToPlayOpen, setIsHowToPlayOpen] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
   
@@ -83,7 +85,7 @@ export default function SpinPage() {
             this.resize();
             this.canvas.style.display = 'block';
             this.particles = [];
-            const colors = ['#3b82f6', '#22c55e', '#f59e0b', '#ef4444', '#8b5cf6', '#06b6d4'];
+            const colors = ['#8b5cf6', '#22c55e', '#f59e0b', '#ef4444', '#8b5cf6', '#06b6d4'];
             for (let i = 0; i < count; i++) {
                 this.particles.push({
                     x: Math.random() * this.canvas.width,
@@ -229,44 +231,63 @@ export default function SpinPage() {
         
         // Calculate target rotation based on the visual index
         const targetAngle = targetIndex * segmentDegree + (segmentDegree / 2);
-        const newRotation = rotation + (360 * 5) + (360 - (targetAngle + (rotation % 360)) % 360);
+        const startRotation = rotationRef.current;
+        const newRotation = startRotation + (360 * 5) + (360 - (targetAngle + (startRotation % 360)) % 360);
         
-        setRotation(newRotation);
-
         playSpinStart();
 
-        // Play ticking sound while spinning
-        let tickCount = 0;
-        const tickInterval = setInterval(() => {
-          if (tickCount >= 38) { // ~3.8 seconds
-            clearInterval(tickInterval);
-          } else {
+        // Animate with requestAnimationFrame to sync sound with rotation
+        const duration = 4000;
+        const startTime = performance.now();
+        let lastTickAngle = startRotation;
+
+        const animate = (time) => {
+          const elapsed = time - startTime;
+          const progress = Math.min(elapsed / duration, 1);
+          // easeOutQuart
+          const eased = 1 - Math.pow(1 - progress, 4);
+          
+          const currentRotation = startRotation + (newRotation - startRotation) * eased;
+          rotationRef.current = currentRotation;
+          
+          if (wheelRef.current) {
+            wheelRef.current.style.transform = `rotate(${currentRotation}deg)`;
+          }
+
+          // Play tick if we crossed a segment threshold
+          // In the original, the threshold grows slightly so it ticks less often at the end
+          const tickThreshold = segmentDegree * (0.8 + progress * 0.4);
+          if (currentRotation - lastTickAngle >= tickThreshold) {
             playTick();
-            tickCount++;
+            lastTickAngle = currentRotation;
           }
-        }, 100);
 
-        setTimeout(() => {
-          setIsSpinning(false);
-          clearInterval(tickInterval);
-          
-          const isWin = rewardAmount > 0;
+          if (progress < 1) {
+            requestAnimationFrame(animate);
+          } else {
+            // Animation complete
+            setIsSpinning(false);
+            setRotation(newRotation); // sync React state just in case
+            
+            const isWin = rewardAmount > 0;
 
-          if (isWin) {
-            playWin();
-            confettiRef.current?.launch(100);
+            if (isWin) {
+              playWin();
+              confettiRef.current?.launch(100);
+            }
+            
+            setResultData({
+              isWin: isWin,
+              amount: rewardAmount,
+              message: res.data.prize.name
+            });
+            setShowResultModal(true);
+            
+            refetch();
           }
-          
-          // Set custom modal data instead of just toast
-          setResultData({
-            isWin: isWin,
-            amount: rewardAmount,
-            message: res.data.prize.name
-          });
-          setShowResultModal(true);
-          
-          refetch(); // Reload data to update balances and history
-        }, 4000); // 4 seconds spin duration
+        };
+
+        requestAnimationFrame(animate);
       },
       onError: (err) => {
         toast.error(err.response?.data?.message || 'Failed to spin');
@@ -281,11 +302,11 @@ export default function SpinPage() {
       <div className="px-4 py-4 flex justify-between items-center bg-[#f8f9fa] sticky top-0 z-20">
         <button 
           onClick={() => router.back()}
-          className="w-10 h-10 bg-white border border-gray-100 rounded-[12px] flex items-center justify-center text-gray-500 shadow-sm"
+          className="w-10 h-10 bg-white border border-gray-100 rounded-[12px] flex items-center justify-center text-gray-500 shadow-sm cursor-pointer"
         >
           <ArrowLeft size={18} />
         </button>
-        <h1 className="text-[#1e3a8a] text-[18px] font-bold">Lucky Spin</h1>
+        <h1 className="text-[#4c1d95] text-[18px] font-bold">Lucky Spin</h1>
         <button 
           onClick={() => setIsMuted(!isMuted)}
           className="cursor-pointer w-10 h-10 bg-white border border-gray-100 rounded-[12px] flex items-center justify-center text-gray-500 shadow-sm hover:bg-gray-50 transition-colors"
@@ -303,19 +324,19 @@ export default function SpinPage() {
               <div className="w-4 h-4 rounded-[4px] bg-gray-200 flex items-center justify-center">
                 <div className="w-2 h-1.5 bg-gray-400 rounded-[1px]"></div>
               </div>
-              <span className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">Available Balance</span>
+              <span className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">Total Balance</span>
             </div>
-            <div className="text-[20px] font-bold text-[#3b82f6]">
+            <div className="text-[20px] font-bold text-[#8b5cf6]">
               ${Number(currentBalance).toFixed(2)}
             </div>
           </div>
 
-          <div className="bg-[#eaf2ff] p-4 rounded-[16px] border border-[#dbeafe] shadow-sm">
+          <div className="bg-[#eaf2ff] p-4 rounded-[16px] border border-[#ede9fe] shadow-sm">
             <div className="flex items-center gap-1.5 mb-2">
               <Ticket className="text-gray-400 w-4 h-4" />
               <span className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">Free Spins</span>
             </div>
-            <div className="text-[20px] font-bold text-[#3b82f6]">
+            <div className="text-[20px] font-bold text-[#8b5cf6]">
               {freeSpins}
             </div>
           </div>
@@ -333,9 +354,9 @@ export default function SpinPage() {
         <div className="flex justify-center items-center py-6">
           <div className="relative w-[320px] h-[320px]">
             {/* The Outer Blue Ring with Lights */}
-            <div className="absolute inset-0 rounded-full bg-[#3b82f6] shadow-[0_0_20px_rgba(59,130,246,0.3)] border-4 border-[#60a5fa] overflow-hidden">
+            <div className="absolute inset-0 rounded-full bg-[#8b5cf6] shadow-[0_0_20px_rgba(59,130,246,0.3)] border-4 border-[#60a5fa] overflow-hidden">
               {/* Fake lights using CSS repeating conic gradient or positioned dots */}
-              <div className="absolute inset-1 rounded-full border border-blue-400/50"></div>
+              <div className="absolute inset-1 rounded-full border border-purple-400/50"></div>
               {Array.from({ length: 24 }).map((_, i) => (
                 <div 
                   key={i}
@@ -351,12 +372,11 @@ export default function SpinPage() {
 
             {/* The Inner Spinning Wheel */}
             <div 
-              className="absolute inset-[15px] rounded-full overflow-hidden shadow-inner transition-transform"
+              ref={wheelRef}
+              className="absolute inset-[15px] rounded-full overflow-hidden shadow-inner"
               style={{
                 background: `conic-gradient(${gradientStops})`,
-                transform: `rotate(${rotation}deg)`,
-                transitionDuration: isSpinning ? '4s' : '0s',
-                transitionTimingFunction: 'cubic-bezier(0.2, 0.8, 0.2, 1)'
+                transform: `rotate(${rotation}deg)`
               }}
             >
               {segments.map((seg, i) => {
@@ -398,10 +418,10 @@ export default function SpinPage() {
             {/* Center Start Button */}
             <div 
               onClick={handleSpin}
-              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80px] h-[80px] bg-gradient-to-b from-[#94a3b8] to-[#475569] rounded-full flex items-center justify-center cursor-pointer shadow-[0_0_15px_rgba(0,0,0,0.3)] z-30 border-[4px] border-[#3b82f6] hover:scale-105 active:scale-95 transition-all"
+              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80px] h-[80px] bg-gradient-to-b from-[#94a3b8] to-[#475569] rounded-full flex items-center justify-center cursor-pointer shadow-[0_0_15px_rgba(0,0,0,0.3)] z-30 border-[4px] border-[#8b5cf6] hover:scale-105 active:scale-95 transition-all"
             >
               {/* Pointer Triangle */}
-              <div className="absolute -top-[14px] left-1/2 -translate-x-1/2 w-0 h-0 border-l-[10px] border-l-transparent border-r-[10px] border-r-transparent border-b-[16px] border-b-[#3b82f6]"></div>
+              <div className="absolute -top-[14px] left-1/2 -translate-x-1/2 w-0 h-0 border-l-[10px] border-l-transparent border-r-[10px] border-r-transparent border-b-[16px] border-b-[#8b5cf6]"></div>
               
               <span className="text-white font-bold text-[16px] drop-shadow-md">Start</span>
             </div>
@@ -412,8 +432,8 @@ export default function SpinPage() {
         {/* Recent Wins */}
         <div className="mt-8">
           <div className="flex items-center gap-2 mb-4 px-1">
-            <History className="text-[#3b82f6]" size={18} />
-            <h3 className="font-bold text-[#1e3a8a] text-[16px]">Recent Wins</h3>
+            <History className="text-[#8b5cf6]" size={18} />
+            <h3 className="font-bold text-[#4c1d95] text-[16px]">Recent Wins</h3>
           </div>
 
           <div className="space-y-3">
@@ -452,10 +472,10 @@ export default function SpinPage() {
       {/* Floating Help Button */}
       <button 
         onClick={() => setIsHowToPlayOpen(true)}
-        className="fixed bottom-[80px] right-4 w-[60px] h-[60px] bg-[#3b82f6] rounded-full shadow-[0_4px_16px_rgba(59,130,246,0.5)] flex items-center justify-center z-40 hover:scale-105 active:scale-95 transition-transform"
+        className="fixed bottom-[80px] right-4 w-[60px] h-[60px] bg-[#8b5cf6] rounded-full shadow-[0_4px_16px_rgba(59,130,246,0.5)] flex items-center justify-center z-40 hover:scale-105 active:scale-95 transition-transform"
       >
         <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center">
-          <span className="text-[#3b82f6] font-bold text-[18px]">?</span>
+          <span className="text-[#8b5cf6] font-bold text-[18px]">?</span>
         </div>
       </button>
 
@@ -485,8 +505,8 @@ export default function SpinPage() {
                 <p className="text-[#64748b] text-[14px]">
                   {resultData.message}
                 </p>
-                <p className="text-[#3b82f6] text-[13px] mt-2 mb-4 flex items-center gap-1.5 font-medium">
-                  <span className="w-4 h-4 rounded-full bg-[#3b82f6] text-white flex items-center justify-center text-[10px]">✓</span>
+                <p className="text-[#8b5cf6] text-[13px] mt-2 mb-4 flex items-center gap-1.5 font-medium">
+                  <span className="w-4 h-4 rounded-full bg-[#8b5cf6] text-white flex items-center justify-center text-[10px]">✓</span>
                   Added to your balance
                 </p>
               </div>
@@ -503,7 +523,7 @@ export default function SpinPage() {
             
             <button 
               onClick={() => setShowResultModal(false)}
-              className="w-full bg-gradient-to-br from-[#3b82f6] to-[#2563eb] text-white font-semibold rounded-[12px] py-3.5 hover:-translate-y-0.5 hover:shadow-[0_8px_20px_rgba(59,130,246,0.3)] active:translate-y-0 transition-all"
+              className="w-full bg-gradient-to-br from-[#8b5cf6] to-[#2563eb] text-white font-semibold rounded-[12px] py-3.5 hover:-translate-y-0.5 hover:shadow-[0_8px_20px_rgba(59,130,246,0.3)] active:translate-y-0 transition-all"
             >
               Continue
             </button>

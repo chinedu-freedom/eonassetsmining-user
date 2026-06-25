@@ -25,8 +25,8 @@ export default function SettingsPage() {
       id: "profile",
       label: "My Profile",
       icon: User,
-      iconBg: "bg-[#eff6ff]",
-      iconColor: "text-[#3b82f6]",
+      iconBg: "bg-[#f5f3ff]",
+      iconColor: "text-[#8b5cf6]",
       badge: null,
       href: "/dashboard/settings/profile"
     },
@@ -34,8 +34,8 @@ export default function SettingsPage() {
       id: "payment",
       label: "Payment Settings",
       icon: Lock,
-      iconBg: "bg-[#eff6ff]",
-      iconColor: "text-[#3b82f6]",
+      iconBg: "bg-[#f5f3ff]",
+      iconColor: "text-[#8b5cf6]",
       badge: hasPin 
         ? { text: "Set", bg: "bg-green-100", color: "text-green-700" }
         : { text: "Not Set", bg: "bg-[#fef3c7]", color: "text-[#d97706]" },
@@ -45,8 +45,8 @@ export default function SettingsPage() {
       id: "login",
       label: "Login Settings",
       icon: Key,
-      iconBg: "bg-[#eff6ff]",
-      iconColor: "text-[#3b82f6]",
+      iconBg: "bg-[#f5f3ff]",
+      iconColor: "text-[#8b5cf6]",
       badge: null,
       href: "/dashboard/settings/login"
     },
@@ -54,8 +54,8 @@ export default function SettingsPage() {
       id: "auth",
       label: "Authentication",
       icon: ShieldCheck,
-      iconBg: "bg-[#eff6ff]",
-      iconColor: "text-[#3b82f6]",
+      iconBg: "bg-[#f5f3ff]",
+      iconColor: "text-[#8b5cf6]",
       badge: isEmailVerified
         ? { text: "Verified", bg: "bg-[#d1fae5]", color: "text-[#059669]" }
         : { text: "Unverified", bg: "bg-[#fef3c7]", color: "text-[#d97706]" },
@@ -69,11 +69,11 @@ export default function SettingsPage() {
       <div className="bg-white px-4 py-3 flex items-center gap-2.5 sticky top-0 z-20 shadow-sm border-b border-gray-100">
         <button
           onClick={() => router.back()}
-          className="w-7 h-7 bg-gray-50 hover:bg-gray-100 rounded-full flex items-center justify-center transition-colors text-gray-600"
+          className="w-7 h-7 bg-gray-50 hover:bg-gray-100 rounded-full flex items-center justify-center transition-colors text-gray-600 cursor-pointer"
         >
           <ArrowLeft size={16} />
         </button>
-        <h1 className="text-[#1e3a8a] text-[15px] font-bold">Settings</h1>
+        <h1 className="text-[#4c1d95] text-[15px] font-bold">Settings</h1>
       </div>
 
       <div className="px-4 py-4 max-w-[480px] mx-auto w-full space-y-3">

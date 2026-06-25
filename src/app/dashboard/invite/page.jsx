@@ -42,8 +42,8 @@ export default function InvitePage() {
     if (navigator.share && invitationLink) {
       try {
         await navigator.share({
-          title: 'Join EonAssets',
-          text: 'Use my invitation code to join EonAssets and start earning!',
+          title: 'Join Polychainapp',
+          text: 'Use my invitation code to join Polychainapp and start earning!',
           url: invitationLink,
         });
       } catch (err) {
@@ -80,14 +80,14 @@ export default function InvitePage() {
           <DollarSign size={20} />
         </div>
         <div className="absolute bottom-[15%] right-[25%] w-2 h-2 bg-yellow-500/20 rounded-full blur-[1px]"></div>
-        <div className="absolute top-[30%] left-[20%] w-1.5 h-1.5 bg-blue-500/30 rounded-full blur-[1px]"></div>
+        <div className="absolute top-[30%] left-[20%] w-1.5 h-1.5 bg-purple-500/30 rounded-full blur-[1px]"></div>
       </div>
       
       {/* Header */}
       <div className="px-4 py-3 flex items-center justify-between sticky top-0 z-20">
         <button 
           onClick={() => router.back()}
-          className="w-8 h-8 bg-white/5 border border-white/10 hover:bg-white/10 rounded-xl flex items-center justify-center transition-colors text-white backdrop-blur-md"
+          className="w-8 h-8 bg-white/5 border border-white/10 hover:bg-white/10 rounded-xl flex items-center justify-center transition-colors text-white backdrop-blur-md cursor-pointer"
         >
           <ArrowLeft size={16} />
         </button>
@@ -97,14 +97,14 @@ export default function InvitePage() {
       <div className="px-4 mt-2 flex flex-col items-center max-w-[480px] mx-auto w-full z-10">
         
         <p className="text-white/80 text-center text-[11px] leading-snug mb-5 max-w-[260px]">
-          Let's pass EonAssets to the world together, so everyone feels joy and reward
+          Let's pass Polychainapp to the world together, so everyone feels joy and reward
         </p>
 
         {/* QR Code */}
         <div className="bg-white p-2.5 rounded-[16px] mb-5 shadow-lg relative">
           {isLoading && (
             <div className="absolute inset-0 flex items-center justify-center bg-white/80 backdrop-blur-sm z-10 rounded-[16px]">
-              <div className="w-6 h-6 border-2 border-[#1e3a8a] border-t-transparent rounded-full animate-spin"></div>
+              <div className="w-6 h-6 border-2 border-[#4c1d95] border-t-transparent rounded-full animate-spin"></div>
             </div>
           )}
           <div className="w-[130px] h-[130px] flex items-center justify-center rounded-[10px] overflow-hidden">
@@ -126,9 +126,9 @@ export default function InvitePage() {
             </div>
             <button 
               onClick={() => handleCopy(invitationCode, "code")}
-              className="w-8 h-8 border border-white/10 rounded-[10px] flex items-center justify-center text-white/70 hover:text-white hover:bg-white/10 transition-colors"
+              className="w-8 h-8 border border-white/10 rounded-[10px] flex items-center justify-center text-white/70 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
             >
-              {copied === "code" ? <Check size={14} className="text-[#34d399]" /> : <Copy size={14} />}
+              {copied === "code" ? <Check size={14} className="text-[#34d399] cursor-pointer" /> : <Copy size={14} className="cursor-pointer" />}
             </button>
           </div>
 
@@ -140,21 +140,21 @@ export default function InvitePage() {
             </div>
             <button 
               onClick={() => handleCopy(invitationLink, "link")}
-              className="w-8 h-8 shrink-0 border border-white/10 rounded-[10px] flex items-center justify-center text-white/70 hover:text-white hover:bg-white/10 transition-colors"
+              className="w-8 h-8 shrink-0 border border-white/10 rounded-[10px] flex items-center justify-center text-white/70 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
             >
-              {copied === "link" ? <Check size={14} className="text-[#34d399]" /> : <Copy size={14} />}
+              {copied === "link" ? <Check size={14} className="text-[#34d399] cursor-pointer" /> : <Copy size={14} className="cursor-pointer" />}
             </button>
           </div>
         </div>
 
         {/* Actions */}
         <div className="w-full flex gap-2 mb-5">
-          <button onClick={handleShare} className="flex-1 bg-[#3b82f6] text-white flex items-center justify-center gap-1.5 py-2.5 rounded-[10px] text-[12px] font-bold hover:bg-[#2563eb] active:scale-[0.98] transition-all shadow-md">
+          <button onClick={handleShare} className=" cursor-pointer flex-1 bg-[#8b5cf6] text-white flex items-center justify-center gap-1.5 py-2.5 rounded-[10px] text-[12px] font-bold hover:bg-[#7c3aed] active:scale-[0.98] transition-all shadow-md">
             <Share2 size={14} /> Share Link
           </button>
           <button 
             onClick={() => router.push('/dashboard/team')}
-            className="flex-1 bg-[#2b3e5d] border border-white/5 text-white flex items-center justify-center gap-1.5 py-2.5 rounded-[10px] text-[12px] font-bold hover:bg-[#364b6e] active:scale-[0.98] transition-all shadow-md"
+            className="cursor-pointer flex-1 bg-[#2b3e5d] border border-white/5 text-white flex items-center justify-center gap-1.5 py-2.5 rounded-[10px] text-[12px] font-bold hover:bg-[#364b6e] active:scale-[0.98] transition-all shadow-md"
           >
             <Users size={14} /> My Team
           </button>

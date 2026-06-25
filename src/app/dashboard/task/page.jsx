@@ -27,31 +27,31 @@ export default function TaskPage() {
       <div className="bg-white px-4 py-4 flex items-center gap-3 shadow-sm z-10 relative">
         <button 
           onClick={() => router.back()}
-          className="w-8 h-8 bg-gray-50 hover:bg-gray-100 rounded-lg flex items-center justify-center transition-colors"
+          className="w-8 h-8 bg-gray-50 hover:bg-gray-100 rounded-lg flex items-center justify-center transition-colors cursor-pointer"
         >
-          <ArrowLeft size={18} className="text-[#1e3a8a]" />
+          <ArrowLeft size={18} className="text-[#4c1d95]" />
         </button>
-        <h1 className="text-[#1e3a8a] font-bold text-[18px]">Task</h1>
+        <h1 className="text-[#4c1d95] font-bold text-[18px]">Task</h1>
       </div>
 
       <div className="p-4 space-y-4 pb-24">
         {/* Stats Card */}
-        <div className="bg-[#3b82f6] rounded-[16px] p-5 text-white shadow-sm flex justify-between items-center text-center">
+        <div className="bg-[#8b5cf6] rounded-[16px] p-5 text-white shadow-sm flex justify-between items-center text-center">
           <div className="flex flex-col gap-1 items-center">
             <span className="text-[24px] font-bold leading-none">{totalTasks}</span>
-            <span className="text-[11px] text-blue-100">Total Tasks</span>
+            <span className="text-[11px] text-purple-100">Total Tasks</span>
           </div>
           <div className="flex flex-col gap-1 items-center">
             <span className="text-[24px] font-bold leading-none">{readyTasks}</span>
-            <span className="text-[11px] text-blue-100">Ready</span>
+            <span className="text-[11px] text-purple-100">Ready</span>
           </div>
           <div className="flex flex-col gap-1 items-center">
             <span className="text-[24px] font-bold leading-none">{claimedTasks}</span>
-            <span className="text-[11px] text-blue-100">Claimed</span>
+            <span className="text-[11px] text-purple-100">Claimed</span>
           </div>
           <div className="flex flex-col gap-1 items-center">
             <span className="text-[24px] font-bold leading-none">{todayInvites}</span>
-            <span className="text-[11px] text-blue-100">Today's Invites</span>
+            <span className="text-[11px] text-purple-100">Today's Invites</span>
           </div>
         </div>
 
@@ -59,7 +59,7 @@ export default function TaskPage() {
         <div className="space-y-4">
           {isLoading ? (
             <div className="flex justify-center items-center py-10">
-              <Loader2 className="w-6 h-6 text-blue-600 animate-spin" />
+              <Loader2 className="w-6 h-6 text-purple-600 animate-spin" />
             </div>
           ) : tasks.length === 0 ? (
             <div className="text-center py-10 text-gray-500">No active tasks available.</div>

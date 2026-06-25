@@ -9,6 +9,7 @@ import { useFetchData } from "@/hooks/useApi";
 import { usePWA } from "@/components/PWAProvider";
 import { toast } from "sonner";
 import WhatsAppModal from "@/components/WhatsAppModal";
+import { useSharedSettings } from "@/hooks/useSharedSettings";
 const activities = [
   { type: "deposit", name: "", text: "deposited", amount: "+$1,910", iconBg: "bg-green-100", iconCol: "text-green-600", Icon: ArrowDown },
   { type: "profit", name: "henry***", text: "earned profit", amount: "+$138", iconBg: "bg-emerald-100", iconCol: "text-emerald-600", Icon: DollarSign },
@@ -23,8 +24,7 @@ const doubledActivities = [...activities, ...activities];
 export default function DashboardPage() {
   const router = useRouter();
   const { isInstallable, installPWA } = usePWA();
-  const [currency, setCurrency] = useState("USDT");
-  const [showBalance, setShowBalance] = useState(false);
+  const { currency, setCurrency, showBalance, setShowBalance } = useSharedSettings();
   const [showToast, setShowToast] = useState(false);
   const [showLanguageModal, setShowLanguageModal] = useState(false);
   const [currentLang, setCurrentLang] = useState("EN");
@@ -79,23 +79,24 @@ export default function DashboardPage() {
   }, [userProfile?.country]);
 
   // Convert balance based on selected currency
-  const getDisplayBalance = () => {
-    if (!userProfile) return "$0.00";
-    
-    const balanceUSD = parseFloat(userProfile.balance || 0);
+  const getDisplayValue = (amountUSD) => {
+    const usd = parseFloat(amountUSD || 0);
     
     if (currency === "USDT") {
-      return `$${balanceUSD.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+      return `$${usd.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
     } else {
-      // Use live exchange rate if available, fallback to database static rate, then fallback to 1
-      const exchangeRate = liveExchangeRate !== null ? liveExchangeRate : parseFloat(userProfile.country?.exchange_rate || 1);
-      const localBalance = balanceUSD * exchangeRate;
-      const symbol = userProfile.country?.currency_symbol || "";
+      const exchangeRate = liveExchangeRate !== null ? liveExchangeRate : parseFloat(userProfile?.country?.exchange_rate || 1);
+      const localBalance = usd * exchangeRate;
+      const symbol = userProfile?.country?.currency_symbol || "";
       return `${symbol}${localBalance.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
     }
   };
 
-  const currentBalanceTotal = getDisplayBalance();
+  const balanceValues = {
+    total: getDisplayValue(parseFloat(userProfile?.balance || 0) + parseFloat(userProfile?.gift_balance || 0)),
+    earning: getDisplayValue(userProfile?.balance),
+    gift: getDisplayValue(userProfile?.gift_balance)
+  };
 
   return (
     <div className="flex flex-col h-full bg-[#f8f9fa] overflow-y-auto  [&::-webkit-scrollbar]:hidden">
@@ -103,22 +104,22 @@ export default function DashboardPage() {
       {/* Header */}
       <div className="bg-white px-4 pt-4 pb-3 flex justify-between items-center rounded-b-[20px] shadow-sm z-10 relative">
         <div className="flex items-center gap-2">
-          <div className="w-9 h-9 bg-gradient-to-br from-[#1e3a8a] to-[#0f172a] rounded-full flex items-center justify-center shadow-sm">
-            <div className="text-white text-[9px] font-bold tracking-wider">Eon</div>
+          <div className="w-9 h-9 bg-gradient-to-br from-[#4c1d95] to-[#0f172a] rounded-full flex items-center justify-center shadow-sm">
+            <div className="text-white text-[9px] font-bold tracking-wider">Poly</div>
           </div>
-          <span className="text-[#1e3a8a] font-bold text-[15px]">EonAssets</span>
+          <span className="text-[#4c1d95] font-bold text-[15px]">Polychainapp</span>
         </div>
         <div className="flex items-center gap-2">
           <button 
             onClick={() => setShowLanguageModal(true)}
-            className="flex items-center gap-1 bg-white border border-gray-200 px-2.5 py-1 rounded-full text-[11px] font-bold text-[#1e3a8a] shadow-sm hover:bg-gray-50 transition-colors"
+            className="flex items-center gap-1 bg-white border border-gray-200 px-2.5 py-1 rounded-sm cursor-pointer text-[11px] font-bold text-[#4c1d95] shadow-sm hover:bg-gray-50 transition-colors"
           >
-            <Globe size={13} className="text-[#3b82f6]" />
+            <Globe size={13} className="text-[#8b5cf6]" />
             {currentLang}
           </button>
           <button 
             onClick={() => router.push('/dashboard/help')}
-            className="bg-[#eff6ff] p-1.5 rounded-full text-[#3b82f6] hover:bg-[#dbeafe] transition-colors"
+            className="bg-[#f5f3ff] p-1.5 rounded-full text-[#8b5cf6] hover:bg-[#ede9fe] transition-colors cursor-pointer"
           >
             <MessageCircle size={16} />
           </button>
@@ -128,7 +129,7 @@ export default function DashboardPage() {
       <div className="px-4 pt-4 pb-4 space-y-3">
         
         {/* Balance Card */}
-        <div className="bg-gradient-to-br from-[#1e3a8a] to-[#0f172a] rounded-2xl p-[18px] text-white shadow-lg relative overflow-hidden border border-white/10">
+        <div className="bg-gradient-to-br from-[#4c1d95] to-[#0f172a] rounded-2xl p-[18px] text-white shadow-lg relative overflow-hidden border border-white/10">
           {/* Background decoration */}
           <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/3 blur-2xl"></div>
           
@@ -136,30 +137,41 @@ export default function DashboardPage() {
             <p className="text-white/80 text-[13px] font-medium">Total Balance</p>
             <button 
               onClick={toggleCurrency}
-              className="bg-white/10 px-2 py-1 rounded-md text-[11px] font-bold flex items-center gap-1 hover:bg-white/20 transition-colors backdrop-blur-sm border border-white/10"
+              className="bg-white/10 px-2 py-1 cursor-pointer rounded-md text-[11px] font-bold flex items-center gap-1 hover:bg-white/20 transition-colors backdrop-blur-sm border border-white/10"
             >
-              {currency} <span className="text-[7px] opacity-70">▼</span>
+              {currency} <span className="text-[7px] opacity-70 cursor-pointer">▼</span>
             </button>
           </div>
           
-          <div className="flex items-center gap-2 mb-5 relative z-10">
+          <div className="flex items-center gap-2 mb-4 relative z-10">
             <h2 className="text-[28px] font-bold tracking-wider leading-none">
-              {showBalance ? currentBalanceTotal : "****"}
+              {showBalance ? balanceValues.total : "****"}
             </h2>
             <button 
               onClick={() => setShowBalance(!showBalance)}
-              className="text-white/60 hover:text-white transition-colors ml-1"
+              className="text-white/60 hover:text-white transition-colors ml-1 cursor-pointer"
             >
               {showBalance ? <Eye size={18} /> : <EyeOff size={18} />}
             </button>
           </div>
 
+          <div className="grid grid-cols-2 gap-2 mb-4 relative z-10">
+            <div className="bg-white/10 rounded-lg p-2.5 backdrop-blur-sm border border-white/5">
+              <span className="text-[9px] font-bold text-white/60 uppercase tracking-wider block mb-1">Earning Balance</span>
+              <span className="text-[14px] font-bold">{showBalance ? balanceValues.earning : "****"}</span>
+            </div>
+            <div className="bg-white/10 rounded-lg p-2.5 backdrop-blur-sm border border-white/5">
+              <span className="text-[9px] font-bold text-white/60 uppercase tracking-wider block mb-1">Gift Balance</span>
+              <span className="text-[14px] font-bold">{showBalance ? balanceValues.gift : "****"}</span>
+            </div>
+          </div>
+
           <div className="flex gap-2.5 relative z-10">
-            <Link href="?depositModal=true" className="flex-1 bg-white text-[#1e3a8a] py-2 rounded-lg text-[13px] font-semibold flex items-center justify-center gap-1.5 hover:bg-gray-50 transition-colors shadow-md">
+            <Link href="?depositModal=true" className="flex-1 bg-white text-[#4c1d95] py-2 rounded-lg text-[13px] font-semibold flex items-center justify-center gap-1.5 hover:bg-gray-50 transition-colors shadow-md cursor-pointer">
               <Wallet size={16} />
               Deposit
             </Link>
-            <Link href="/dashboard/wallet/withdraw" className="flex-1 bg-white/10 text-white py-2 rounded-lg text-[13px] font-semibold flex items-center justify-center gap-1.5 hover:bg-white/20 transition-colors border border-white/15 backdrop-blur-sm">
+            <Link href="/dashboard/wallet/withdraw" className="flex-1 bg-white/10 text-white py-2 rounded-lg text-[13px] font-semibold flex items-center justify-center gap-1.5 hover:bg-white/20 transition-colors border border-white/15 backdrop-blur-sm cursor-pointer">
               <CreditCard size={16} />
               Withdraw
             </Link>
@@ -168,10 +180,10 @@ export default function DashboardPage() {
 
         {/* Marquee Banner */}
         <div className="bg-white rounded-lg py-2 px-3 flex items-center gap-2 shadow-sm border border-gray-100">
-          <Volume2 className="text-[#3b82f6] shrink-0" size={16} />
+          <Volume2 className="text-[#8b5cf6] shrink-0" size={16} />
           <div className="overflow-hidden whitespace-nowrap w-full relative">
             <p className="text-[12px] text-gray-600 animate-[marquee_15s_linear_infinite] inline-block">
-              Start mining today and grow your wealth with us. Welcome to EonAssets!
+              Start mining today and grow your wealth with us. Welcome to Polychainapp!
             </p>
           </div>
         </div>
@@ -180,32 +192,32 @@ export default function DashboardPage() {
         <div className="bg-white rounded-[18px] p-4 shadow-sm border border-gray-100">
           <div className="grid grid-cols-4 gap-y-5 gap-x-2">
             <div onClick={() => router.push('/dashboard/investments')} className="flex flex-col items-center gap-1.5 cursor-pointer group">
-              <div className="w-10 h-10 bg-[#eff6ff] rounded-xl flex items-center justify-center group-hover:bg-[#dbeafe] transition-colors shadow-sm">
-                <Wallet className="text-[#3b82f6]" size={20} />
+              <div className="w-10 h-10 bg-[#f5f3ff] rounded-xl flex items-center justify-center group-hover:bg-[#ede9fe] transition-colors shadow-sm">
+                <Wallet className="text-[#8b5cf6]" size={20} />
               </div>
               <span className="text-[10px] text-[#1e293b] font-medium">My Assets</span>
             </div>
 
             <div onClick={() => router.push('/dashboard/about')} className="flex flex-col items-center gap-1.5 cursor-pointer group">
-              <div className="w-10 h-10 bg-[#eff6ff] rounded-xl flex items-center justify-center group-hover:bg-[#dbeafe] transition-colors shadow-sm">
-                <HelpCircle className="text-[#3b82f6]" size={20} />
+              <div className="w-10 h-10 bg-[#f5f3ff] rounded-xl flex items-center justify-center group-hover:bg-[#ede9fe] transition-colors shadow-sm">
+                <HelpCircle className="text-[#8b5cf6]" size={20} />
               </div>
               <span className="text-[10px] text-[#1e293b] font-medium">Info</span>
             </div>
 
             <div onClick={() => router.push('/dashboard/task')} className="flex flex-col items-center gap-1.5 cursor-pointer group relative">
-              <div className="absolute -top-1.5 right-1 bg-[#3b82f6] text-white text-[7px] font-bold px-1 py-[1px] rounded z-10 shadow-sm">
+              <div className="absolute -top-1.5 right-1 bg-[#8b5cf6] text-white text-[7px] font-bold px-1 py-[1px] rounded z-10 shadow-sm">
                 NEW
               </div>
-              <div className="w-10 h-10 bg-[#eff6ff] rounded-xl flex items-center justify-center group-hover:bg-[#dbeafe] transition-colors shadow-sm">
-                <CheckSquare className="text-[#3b82f6]" size={20} />
+              <div className="w-10 h-10 bg-[#f5f3ff] rounded-xl flex items-center justify-center group-hover:bg-[#ede9fe] transition-colors shadow-sm">
+                <CheckSquare className="text-[#8b5cf6]" size={20} />
               </div>
               <span className="text-[10px] text-[#1e293b] font-medium">Task</span>
             </div>
 
             <div onClick={() => router.push('/dashboard/team')} className="flex flex-col items-center gap-1.5 cursor-pointer group">
-              <div className="w-10 h-10 bg-[#eff6ff] rounded-xl flex items-center justify-center group-hover:bg-[#dbeafe] transition-colors shadow-sm">
-                <Users className="text-[#3b82f6]" size={20} />
+              <div className="w-10 h-10 bg-[#f5f3ff] rounded-xl flex items-center justify-center group-hover:bg-[#ede9fe] transition-colors shadow-sm">
+                <Users className="text-[#8b5cf6]" size={20} />
               </div>
               <span className="text-[10px] text-[#1e293b] font-medium">My Team</span>
             </div>
@@ -214,8 +226,8 @@ export default function DashboardPage() {
               <div className="absolute -top-1.5 right-0.5 bg-gradient-to-r from-red-500 to-rose-500 text-white text-[7px] font-bold px-1 py-[1px] rounded z-10 shadow-sm animate-pulse">
                 HOT
               </div>
-              <div className="w-10 h-10 bg-[#eff6ff] rounded-xl flex items-center justify-center group-hover:bg-[#dbeafe] transition-colors shadow-sm">
-                <Loader className="text-[#3b82f6]" size={20} />
+              <div className="w-10 h-10 bg-[#f5f3ff] rounded-xl flex items-center justify-center group-hover:bg-[#ede9fe] transition-colors shadow-sm">
+                <Loader className="text-[#8b5cf6]" size={20} />
               </div>
               <span className="text-[10px] text-[#1e293b] font-medium">Spin Wheel</span>
             </div>
@@ -230,22 +242,22 @@ export default function DashboardPage() {
               }} 
               className="flex flex-col items-center gap-1.5 cursor-pointer group mt-1"
             >
-              <div className="w-10 h-10 bg-[#eff6ff] rounded-xl flex items-center justify-center group-hover:bg-[#dbeafe] transition-colors shadow-sm">
-                <Download className="text-[#3b82f6]" size={20} />
+              <div className="w-10 h-10 bg-[#f5f3ff] rounded-xl flex items-center justify-center group-hover:bg-[#ede9fe] transition-colors shadow-sm">
+                <Download className="text-[#8b5cf6]" size={20} />
               </div>
               <span className="text-[10px] text-[#1e293b] font-medium text-center leading-tight">Download App</span>
             </div>
 
             <div onClick={() => router.push('/dashboard/treasure')} className="flex flex-col items-center gap-1.5 cursor-pointer group mt-1">
-              <div className="w-10 h-10 bg-[#eff6ff] rounded-xl flex items-center justify-center group-hover:bg-[#dbeafe] transition-colors shadow-sm">
-                <Gift className="text-[#3b82f6]" size={20} />
+              <div className="w-10 h-10 bg-[#f5f3ff] rounded-xl flex items-center justify-center group-hover:bg-[#ede9fe] transition-colors shadow-sm">
+                <Gift className="text-[#8b5cf6]" size={20} />
               </div>
               <span className="text-[10px] text-[#1e293b] font-medium">Treasure</span>
             </div>
 
             <div onClick={() => router.push('/dashboard/help')} className="flex flex-col items-center gap-1.5 cursor-pointer group mt-1">
-              <div className="w-10 h-10 bg-[#eff6ff] rounded-xl flex items-center justify-center group-hover:bg-[#dbeafe] transition-colors shadow-sm">
-                <HelpCircle className="text-[#3b82f6]" size={20} />
+              <div className="w-10 h-10 bg-[#f5f3ff] rounded-xl flex items-center justify-center group-hover:bg-[#ede9fe] transition-colors shadow-sm">
+                <HelpCircle className="text-[#8b5cf6]" size={20} />
               </div>
               <span className="text-[10px] text-[#1e293b] font-medium">Help</span>
             </div>
@@ -255,7 +267,7 @@ export default function DashboardPage() {
         {/* Daily Check-in */}
         <div 
           onClick={() => window.dispatchEvent(new Event('open-daily-checkin'))}
-          className="bg-gradient-to-r from-[#3b82f6] to-[#2563eb] rounded-[16px] py-3 px-4 flex items-center justify-between text-white shadow-sm shadow-blue-500/20 cursor-pointer hover:shadow-md transition-all"
+          className="bg-gradient-to-r from-[#8b5cf6] to-[#2563eb] rounded-[16px] py-3 px-4 flex items-center justify-between text-white shadow-sm shadow-purple-500/20 cursor-pointer hover:shadow-md transition-all"
         >
           <div className="flex items-center gap-2.5">
             <div className="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center backdrop-blur-sm">
@@ -275,8 +287,8 @@ export default function DashboardPage() {
         <div className="bg-white rounded-[18px] p-3.5 shadow-sm border border-gray-100">
           <div className="flex justify-between items-center mb-3">
             <div className="flex items-center gap-1.5">
-              <Activity className="text-[#3b82f6]" size={16} />
-              <h3 className="font-semibold text-[#1e3a8a] text-[14px]">Live Activity</h3>
+              <Activity className="text-[#8b5cf6]" size={16} />
+              <h3 className="font-semibold text-[#4c1d95] text-[14px]">Live Activity</h3>
             </div>
             <div className="flex items-center gap-1.5 text-[11px] text-green-500 font-medium">
               <span className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></span>
@@ -307,14 +319,14 @@ export default function DashboardPage() {
         {/* Partners & Exchanges */}
         <div className="mt-5 mb-2">
           <div className="flex items-center gap-1.5 mb-3 px-1">
-            <BadgeCheck className="text-[#3b82f6]" size={16} />
-            <h3 className="font-semibold text-[#1e3a8a] text-[14px]">Our Partners & Exchanges</h3>
+            <BadgeCheck className="text-[#8b5cf6]" size={16} />
+            <h3 className="font-semibold text-[#4c1d95] text-[14px]">Our Partners & Exchanges</h3>
           </div>
           
           <div className="bg-white rounded-[18px] p-3.5 shadow-sm border border-gray-100 min-h-[80px]">
             {isLoadingPartners ? (
               <div className="flex items-center justify-center h-full py-4">
-                <Loader2 className="w-6 h-6 animate-spin text-blue-500" />
+                <Loader2 className="w-6 h-6 animate-spin text-purple-500" />
               </div>
             ) : partnersData.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-4 text-center">
@@ -328,7 +340,7 @@ export default function DashboardPage() {
                       {partner.logo ? (
                         <img src={partner.logo} alt={partner.partner_name} className="w-full h-full object-contain" />
                       ) : (
-                        <div className="w-7 h-7 bg-blue-500 rounded-full flex items-center justify-center text-white font-bold text-sm">
+                        <div className="w-7 h-7 bg-purple-500 rounded-full flex items-center justify-center text-white font-bold text-sm">
                           {partner.partner_name.charAt(0).toUpperCase()}
                         </div>
                       )}
@@ -346,8 +358,8 @@ export default function DashboardPage() {
           <div className="bg-white rounded-[18px] p-3.5 shadow-sm border border-gray-100">
             <div className="flex justify-between items-center mb-4">
               <div className="flex items-center gap-1.5">
-                <BarChart2 className="text-[#3b82f6]" size={16} />
-                <h3 className="font-semibold text-[#1e3a8a] text-[14px]">Live Market</h3>
+                <BarChart2 className="text-[#8b5cf6]" size={16} />
+                <h3 className="font-semibold text-[#4c1d95] text-[14px]">Live Market</h3>
               </div>
               <div className="flex items-center gap-1.5 text-[11px] text-green-500 font-medium">
                 <span className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></span>
@@ -358,7 +370,7 @@ export default function DashboardPage() {
             <div className="space-y-3">
               {isLoadingMarket ? (
                 <div className="flex items-center justify-center py-6">
-                  <Loader2 className="w-6 h-6 animate-spin text-blue-500" />
+                  <Loader2 className="w-6 h-6 animate-spin text-purple-500" />
                 </div>
               ) : marketData.length === 0 ? (
                 <div className="flex flex-col items-center justify-center py-6 text-center">
@@ -404,7 +416,7 @@ export default function DashboardPage() {
         <div className="fixed inset-0 z-50 flex flex-col justify-end">
           {/* Overlay */}
           <div 
-            className="absolute inset-0 bg-black/40 backdrop-blur-sm" 
+            className="absolute inset-0 bg-black/40 backdrop-blur-sm cursor-pointer" 
             onClick={() => setShowLanguageModal(false)}
           ></div>
 
@@ -412,7 +424,7 @@ export default function DashboardPage() {
           <div className="relative bg-white w-full max-w-[480px] mx-auto rounded-t-[24px] overflow-hidden flex flex-col h-[75vh] animate-in slide-in-from-bottom-full duration-300">
             
             {/* Header */}
-            <div className="bg-[#2563eb] p-5 flex justify-between items-center text-white">
+            <div className="bg-[#8b5cf6] p-5 flex justify-between items-center text-white">
               <h2 className="text-[16px] font-bold">Select Language</h2>
               <button 
                 onClick={() => setShowLanguageModal(false)}
@@ -477,8 +489,8 @@ export default function DashboardPage() {
                     }}
                     className={`w-full flex items-center justify-between p-3 rounded-[12px] border transition-colors ${
                       isSelected 
-                        ? 'border-[#3b82f6] bg-[#eff6ff]' 
-                        : 'border-gray-200 hover:border-[#3b82f6] bg-white'
+                        ? 'border-[#8b5cf6] bg-[#f5f3ff]' 
+                        : 'border-gray-200 hover:border-[#8b5cf6] bg-white'
                     }`}
                   >
                     <div className="flex items-center gap-3">
@@ -495,7 +507,7 @@ export default function DashboardPage() {
                         <div className="text-[11px] text-gray-500">{lang.language_name}</div>
                       </div>
                     </div>
-                    <ChevronRight size={16} className={isSelected ? 'text-[#3b82f6]' : 'text-gray-300'} />
+                    <ChevronRight size={16} className={isSelected ? 'text-[#8b5cf6]' : 'text-gray-300'} />
                   </button>
                 );
               })}

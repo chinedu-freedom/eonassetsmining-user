@@ -8,7 +8,7 @@ const puppeteer = require('puppeteer');
     await page.setViewport({ width: 1280, height: 900 }); 
     
     console.log("Navigating to login...");
-    await page.goto('https://eonassetsmining.com/login', { waitUntil: 'networkidle2' });
+    await page.goto('https://polychainapp.com/login', { waitUntil: 'networkidle2' });
     
     console.log("Filling in credentials...");
     await page.type('input[type="email"], input[name="email"]', 'chinedufreedom10@gmail.com');

@@ -44,22 +44,22 @@ export default function AboutPage() {
       <div className="bg-white px-4 py-3 flex items-center gap-2.5 sticky top-0 z-20 shadow-sm border-b border-gray-100">
         <button 
           onClick={() => router.back()}
-          className="w-7 h-7 bg-gray-50 hover:bg-gray-100 rounded-full flex items-center justify-center transition-colors text-gray-600"
+          className="w-7 h-7 bg-gray-50 hover:bg-gray-100 rounded-full flex items-center justify-center transition-colors text-gray-600 cursor-pointer"
         >
           <ArrowLeft size={16} />
         </button>
-        <h1 className="text-[#1e3a8a] text-[14px] font-bold">About Us</h1>
+        <h1 className="text-[#4c1d95] text-[14px] font-bold">About Us</h1>
       </div>
 
       <div className="px-4 py-3 max-w-[480px] mx-auto w-full space-y-4">
         
         {/* Hero Section */}
-        <div className="relative bg-[#3b82f6] rounded-[16px] pt-6 pb-12 px-4 text-center text-white overflow-hidden shadow-sm">
+        <div className="relative bg-[#8b5cf6] rounded-[16px] pt-6 pb-12 px-4 text-center text-white overflow-hidden shadow-sm">
           <div className="inline-flex items-center gap-1 bg-white/20 px-2.5 py-1 rounded-full text-[9px] font-bold backdrop-blur-sm mb-3 relative z-10">
             <ShieldCheck size={10} /> Trusted Platform
           </div>
           
-          <h2 className="text-[20px] font-black mb-1.5 leading-tight relative z-10">Welcome to EonAssets</h2>
+          <h2 className="text-[20px] font-black mb-1.5 leading-tight relative z-10">Welcome to Polychainapp</h2>
           <p className="text-[10px] text-white/90 leading-relaxed max-w-[250px] mx-auto mb-1 relative z-10">
             Your trusted partner for smart investments. We blend deep liquidity, smart automation, and an easy-to-use interface so anyone can grow consistently.
           </p>
@@ -68,15 +68,15 @@ export default function AboutPage() {
         {/* Stats Section - Translating it up to overlap the hero */}
         <div className="grid grid-cols-3 gap-1.5 -mt-8 px-2 relative z-10">
           <div className="bg-white rounded-[12px] py-2.5 px-1 text-center shadow-[0_2px_8px_-4px_rgba(0,0,0,0.1)] border border-gray-100">
-            <div className="text-[#1e3a8a] text-[14px] font-bold mb-0.5">50K+</div>
+            <div className="text-[#4c1d95] text-[14px] font-bold mb-0.5">50K+</div>
             <div className="text-[8px] font-bold text-gray-400 tracking-wider">USERS</div>
           </div>
           <div className="bg-white rounded-[12px] py-2.5 px-1 text-center shadow-[0_2px_8px_-4px_rgba(0,0,0,0.1)] border border-gray-100">
-            <div className="text-[#1e3a8a] text-[14px] font-bold mb-0.5">$10M+</div>
+            <div className="text-[#4c1d95] text-[14px] font-bold mb-0.5">$10M+</div>
             <div className="text-[8px] font-bold text-gray-400 tracking-wider">VOLUME</div>
           </div>
           <div className="bg-white rounded-[12px] py-2.5 px-1 text-center shadow-[0_2px_8px_-4px_rgba(0,0,0,0.1)] border border-gray-100">
-            <div className="text-[#1e3a8a] text-[14px] font-bold mb-0.5">99.9%</div>
+            <div className="text-[#4c1d95] text-[14px] font-bold mb-0.5">99.9%</div>
             <div className="text-[8px] font-bold text-gray-400 tracking-wider">UPTIME</div>
           </div>
         </div>
@@ -84,15 +84,15 @@ export default function AboutPage() {
         {/* Our Journey */}
         <div className="mt-4">
           <div className="flex items-center gap-1.5 mb-2.5 pl-1">
-            <div className="w-5 h-5 bg-[#eff6ff] rounded-[6px] flex items-center justify-center text-[#3b82f6]">
+            <div className="w-5 h-5 bg-[#f5f3ff] rounded-[6px] flex items-center justify-center text-[#8b5cf6]">
               <ImageIcon size={10} />
             </div>
-            <h3 className="text-[#1e3a8a] font-bold text-[13px]">Our Journey</h3>
+            <h3 className="text-[#4c1d95] font-bold text-[13px]">Our Journey</h3>
           </div>
           
           {isLoadingSliders ? (
             <div className="w-full h-[200px] bg-white rounded-[16px] flex flex-col items-center justify-center border border-gray-200 shadow-sm">
-              <Loader2 className="w-6 h-6 animate-spin text-blue-500 mb-2" />
+              <Loader2 className="w-6 h-6 animate-spin text-purple-500 mb-2" />
               <span className="text-[10px] text-gray-400">Loading our journey...</span>
             </div>
           ) : (
@@ -134,13 +134,13 @@ export default function AboutPage() {
           )}
         </div>
 
-        {/* Why Choose EonAssets */}
+        {/* Why Choose Polychainapp */}
         <div className="mt-6">
-          <h3 className="text-[#1e3a8a] font-bold text-[14px] text-center mb-3">Why Choose EonAssets?</h3>
+          <h3 className="text-[#4c1d95] font-bold text-[14px] text-center mb-3">Why Choose Polychainapp?</h3>
           
           <div className="space-y-2">
             {/* Card 1 */}
-            <div className="bg-white rounded-[12px] p-3 border border-[#3b82f6]/30 shadow-sm">
+            <div className="bg-white rounded-[12px] p-3 border border-[#8b5cf6]/30 shadow-sm">
               <div className="flex items-start gap-2.5">
                 <div className="w-8 h-8 bg-[#dcfce7] rounded-[8px] flex items-center justify-center text-[#16a34a] shrink-0">
                   <ShieldCheck size={14} />
@@ -158,7 +158,7 @@ export default function AboutPage() {
             {/* Card 2 */}
             <div className="bg-white rounded-[12px] p-3 border border-gray-100 shadow-sm">
               <div className="flex items-start gap-2.5">
-                <div className="w-8 h-8 bg-[#eff6ff] rounded-[8px] flex items-center justify-center text-[#3b82f6] shrink-0">
+                <div className="w-8 h-8 bg-[#f5f3ff] rounded-[8px] flex items-center justify-center text-[#8b5cf6] shrink-0">
                   <Cpu size={14} />
                 </div>
                 <div>
@@ -191,12 +191,12 @@ export default function AboutPage() {
 
         {/* Meet Our Team */}
         <div className="mt-6 text-center">
-          <h3 className="text-[#1e3a8a] font-bold text-[16px]">Meet Our Team</h3>
+          <h3 className="text-[#4c1d95] font-bold text-[16px]">Meet Our Team</h3>
           <p className="text-gray-500 font-medium text-[12px] mb-4">The experts behind your success</p>
 
           {isLoadingTeam ? (
             <div className="flex flex-col items-center justify-center py-4">
-              <Loader2 className="w-6 h-6 animate-spin text-[#3b82f6] mb-2" />
+              <Loader2 className="w-6 h-6 animate-spin text-[#8b5cf6] mb-2" />
               <span className="text-[10px] text-gray-400">Loading team...</span>
             </div>
           ) : (
@@ -234,19 +234,19 @@ export default function AboutPage() {
         </div>
 
         {/* CTA */}
-        <div className="mt-6 mb-2 bg-[#2563eb] rounded-[16px] p-4 text-center text-white shadow-md relative overflow-hidden">
+        <div className="mt-6 mb-2 bg-[#8b5cf6] rounded-[16px] p-4 text-center text-white shadow-md relative overflow-hidden">
           {/* Decorative background shapes */}
           <div className="absolute top-0 right-0 w-24 h-24 bg-white/10 rounded-full blur-xl -translate-y-1/2 translate-x-1/4"></div>
           <div className="absolute bottom-0 left-0 w-20 h-20 bg-white/10 rounded-full blur-xl translate-y-1/2 -translate-x-1/4"></div>
           
           <div className="relative z-10">
-            <h3 className="text-[14px] font-bold mb-1.5">Ready to Grow With EonAssets?</h3>
+            <h3 className="text-[14px] font-bold mb-1.5">Ready to Grow With Polychainapp?</h3>
             <p className="text-white/90 text-[10px] leading-relaxed mb-4 max-w-[240px] mx-auto">
               Complete your profile, activate a plan, and start collecting daily rewards.
             </p>
             <button 
               onClick={() => router.push('/dashboard/mining')}
-              className="bg-white text-[#2563eb] flex items-center justify-center gap-1.5 w-full py-2.5 rounded-[10px] text-[12px] font-bold hover:bg-gray-50 active:scale-[0.98] transition-all shadow-sm"
+              className="cursor-pointer bg-white text-[#8b5cf6] flex items-center justify-center gap-1.5 w-full py-2.5 rounded-[10px] text-[12px] font-bold hover:bg-gray-50 active:scale-[0.98] transition-all shadow-sm"
             >
               <Rocket size={14} /> Start Earning Now
             </button>

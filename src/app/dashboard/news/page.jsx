@@ -12,9 +12,9 @@ export default function NewsPage() {
   return (
     <div className="flex flex-col h-full bg-[#f8f9fa] overflow-y-auto  [&::-webkit-scrollbar]:hidden">
       {/* Header */}
-      <div className="bg-[#3b82f6] bg-gradient-to-r from-[#3b82f6] to-[#2563eb] px-4 pt-5 pb-5 shadow-sm z-10 sticky top-0 flex items-center justify-between gap-2">
+      <div className="bg-[#8b5cf6] bg-gradient-to-r from-[#8b5cf6] to-[#2563eb] px-4 pt-5 pb-5 shadow-sm z-10 sticky top-0 flex items-center justify-between gap-2">
         <div className="flex items-center gap-3">
-          <Link href="/dashboard" className="w-8 h-8 bg-white/20 rounded-xl flex items-center justify-center text-white hover:bg-white/30 transition-colors shrink-0">
+          <Link href="/dashboard" className="w-8 h-8 bg-white/20 rounded-xl flex items-center justify-center text-white hover:bg-white/30 transition-colors shrink-0 cursor-pointer">
             <ArrowLeft size={16} />
           </Link>
           <div>
@@ -22,7 +22,7 @@ export default function NewsPage() {
             <p className="text-white/90 text-[10px] leading-none">Stay informed with the latest announcements</p>
           </div>
         </div>
-        <button className="w-8 h-8 bg-white/20 rounded-xl flex items-center justify-center text-white hover:bg-white/30 transition-colors shadow-sm relative shrink-0">
+        <button className="w-8 h-8 bg-white/20 rounded-xl flex items-center justify-center text-white hover:bg-white/30 transition-colors shadow-sm relative shrink-0 cursor-pointer">
           <Bell size={14} />
           <span className="absolute top-2 right-2 w-1.5 h-1.5 bg-red-500 rounded-full"></span>
         </button>
@@ -31,7 +31,7 @@ export default function NewsPage() {
       <div className="px-4 pt-4 pb-4 space-y-3 max-w-[480px] mx-auto w-full flex-1 ">
         {isLoading ? (
           <div className="flex flex-col items-center justify-center py-20 text-gray-400">
-            <Loader2 className="w-8 h-8 animate-spin mb-3 text-blue-500" />
+            <Loader2 className="w-8 h-8 animate-spin mb-3 text-purple-500" />
             <p className="text-sm font-medium">Loading news...</p>
           </div>
         ) : error ? (
@@ -40,9 +40,9 @@ export default function NewsPage() {
           </div>
         ) : newsItems.length > 0 ? (
           newsItems.map((news) => (
-            <Link href={`/dashboard/news/${news.id}`} key={news.id} className="block bg-white rounded-[8px] p-[16px] border border-gray-100 shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] hover:shadow-md transition-shadow">
+            <Link href={`/dashboard/news/${news.id}`} key={news.id} className="block bg-white rounded-[8px] p-[16px] border border-gray-100 shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] hover:shadow-md transition-shadow cursor-pointer">
               <div className="flex justify-between items-center mb-2">
-                <span className="text-[9px] font-bold px-2 py-0.5 rounded bg-blue-100 text-blue-600">
+                <span className="text-[9px] font-bold px-2 py-0.5 rounded bg-purple-100 text-purple-600">
                   {news.category || "General"}
                 </span>
                 <div className="flex items-center gap-1 text-gray-400 text-[9px]">
@@ -69,7 +69,7 @@ export default function NewsPage() {
 
               <div className="flex justify-between items-center mt-2 border-t border-gray-50 pt-2">
                 <div className="text-[10px] text-gray-400 font-medium">{news.views} views</div>
-                <div className="flex items-center text-[#3b82f6] text-[10px] font-bold">
+                <div className="flex items-center text-[#8b5cf6] text-[10px] font-bold">
                   Read Full Article <ChevronRight size={12} className="ml-0.5" />
                 </div>
               </div>

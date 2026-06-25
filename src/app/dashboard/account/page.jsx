@@ -28,19 +28,19 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { clearAuthToken } from "@/config/axiosInstance";
+import axiosInstance, { clearAuthToken } from "@/config/axiosInstance";
 
 // Dynamic languages are now fetched from backend
 
 import { useFetchData } from "@/hooks/useApi";
 import { usePWA } from "@/components/PWAProvider";
 import { toast } from "sonner";
+import { useSharedSettings } from "@/hooks/useSharedSettings";
 
 export default function AccountPage() {
   const router = useRouter();
   const { isInstallable, installPWA } = usePWA();
-  const [currency, setCurrency] = useState("USDT");
-  const [showBalance, setShowBalance] = useState(true);
+  const { currency, setCurrency, showBalance, setShowBalance } = useSharedSettings();
   const [showLanguageModal, setShowLanguageModal] = useState(false);
   const [currentLang, setCurrentLang] = useState("EN");
   const [searchQuery, setSearchQuery] = useState("");
@@ -59,7 +59,10 @@ export default function AccountPage() {
     if (userProfile?.language?.language_code) {
       setCurrentLang(userProfile.language.language_code);
     }
-  }, [userProfile?.language]);
+    if (userProfile?.profile_image && !profilePic) {
+      setProfilePic(userProfile.profile_image);
+    }
+  }, [userProfile?.language, userProfile?.profile_image]);
 
   useEffect(() => {
     const fetchLiveRate = async () => {
@@ -81,12 +84,25 @@ export default function AccountPage() {
     fetchLiveRate();
   }, [userProfile?.country]);
 
-  const handleProfilePicChange = (e) => {
+  const handleProfilePicChange = async (e) => {
     const file = e.target.files[0];
     if (file) {
+      if (file.size > 2 * 1024 * 1024) {
+        toast.error("Image must be less than 2MB");
+        return;
+      }
       const reader = new FileReader();
-      reader.onloadend = () => {
-        setProfilePic(reader.result);
+      reader.onloadend = async () => {
+        const base64Data = reader.result;
+        setProfilePic(base64Data);
+        try {
+          const loadingToast = toast.loading("Uploading profile picture...");
+          await axiosInstance.put("/users/profile-image", { profile_image: base64Data });
+          toast.success("Profile picture updated", { id: loadingToast });
+        } catch (error) {
+          toast.error("Failed to update profile picture");
+          console.error(error);
+        }
       };
       reader.readAsDataURL(file);
     }
@@ -113,19 +129,21 @@ export default function AccountPage() {
   };
 
   const balanceValues = {
-    total: getDisplayValue(userProfile?.balance),
+    total: getDisplayValue(parseFloat(userProfile?.balance || 0) + parseFloat(userProfile?.gift_balance || 0)),
+    earning: getDisplayValue(userProfile?.balance),
+    gift: getDisplayValue(userProfile?.gift_balance),
     deposit: getDisplayValue(userProfile?.statistics?.total_deposit),
     withdraw: getDisplayValue(userProfile?.statistics?.total_withdrawal),
     income: getDisplayValue(userProfile?.statistics?.total_income)
   };
 
   const menuItems = [
-    { icon: Info, label: "About Us", href: "/dashboard/about", color: "text-[#3b82f6]", bg: "bg-[#eff6ff]" },
-    { icon: Users, label: "Invite", href: "/dashboard/invite", color: "text-[#3b82f6]", bg: "bg-[#eff6ff]" },
-    { icon: Clock, label: "Transactions", href: "/dashboard/transactions", color: "text-[#3b82f6]", bg: "bg-[#eff6ff]" },
-    { icon: Settings, label: "Settings", href: "/dashboard/settings", color: "text-[#3b82f6]", bg: "bg-[#eff6ff]" },
-    { icon: Download, label: "Download App", href: "#", color: "text-[#3b82f6]", bg: "bg-[#eff6ff]" },
-    { icon: HelpCircle, label: "Help Center", href: "/dashboard/help", color: "text-[#3b82f6]", bg: "bg-[#eff6ff]" },
+    { icon: Info, label: "About Us", href: "/dashboard/about", color: "text-[#8b5cf6]", bg: "bg-[#f5f3ff]" },
+    { icon: Users, label: "Invite", href: "/dashboard/invite", color: "text-[#8b5cf6]", bg: "bg-[#f5f3ff]" },
+    { icon: Clock, label: "Transactions", href: "/dashboard/transactions", color: "text-[#8b5cf6]", bg: "bg-[#f5f3ff]" },
+    { icon: Settings, label: "Settings", href: "/dashboard/settings", color: "text-[#8b5cf6]", bg: "bg-[#f5f3ff]" },
+    { icon: Download, label: "Download App", href: "#", color: "text-[#8b5cf6]", bg: "bg-[#f5f3ff]" },
+    { icon: HelpCircle, label: "Help Center", href: "/dashboard/help", color: "text-[#8b5cf6]", bg: "bg-[#f5f3ff]" },
     { icon: LogOut, label: "Logout", href: "#", color: "text-[#ef4444]", bg: "bg-[#fee2e2]" },
   ];
 
@@ -134,7 +152,7 @@ export default function AccountPage() {
       {/* Header */}
       <div className="bg-white px-4 pt-4 pb-3 flex justify-between items-center rounded-b-[20px] shadow-sm z-10 sticky top-0">
         <div className="flex items-center gap-2">
-          <label className="relative w-9 h-9 bg-gradient-to-br from-[#1e3a8a] to-[#0f172a] rounded-full flex items-center justify-center text-white shadow-sm cursor-pointer overflow-hidden group shrink-0">
+          <label className="relative w-9 h-9 bg-gradient-to-br from-[#4c1d95] to-[#0f172a] rounded-full flex items-center justify-center text-white shadow-sm cursor-pointer overflow-hidden group shrink-0">
             {profilePic ? (
               <img src={profilePic} alt="Profile" className="w-full h-full object-cover" />
             ) : (
@@ -151,21 +169,21 @@ export default function AccountPage() {
             />
           </label>
           <div>
-            <h1 className="text-[#1e3a8a] text-[15px] font-bold leading-tight">{userProfile?.full_name || "..."}</h1>
+            <h1 className="text-[#4c1d95] text-[15px] font-bold leading-tight">{userProfile?.full_name || "..."}</h1>
             <p className="text-gray-400 text-[10px] mt-0.5">{userProfile?.email || "..."}</p>
           </div>
         </div>
         <div className="flex items-center gap-2">
           <button 
             onClick={() => setShowLanguageModal(true)}
-            className="flex items-center gap-1 bg-white border border-gray-200 px-2.5 py-1 rounded-full text-[11px] font-bold text-[#1e3a8a] shadow-sm hover:bg-gray-50 transition-colors"
+            className="flex items-center gap-1 bg-white border border-gray-200 px-2.5 py-1 rounded-sm cursor-pointer text-[11px] font-bold text-[#4c1d95] shadow-sm hover:bg-gray-50 transition-colors"
           >
-            <Globe size={13} className="text-[#3b82f6]" />
+            <Globe size={13} className="text-[#8b5cf6]" />
             {currentLang}
           </button>
           <Link 
             href="/dashboard/help"
-            className="bg-[#eff6ff] p-1.5 rounded-full text-[#3b82f6] hover:bg-[#dbeafe] transition-colors"
+            className="bg-[#f5f3ff] p-1.5 rounded-full text-[#8b5cf6] hover:bg-[#ede9fe] transition-colors cursor-pointer"
           >
             <MessageCircle size={16} />
           </Link>
@@ -175,7 +193,7 @@ export default function AccountPage() {
       <div className="px-4 pt-4 pb-4 space-y-4 max-w-[480px] mx-auto w-full">
         
         {/* Total Balance Card */}
-        <div className="bg-gradient-to-br from-[#1e3a8a] to-[#0f172a] rounded-2xl p-[18px] text-white shadow-lg relative overflow-hidden border border-white/10">
+        <div className="bg-gradient-to-br from-[#4c1d95] to-[#0f172a] rounded-2xl p-[18px] text-white shadow-lg relative overflow-hidden border border-white/10">
           {/* Background decoration */}
           <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/3 blur-2xl pointer-events-none"></div>
           
@@ -183,30 +201,41 @@ export default function AccountPage() {
             <p className="text-white/80 text-[13px] font-medium">Total Balance</p>
             <button 
               onClick={toggleCurrency}
-              className="bg-white/10 px-2 py-1 rounded-md text-[11px] font-bold flex items-center gap-1 hover:bg-white/20 transition-colors backdrop-blur-sm border border-white/10"
+              className="bg-white/10 px-2 cursor-pointer py-1 rounded-md text-[11px] font-bold flex items-center gap-1 hover:bg-white/20 transition-colors backdrop-blur-sm border border-white/10"
             >
-              {currency} <span className="text-[7px] opacity-70">▼</span>
+              {currency} <span className="text-[7px] opacity-70 cursor-pointer">▼</span>
             </button>
           </div>
           
-          <div className="flex items-center gap-2 mb-5 relative z-10">
+          <div className="flex items-center gap-2 mb-4 relative z-10">
             <h2 className="text-[28px] font-bold tracking-wider leading-none">
               {showBalance ? balanceValues.total : "****"}
             </h2>
             <button 
               onClick={() => setShowBalance(!showBalance)}
-              className="text-white/60 hover:text-white transition-colors ml-1"
+              className="text-white/60 hover:text-white transition-colors ml-1 cursor-pointer"
             >
               {showBalance ? <Eye size={18} /> : <EyeOff size={18} />}
             </button>
           </div>
 
+          <div className="grid grid-cols-2 gap-2 mb-4 relative z-10">
+            <div className="bg-white/10 rounded-lg p-2.5 backdrop-blur-sm border border-white/5">
+              <span className="text-[9px] font-bold text-white/60 uppercase tracking-wider block mb-1">Earning Balance</span>
+              <span className="text-[14px] font-bold">{showBalance ? balanceValues.earning : "****"}</span>
+            </div>
+            <div className="bg-white/10 rounded-lg p-2.5 backdrop-blur-sm border border-white/5">
+              <span className="text-[9px] font-bold text-white/60 uppercase tracking-wider block mb-1">Gift Balance</span>
+              <span className="text-[14px] font-bold">{showBalance ? balanceValues.gift : "****"}</span>
+            </div>
+          </div>
+
           <div className="flex gap-2.5 relative z-10">
-            <Link href="?depositModal=true" className="flex-1 bg-white text-[#1e3a8a] py-2 rounded-lg text-[13px] font-semibold flex items-center justify-center gap-1.5 hover:bg-gray-50 transition-colors shadow-md">
+            <Link href="?depositModal=true" className="flex-1 bg-white text-[#4c1d95] py-2 rounded-lg text-[13px] font-semibold flex items-center justify-center gap-1.5 hover:bg-gray-50 transition-colors shadow-md cursor-pointer">
               <Wallet size={16} />
               Deposit
             </Link>
-            <Link href="/dashboard/wallet/withdraw" className="flex-1 bg-white/10 text-white py-2 rounded-lg text-[13px] font-semibold flex items-center justify-center gap-1.5 hover:bg-white/20 transition-colors border border-white/15 backdrop-blur-sm">
+            <Link href="/dashboard/wallet/withdraw" className="flex-1 bg-white/10 text-white py-2 rounded-lg text-[13px] font-semibold flex items-center justify-center gap-1.5 hover:bg-white/20 transition-colors border border-white/15 backdrop-blur-sm cursor-pointer">
               <CreditCard size={16} />
               Withdraw
             </Link>
@@ -216,7 +245,7 @@ export default function AccountPage() {
         {/* Account Overview */}
         <div className="bg-white rounded-[16px] p-[16px] border border-gray-100 shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)]">
           <div className="flex items-center gap-1.5 mb-3.5">
-            <BarChart3 size={14} className="text-[#3b82f6]" />
+            <BarChart3 size={14} className="text-[#8b5cf6]" />
             <h2 className="text-[#334155] font-bold text-[13px]">Account Overview</h2>
           </div>
 
@@ -246,7 +275,7 @@ export default function AccountPage() {
             {/* Total Income */}
             <div className="bg-[#f8f9fa] rounded-[12px] p-3 flex flex-col gap-2 border border-gray-50">
               <div className="flex items-center gap-2">
-                <div className="w-7 h-7 bg-[#dbeafe] rounded-[8px] flex items-center justify-center text-[#3b82f6]">
+                <div className="w-7 h-7 bg-[#ede9fe] rounded-[8px] flex items-center justify-center text-[#8b5cf6]">
                   <BarChart2 size={12} />
                 </div>
                 <span className="text-[8px] font-bold text-gray-400 uppercase tracking-wider">Total Income</span>
@@ -317,7 +346,7 @@ export default function AccountPage() {
         <div className="fixed inset-0 z-50 flex flex-col justify-end">
           {/* Overlay */}
           <div 
-            className="absolute inset-0 bg-black/40 backdrop-blur-sm" 
+            className="absolute inset-0 bg-black/40 backdrop-blur-sm cursor-pointer" 
             onClick={() => setShowLanguageModal(false)}
           ></div>
 
@@ -325,7 +354,7 @@ export default function AccountPage() {
           <div className="relative bg-white w-full max-w-[480px] mx-auto rounded-t-[24px] overflow-hidden flex flex-col h-[75vh] animate-in slide-in-from-bottom-full duration-300">
             
             {/* Header */}
-            <div className="bg-[#2563eb] p-5 flex justify-between items-center text-white">
+            <div className="bg-[#8b5cf6] p-5 flex justify-between items-center text-white">
               <h2 className="text-[16px] font-bold">Select Language</h2>
               <button 
                 onClick={() => setShowLanguageModal(false)}
@@ -390,8 +419,8 @@ export default function AccountPage() {
                     }}
                     className={`w-full flex items-center justify-between p-3 rounded-[12px] border transition-colors ${
                       isSelected 
-                        ? 'border-[#3b82f6] bg-[#eff6ff]' 
-                        : 'border-gray-200 hover:border-[#3b82f6] bg-white'
+                        ? 'border-[#8b5cf6] bg-[#f5f3ff]' 
+                        : 'border-gray-200 hover:border-[#8b5cf6] bg-white'
                     }`}
                   >
                     <div className="flex items-center gap-3">
@@ -408,7 +437,7 @@ export default function AccountPage() {
                         <div className="text-[11px] text-gray-500">{lang.language_name}</div>
                       </div>
                     </div>
-                    <ChevronRight size={16} className={isSelected ? 'text-[#3b82f6]' : 'text-gray-300'} />
+                    <ChevronRight size={16} className={isSelected ? 'text-[#8b5cf6]' : 'text-gray-300'} />
                   </button>
                 );
               })}
@@ -421,8 +450,8 @@ export default function AccountPage() {
       {showToast && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center pointer-events-none p-4">
           <div className="bg-white rounded-[24px] shadow-[0_8px_30px_rgb(0,0,0,0.12)] px-5 py-4 flex items-center gap-4 animate-in fade-in zoom-in-95 duration-300 pointer-events-auto max-w-[320px] w-full border border-gray-100/50">
-            <div className="w-12 h-12 bg-[#eff6ff] rounded-[14px] flex items-center justify-center shrink-0">
-              <div className="w-6 h-6 bg-[#2563eb] rounded-full flex items-center justify-center text-white">
+            <div className="w-12 h-12 bg-[#f5f3ff] rounded-[14px] flex items-center justify-center shrink-0">
+              <div className="w-6 h-6 bg-[#8b5cf6] rounded-full flex items-center justify-center text-white">
                 <Info size={14} strokeWidth={3} />
               </div>
             </div>

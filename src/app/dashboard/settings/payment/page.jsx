@@ -43,11 +43,11 @@ export default function PaymentSettingsPage() {
       <div className="bg-white px-4 py-3 flex items-center gap-2.5 sticky top-0 z-20 shadow-sm border-b border-gray-100">
         <button
           onClick={() => router.back()}
-          className="w-7 h-7 bg-gray-50 hover:bg-gray-100 rounded-full flex items-center justify-center transition-colors text-gray-600"
+          className="w-7 h-7 bg-gray-50 hover:bg-gray-100 rounded-full flex items-center justify-center transition-colors text-gray-600 cursor-pointer"
         >
           <ArrowLeft size={16} />
         </button>
-        <h1 className="text-[#1e3a8a] text-[15px] font-bold">Payment Settings</h1>
+        <h1 className="text-[#4c1d95] text-[15px] font-bold">Payment Settings</h1>
       </div>
 
       <div className="px-4 py-4 max-w-[480px] mx-auto w-full">
@@ -79,7 +79,7 @@ export default function PaymentSettingsPage() {
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="w-full bg-white border border-gray-200 rounded-[10px] pl-3.5 pr-10 py-2.5 text-[14px] text-gray-800 placeholder-gray-400 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all"
+                  className="w-full bg-white border border-gray-200 rounded-[10px] pl-3.5 pr-10 py-2.5 text-[14px] text-gray-800 placeholder-gray-400 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all"
                 />
                 <button
                   type="button"
@@ -99,7 +99,7 @@ export default function PaymentSettingsPage() {
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="w-full bg-white border border-gray-200 rounded-[10px] pl-3.5 pr-10 py-2.5 text-[14px] text-gray-800 placeholder-gray-400 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all"
+                  className="w-full bg-white border border-gray-200 rounded-[10px] pl-3.5 pr-10 py-2.5 text-[14px] text-gray-800 placeholder-gray-400 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all"
                 />
                 <button
                   type="button"
@@ -114,7 +114,7 @@ export default function PaymentSettingsPage() {
             <button
               type="submit"
               disabled={isPending}
-              className="w-full flex justify-center items-center gap-2 bg-[#2563eb] hover:bg-blue-700 disabled:bg-blue-400 text-white font-bold text-[14px] py-3 rounded-[12px] transition-colors shadow-sm"
+              className="w-full flex justify-center items-center gap-2 bg-[#8b5cf6] hover:bg-purple-700 disabled:bg-purple-400 text-white font-bold text-[14px] py-3 rounded-[12px] transition-colors shadow-sm cursor-pointer"
             >
               {isPending ? <Loader2 size={20} className="animate-spin" /> : "Set Password"}
             </button>

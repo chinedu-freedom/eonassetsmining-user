@@ -1,7 +1,7 @@
 const https = require('https');
 
 function findAudio() {
-  https.get('https://eonassetsmining.com/spin-wheel', (res) => {
+  https.get('https://polychainapp.com/spin-wheel', (res) => {
     let data = '';
     res.on('data', chunk => data += chunk);
     res.on('end', () => {
@@ -15,9 +15,9 @@ function findAudio() {
         jsUrls.forEach(jsUrl => {
           if (!jsUrl.startsWith('http')) {
             if (jsUrl.startsWith('/')) {
-              jsUrl = 'https://eonassetsmining.com' + jsUrl;
+              jsUrl = 'https://polychainapp.com' + jsUrl;
             } else {
-              jsUrl = 'https://eonassetsmining.com/' + jsUrl;
+              jsUrl = 'https://polychainapp.com/' + jsUrl;
             }
           }
           

@@ -44,11 +44,11 @@ export default function DepositModal() {
 
   return (
     <div 
-      className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/50 backdrop-blur-sm animate-fade-in"
+      className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/50 backdrop-blur-sm animate-fade-in cursor-pointer"
       onClick={handleClose}
     >
       <div 
-        className="bg-white rounded-t-[24px] sm:rounded-[20px] w-full max-w-[450px] overflow-hidden shadow-2xl animate-slide-up flex flex-col max-h-[85vh] mt-auto sm:mt-0"
+        className="bg-white rounded-t-[24px] sm:rounded-[20px] w-full max-w-[450px] overflow-hidden shadow-2xl animate-slide-up flex flex-col max-h-[85vh] mt-auto sm:mt-0 cursor-pointer"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="px-5 py-4 border-b border-gray-100 flex items-center justify-between sticky top-0 bg-white z-10 shrink-0">
@@ -58,7 +58,7 @@ export default function DepositModal() {
           </div>
           <button 
             onClick={handleClose}
-            className="w-8 h-8 bg-gray-50 hover:bg-gray-100 rounded-full flex items-center justify-center transition-colors text-gray-500"
+            className="w-8 h-8 bg-gray-50 hover:bg-gray-100 rounded-full flex items-center justify-center transition-colors text-gray-500 cursor-pointer"
           >
             <X size={18} />
           </button>
@@ -67,7 +67,7 @@ export default function DepositModal() {
         <div className="p-4 overflow-y-auto overflow-x-hidden flex-1 space-y-3 pb-[80px] sm:pb-4 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
           {isLoadingCryptos || isLoadingSettings ? (
             <div className="flex flex-col items-center justify-center py-10 space-y-3">
-              <Loader2 className="w-8 h-8 text-blue-500 animate-spin" />
+              <Loader2 className="w-8 h-8 text-purple-500 animate-spin" />
               <p className="text-sm text-gray-500">Loading methods...</p>
             </div>
           ) : cryptos.length === 0 ? (

@@ -1,16 +1,89 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useFetchData, usePost } from "@/hooks/useApi";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Gift, Lock, Loader2, Coins } from "lucide-react";
+import { Gift, Lock, Loader2, Coins, Check } from "lucide-react";
 import { toast } from "sonner";
 
 export default function DailyCheckinModal() {
   const [isOpen, setIsOpen] = useState(false);
   const { data, isLoading, refetch } = useFetchData("/users/checkin", "checkin-status");
   const claimMutation = usePost("/users/checkin");
+
+  const confettiCanvasRef = useRef(null);
+  const confettiRef = useRef(null);
+
+  useEffect(() => {
+    if (!confettiCanvasRef.current) return;
+    class Confetti {
+        constructor(canvas) {
+            this.canvas = canvas;
+            this.ctx = canvas.getContext('2d');
+            this.particles = [];
+            this.running = false;
+        }
+        resize() {
+            this.canvas.width = window.innerWidth;
+            this.canvas.height = window.innerHeight;
+        }
+        launch(count = 150) {
+            this.resize();
+            this.canvas.style.display = 'block';
+            this.particles = [];
+            const colors = ['#8b5cf6', '#22c55e', '#f59e0b', '#ef4444', '#8b5cf6', '#06b6d4'];
+            for (let i = 0; i < count; i++) {
+                this.particles.push({
+                    x: Math.random() * this.canvas.width,
+                    y: -20 - Math.random() * 200,
+                    size: Math.random() * 10 + 4,
+                    speedY: Math.random() * 4 + 2,
+                    speedX: (Math.random() - 0.5) * 6,
+                    rotation: Math.random() * 360,
+                    rotSpeed: (Math.random() - 0.5) * 15,
+                    color: colors[Math.floor(Math.random() * colors.length)],
+                    shape: Math.random() > 0.5 ? 'rect' : 'circle'
+                });
+            }
+            this.running = true;
+            this.animate();
+        }
+        animate() {
+            if (!this.running) return;
+            this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+            let active = 0;
+            this.particles.forEach(p => {
+                if (p.y < this.canvas.height + 50) {
+                    active++;
+                    p.y += p.speedY;
+                    p.x += p.speedX;
+                    p.rotation += p.rotSpeed;
+                    p.speedY += 0.15;
+                    this.ctx.save();
+                    this.ctx.translate(p.x, p.y);
+                    this.ctx.rotate(p.rotation * Math.PI / 180);
+                    this.ctx.fillStyle = p.color;
+                    if (p.shape === 'rect') {
+                        this.ctx.fillRect(-p.size/2, -p.size/4, p.size, p.size/2);
+                    } else {
+                        this.ctx.beginPath();
+                        this.ctx.arc(0, 0, p.size/2, 0, Math.PI * 2);
+                        this.ctx.fill();
+                    }
+                    this.ctx.restore();
+                }
+            });
+            if (active > 0) {
+                requestAnimationFrame(() => this.animate());
+            } else {
+                this.running = false;
+                this.canvas.style.display = 'none';
+            }
+        }
+    }
+    confettiRef.current = new Confetti(confettiCanvasRef.current);
+  }, [isOpen]);
 
   useEffect(() => {
     if (data && data.enabled && !data.claimedToday) {
@@ -59,6 +132,7 @@ export default function DailyCheckinModal() {
     try {
       const result = await claimMutation.mutateAsync({});
       if (result.success) {
+        confettiRef.current?.launch(150);
         // toast.success("Reward Claimed!", {
         //   description: result.message,
         // });
@@ -86,7 +160,7 @@ export default function DailyCheckinModal() {
 
   return (
     <Dialog open={isOpen} onOpenChange={handleOpenChange}>
-      <DialogContent className="sm:max-w-[400px] p-0 overflow-hidden bg-white rounded-2xl border-0 shadow-2xl">
+      <DialogContent className="cursor-pointer sm:max-w-[400px] p-0 overflow-hidden bg-white rounded-2xl border-0 shadow-2xl">
         <div className="p-8 flex flex-col items-center">
           
           <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mb-4 text-orange-500 shadow-sm relative overflow-hidden">
@@ -118,7 +192,7 @@ export default function DailyCheckinModal() {
             <Button 
               onClick={handleClaim} 
               disabled={claimMutation.isPending}
-              className="w-full bg-[#3b82f6] hover:bg-[#2563eb] text-white rounded-xl py-6 font-semibold shadow-md shadow-blue-500/20 transition-all active:scale-[0.98]"
+              className="w-full bg-[#8b5cf6] hover:bg-[#8b5cf6] text-white rounded-xl py-6 font-semibold shadow-md shadow-purple-500/20 transition-all active:scale-[0.98]"
             >
               {claimMutation.isPending ? (
                 <Loader2 className="w-5 h-5 animate-spin" />
@@ -130,6 +204,11 @@ export default function DailyCheckinModal() {
           
         </div>
       </DialogContent>
+      <canvas 
+        ref={confettiCanvasRef} 
+        className="pointer-events-none fixed inset-0 z-[100] w-full h-full" 
+        style={{ display: 'none' }}
+      />
     </Dialog>
   );
 }
@@ -141,23 +220,31 @@ function RewardCard({ reward, isNext }) {
   return (
     <div className={`
       flex flex-col items-center justify-center p-3 rounded-xl border-2 transition-all
-      ${isClaimed ? 'border-blue-100 bg-blue-50 opacity-60' : ''}
-      ${isAvailable ? 'border-[#3b82f6] bg-blue-50 shadow-sm scale-105 z-10 relative' : ''}
+      ${isClaimed ? 'border-green-500 bg-green-50' : ''}
+      ${isAvailable ? 'border-[#8b5cf6] bg-purple-50 shadow-sm scale-105 z-10 relative' : ''}
       ${reward.status === 'locked' && !isNext ? 'border-gray-100 bg-gray-50/50' : ''}
     `}>
-      <span className={`text-[10px] font-bold tracking-wider uppercase mb-2 ${isAvailable ? 'text-[#3b82f6]' : 'text-gray-400'}`}>
+      <span className={`text-[11px] font-bold tracking-wider uppercase mb-2 
+        ${isClaimed ? 'text-green-500' : isAvailable ? 'text-[#8b5cf6]' : 'text-gray-400'}
+      `}>
         Day {reward.day}
       </span>
       
-      <div className={`w-8 h-8 rounded-full flex items-center justify-center mb-2 ${isClaimed || isAvailable ? 'bg-[#f59e0b] text-white shadow-sm' : 'bg-gray-200 text-gray-400'}`}>
-        {isClaimed || isAvailable ? (
+      <div className={`w-8 h-8 rounded-full flex items-center justify-center mb-2 shadow-sm
+        ${isClaimed ? 'bg-green-500 text-white' : isAvailable ? 'bg-[#f59e0b] text-white' : 'bg-gray-200 text-gray-400'}
+      `}>
+        {isClaimed ? (
+          <Check className="w-5 h-5" strokeWidth={3} />
+        ) : isAvailable ? (
           <Coins className="w-4 h-4" />
         ) : (
           <Lock className="w-4 h-4" />
         )}
       </div>
       
-      <span className={`text-xs font-bold ${isAvailable ? 'text-[#3b82f6]' : 'text-gray-400'}`}>
+      <span className={`text-xs font-bold 
+        ${isClaimed ? 'text-green-500' : isAvailable ? 'text-[#8b5cf6]' : 'text-gray-400'}
+      `}>
         +${parseFloat(reward.amount).toFixed(2)}
       </span>
     </div>

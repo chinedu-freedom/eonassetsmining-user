@@ -61,11 +61,11 @@ export default function AuthenticationSettingsPage() {
       <div className="bg-white px-4 py-3 flex items-center gap-2.5 sticky top-0 z-20 shadow-sm border-b border-gray-100">
         <button
           onClick={() => router.back()}
-          className="w-7 h-7 bg-gray-50 hover:bg-gray-100 rounded-full flex items-center justify-center transition-colors text-gray-600"
+          className="w-7 h-7 bg-gray-50 hover:bg-gray-100 rounded-full flex items-center justify-center transition-colors text-gray-600 cursor-pointer"
         >
           <ArrowLeft size={16} />
         </button>
-        <h1 className="text-[#1e3a8a] text-[15px] font-bold">Authentication</h1>
+        <h1 className="text-[#4c1d95] text-[15px] font-bold">Authentication</h1>
       </div>
 
       <div className="px-4 py-4 max-w-[480px] mx-auto w-full">
@@ -115,7 +115,7 @@ export default function AuthenticationSettingsPage() {
             <button
               onClick={handleSendCode}
               disabled={isSending}
-              className="w-full bg-[#2563eb] hover:bg-blue-700 disabled:bg-blue-400 flex items-center justify-center gap-2 text-white font-bold text-[15px] py-3.5 rounded-[12px] transition-colors shadow-sm"
+              className="w-full bg-[#8b5cf6] hover:bg-purple-700 disabled:bg-purple-400 flex items-center justify-center gap-2 text-white font-bold text-[15px] py-3.5 rounded-[12px] transition-colors shadow-sm cursor-pointer"
             >
               {isSending ?  <Loader2 size={18} className="animate-spin" /> : "Send Verification Code"     }
             </button>
@@ -130,7 +130,7 @@ export default function AuthenticationSettingsPage() {
                   value={code}
                   onChange={(e) => setCode(e.target.value)}
                   placeholder="0 0 0 0 0 0"
-                  className="w-full bg-[#f8fafc] border border-gray-200 rounded-[12px] px-4 py-4 text-[16px] text-center tracking-[0.4em] font-medium text-gray-800 placeholder-gray-400 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all"
+                  className="w-full bg-[#f8fafc] border border-gray-200 rounded-[12px] px-4 py-4 text-[16px] text-center tracking-[0.4em] font-medium text-gray-800 placeholder-gray-400 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all"
                   maxLength={6}
                 />
               </div>
@@ -138,7 +138,7 @@ export default function AuthenticationSettingsPage() {
               <button
                 type="submit"
                 disabled={isVerifying}
-                className="w-full flex items-center justify-center gap-2 bg-[#2563eb] hover:bg-blue-700 disabled:bg-blue-400 text-white font-bold text-[15px] py-3.5 rounded-[12px] transition-colors shadow-sm"
+                className="w-full flex items-center justify-center gap-2 bg-[#8b5cf6] hover:bg-purple-700 disabled:bg-purple-400 text-white font-bold text-[15px] py-3.5 rounded-[12px] transition-colors shadow-sm cursor-pointer"
               >
                 {isVerifying ? <Loader2 size={18} className="animate-spin" /> : "Verify"}
               </button>
@@ -150,7 +150,7 @@ export default function AuthenticationSettingsPage() {
                     type="button" 
                     onClick={handleSendCode} 
                     disabled={isSending}
-                    className="text-[#3b82f6] hover:underline disabled:opacity-50 font-medium ml-1"
+                    className="text-[#8b5cf6] hover:underline disabled:opacity-50 font-medium ml-1 cursor-pointer"
                   >
                     Resend
                   </button>

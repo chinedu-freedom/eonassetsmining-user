@@ -39,10 +39,10 @@ export default function TreasurePage() {
   return (
     <div className="flex flex-col h-full bg-[#f8f9fa] overflow-y-auto [&::-webkit-scrollbar]:hidden pb-20">
       {/* Header Section */}
-      <div className="bg-[#3b82f6] px-4 pt-6 pb-20 relative">
+      <div className="bg-[#8b5cf6] px-4 pt-6 pb-20 relative">
         <button 
           onClick={() => router.back()}
-          className="flex items-center gap-1.5 text-white/90 hover:text-white transition-colors z-10 relative mb-6"
+          className="flex items-center gap-1.5 text-white/90 hover:text-white transition-colors z-10 relative mb-6 cursor-pointer"
         >
           <ArrowLeft size={18} />
           <span className="text-[14px] font-medium">Back</span>
@@ -75,7 +75,7 @@ export default function TreasurePage() {
                 value={giftCode}
                 onChange={(e) => setGiftCode(e.target.value)}
                 placeholder="Enter your code here..."
-                className="w-full bg-[#f8f9fa] border border-gray-200 rounded-[12px] py-3 pl-10 pr-4 text-[14px] outline-none focus:border-[#3b82f6] focus:bg-white transition-colors"
+                className="w-full bg-[#f8f9fa] border border-gray-200 rounded-[12px] py-3 pl-10 pr-4 text-[14px] outline-none focus:border-[#8b5cf6] focus:bg-white transition-colors"
                 disabled={claimMutation.isPending}
               />
             </div>
@@ -83,7 +83,7 @@ export default function TreasurePage() {
             <button 
               type="submit"
               disabled={claimMutation.isPending || !giftCode.trim()}
-              className="w-full bg-[#2563eb] hover:bg-[#1d4ed8] text-white py-3.5 rounded-[12px] font-bold text-[14px] flex items-center justify-center gap-2 transition-colors shadow-sm disabled:opacity-70"
+              className="w-full bg-[#8b5cf6] hover:bg-[#1d4ed8] text-white py-3.5 rounded-[12px] font-bold text-[14px] flex items-center justify-center gap-2 transition-colors shadow-sm disabled:opacity-70 cursor-pointer"
             >
               {claimMutation.isPending ? (
                 <Loader2 className="w-5 h-5 animate-spin" />
@@ -100,31 +100,31 @@ export default function TreasurePage() {
         {/* How It Works */}
         <div>
           <div className="flex items-center gap-2 mb-3 px-1">
-            <div className="w-5 h-5 rounded-full bg-[#dbeafe] flex items-center justify-center">
-              <Info className="text-[#3b82f6]" size={12} />
+            <div className="w-5 h-5 rounded-full bg-[#ede9fe] flex items-center justify-center">
+              <Info className="text-[#8b5cf6]" size={12} />
             </div>
-            <h3 className="font-bold text-[#1e3a8a] text-[15px]">How It Works</h3>
+            <h3 className="font-bold text-[#4c1d95] text-[15px]">How It Works</h3>
           </div>
           
           <div className="grid grid-cols-3 gap-2.5">
             <div 
               onClick={() => setIsTelegramModalOpen(true)}
-              className="bg-white p-3 rounded-[16px] flex flex-col items-center text-center border border-gray-100 shadow-sm cursor-pointer hover:border-[#3b82f6] transition-colors"
+              className="bg-white p-3 rounded-[16px] flex flex-col items-center text-center border border-gray-100 shadow-sm cursor-pointer hover:border-[#8b5cf6] transition-colors"
             >
               <div className="w-10 h-10 bg-[#e0e7ff] rounded-[10px] flex items-center justify-center mb-2">
-                <Send className="text-[#3b82f6]" size={18} />
+                <Send className="text-[#8b5cf6]" size={18} />
               </div>
               <p className="text-[10px] text-gray-500 font-medium leading-tight">Get gift code from Telegram</p>
             </div>
             <div className="bg-white p-3 rounded-[16px] flex flex-col items-center text-center border border-gray-100 shadow-sm">
               <div className="w-10 h-10 bg-[#e0e7ff] rounded-[10px] flex items-center justify-center mb-2">
-                <Ticket className="text-[#3b82f6]" size={18} />
+                <Ticket className="text-[#8b5cf6]" size={18} />
               </div>
               <p className="text-[10px] text-gray-500 font-medium leading-tight">Enter your unique gift code</p>
             </div>
             <div className="bg-white p-3 rounded-[16px] flex flex-col items-center text-center border border-gray-100 shadow-sm">
               <div className="w-10 h-10 bg-[#e0e7ff] rounded-[10px] flex items-center justify-center mb-2">
-                <Wallet className="text-[#3b82f6]" size={18} />
+                <Wallet className="text-[#8b5cf6]" size={18} />
               </div>
               <p className="text-[10px] text-gray-500 font-medium leading-tight">Reward added to balance</p>
             </div>
@@ -135,12 +135,12 @@ export default function TreasurePage() {
         <div>
           <div className="flex justify-between items-center mb-3 px-1">
             <div className="flex items-center gap-2">
-              <History className="text-[#3b82f6]" size={18} />
-              <h3 className="font-bold text-[#1e3a8a] text-[15px]">Recent Redemptions</h3>
+              <History className="text-[#8b5cf6]" size={18} />
+              <h3 className="font-bold text-[#4c1d95] text-[15px]">Recent Redemptions</h3>
             </div>
             <button 
               onClick={() => router.push('/dashboard/transactions')}
-              className="text-[#3b82f6] text-[12px] font-medium flex items-center gap-1 hover:underline cursor-pointer"
+              className="text-[#8b5cf6] text-[12px] font-medium flex items-center gap-1 hover:underline cursor-pointer"
             >
               View All <ArrowRight size={12} />
             </button>
@@ -149,7 +149,7 @@ export default function TreasurePage() {
           <div className="bg-white rounded-[16px] border border-gray-100 shadow-sm overflow-hidden">
             {isLoading ? (
               <div className="flex justify-center items-center py-10">
-                <Loader2 className="w-6 h-6 text-blue-600 animate-spin" />
+                <Loader2 className="w-6 h-6 text-purple-600 animate-spin" />
               </div>
             ) : claims.length === 0 ? (
               <div className="py-12 flex flex-col items-center justify-center text-center">

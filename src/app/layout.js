@@ -13,13 +13,13 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  title: "EonAssets",
+  title: "Polychainapp",
   description: "The Ultimate Crypto Asset Mining Platform",
   manifest: "/manifest.json",
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
-    title: "EonAssets",
+    title: "Polychainapp",
   },
 };
 

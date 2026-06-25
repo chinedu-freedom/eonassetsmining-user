@@ -16,13 +16,13 @@ export default function MyInvestmentsPage() {
         <div className="flex items-center gap-3">
           <button
             onClick={() => router.back()}
-            className="w-8 h-8 bg-gray-50 rounded-xl flex items-center justify-center text-gray-500 hover:bg-gray-100 transition-colors"
+            className="w-8 h-8 bg-gray-50 rounded-xl flex items-center justify-center text-gray-500 hover:bg-gray-100 transition-colors cursor-pointer"
           >
             <ArrowLeft size={16} />
           </button>
-          <h1 className="text-[#1e3a8a] text-[15px] font-bold">My Investments</h1>
+          <h1 className="text-[#4c1d95] text-[15px] font-bold">My Investments</h1>
         </div>
-        <Link href="/dashboard/mining" className="w-8 h-8 bg-[#4082F6] rounded-md flex items-center justify-center text-white hover:bg-blue-600 transition-colors shadow-sm">
+        <Link href="/dashboard/mining" className="w-8 h-8 bg-[#8b5cf6] rounded-md flex items-center justify-center text-white hover:bg-purple-600 transition-colors shadow-sm cursor-pointer">
           <Plus size={16} />
         </Link>
       </div>
@@ -33,7 +33,7 @@ export default function MyInvestmentsPage() {
           <button
             onClick={() => setActiveTab("active")}
             className={`flex-1 py-2 rounded-[8px] text-[13px] font-bold transition-colors ${activeTab === "active"
-                ? "bg-[#4082F6] text-white"
+                ? "bg-[#8b5cf6] text-white"
                 : "text-[#334155] hover:bg-gray-50"
               }`}
           >
@@ -42,7 +42,7 @@ export default function MyInvestmentsPage() {
           <button
             onClick={() => setActiveTab("completed")}
             className={`flex-1 py-2 rounded-[8px] text-[13px] font-bold transition-colors ${activeTab === "completed"
-                ? "bg-[#4082F6] text-white"
+                ? "bg-[#8b5cf6] text-white"
                 : "text-[#334155] hover:bg-gray-50"
               }`}
           >
@@ -51,7 +51,7 @@ export default function MyInvestmentsPage() {
         </div>
 
         {/* Stats Card */}
-        <div className="bg-[#4082F6] rounded-lg px-4 py-2 text-white shadow-[0_4px_14px_rgba(59,130,246,0.3)] flex justify-between items-center">
+        <div className="bg-[#8b5cf6] rounded-lg px-4 py-2 text-white shadow-[0_4px_14px_rgba(59,130,246,0.3)] flex justify-between items-center">
           <div className="text-center flex-1">
             <div className="text-[18px] font-bold tracking-tight">$0.00</div>
             <div className="text-[10px] text-white/80">Total Invested</div>

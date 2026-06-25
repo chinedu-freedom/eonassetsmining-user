@@ -52,17 +52,17 @@ export default function WithdrawPage() {
       <div className="bg-white px-4 py-4 flex items-center gap-3 sticky top-0 z-20 shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] border-b border-gray-100">
         <button
           onClick={() => router.back()}
-          className="w-8 h-8 bg-gray-50 hover:bg-gray-100 rounded-xl flex items-center justify-center transition-colors text-gray-600 shadow-sm border border-gray-100"
+          className="w-8 h-8 bg-gray-50 hover:bg-gray-100 rounded-xl flex items-center justify-center transition-colors text-gray-600 shadow-sm border border-gray-100 cursor-pointer"
         >
           <ArrowLeft size={16} />
         </button>
-        <h1 className="text-[#1e3a8a] text-[16px] font-bold">Withdraw</h1>
+        <h1 className="text-[#4c1d95] text-[16px] font-bold">Withdraw</h1>
       </div>
 
       <div className="px-4 py-5 max-w-[480px] mx-auto w-full space-y-6">
         
         {/* Balance Card */}
-        <div className="bg-[#2563eb] rounded-[16px] p-5 text-white shadow-[0_8px_20px_-6px_rgba(37,99,235,0.4)] relative overflow-hidden">
+        <div className="bg-[#8b5cf6] rounded-[16px] p-5 text-white shadow-[0_8px_20px_-6px_rgba(37,99,235,0.4)] relative overflow-hidden">
           {/* Background decoration */}
           <div className="absolute -right-10 -top-10 w-32 h-32 bg-white/10 rounded-full blur-2xl"></div>
           
@@ -70,7 +70,7 @@ export default function WithdrawPage() {
             <div className="bg-white/20 p-1 rounded-md">
               <Wallet size={12} className="text-white" />
             </div>
-            <span className="text-[12px] font-medium text-white/90">Available Balance</span>
+            <span className="text-[12px] font-medium text-white/90">Total Balance</span>
           </div>
           
           <div className="text-[32px] font-bold tracking-tight relative z-10 flex items-center">
@@ -84,7 +84,7 @@ export default function WithdrawPage() {
 
         {/* Selection Area */}
         <div>
-          <h2 className="text-[#1e3a8a] font-bold text-[14px] mb-3 px-1">Select Withdrawal Method</h2>
+          <h2 className="text-[#4c1d95] font-bold text-[14px] mb-3 px-1">Select Withdrawal Method</h2>
           
           <div className="grid grid-cols-1 gap-3">
 
@@ -98,11 +98,11 @@ export default function WithdrawPage() {
                   <Hexagon size={24} className="fill-white" />
                 </div>
                 <div className="text-left">
-                  <h3 className="text-[#0f172a] font-bold text-[14px] mb-0.5 group-hover:text-[#2563eb] transition-colors">Withdraw to Crypto</h3>
+                  <h3 className="text-[#0f172a] font-bold text-[14px] mb-0.5 group-hover:text-[#8b5cf6] transition-colors">Withdraw to Crypto</h3>
                   <p className="text-[#64748b] text-[11px] leading-relaxed">Transfer to your crypto wallet directly</p>
                 </div>
               </div>
-              <div className="w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center group-hover:bg-blue-50 transition-colors text-gray-400 group-hover:text-blue-500">
+              <div className="w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center group-hover:bg-purple-50 transition-colors text-gray-400 group-hover:text-purple-500">
                 <ArrowLeft size={16} className="rotate-180" />
               </div>
             </button>
@@ -142,11 +142,11 @@ export default function WithdrawPage() {
       {/* Crypto Withdrawal Modal */}
       {showCryptoModal && (
         <div 
-          className="fixed inset-0 z-[60] flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/50 backdrop-blur-sm animate-fade-in"
+          className="fixed inset-0 z-[60] flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/50 backdrop-blur-sm animate-fade-in cursor-pointer"
           onClick={handleCloseModal}
         >
           <div 
-            className="bg-white rounded-t-[24px] sm:rounded-[20px] w-full max-w-[450px] overflow-hidden shadow-2xl animate-slide-up flex flex-col max-h-[85vh] mt-auto sm:mt-0"
+            className="bg-white rounded-t-[24px] sm:rounded-[20px] w-full max-w-[450px] overflow-hidden shadow-2xl animate-slide-up flex flex-col max-h-[85vh] mt-auto sm:mt-0 cursor-pointer"
             onClick={(e) => e.stopPropagation()}
           >
             
@@ -157,7 +157,7 @@ export default function WithdrawPage() {
             
             {/* Modal Header */}
             <div className="flex justify-between items-center px-4 py-3 sm:py-4 border-b border-gray-100 shrink-0">
-              <h3 className="text-[#1e3a8a] text-[15px] font-bold">Withdraw to Crypto</h3>
+              <h3 className="text-[#4c1d95] text-[15px] font-bold">Withdraw to Crypto</h3>
               <button 
                 onClick={handleCloseModal}
                 className="cursor-pointer w-7 h-7 bg-gray-100 hover:bg-gray-200 rounded-full flex items-center justify-center text-gray-500 transition-colors"
@@ -174,7 +174,7 @@ export default function WithdrawPage() {
                 <select 
                   value={cryptoNetwork}
                   onChange={(e) => setCryptoNetwork(e.target.value)}
-                  className="cursor-pointer w-full bg-white border border-gray-200 rounded-[10px] px-3.5 py-2.5 text-[13px] text-gray-800 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 appearance-none"
+                  className="cursor-pointer w-full bg-white border border-gray-200 rounded-[10px] px-3.5 py-2.5 text-[13px] text-gray-800 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 appearance-none"
                 >
                   <option value="" disabled>Choose cryptocurrency & network</option>
                   {isLoadingCryptos ? (
@@ -196,7 +196,7 @@ export default function WithdrawPage() {
                   value={walletAddress}
                   onChange={(e) => setWalletAddress(e.target.value)}
                   placeholder="Enter your wallet address"
-                  className="w-full bg-white border border-gray-200 rounded-[10px] px-3.5 py-2.5 text-[13px] text-gray-800 placeholder-gray-400 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                  className="w-full bg-white border border-gray-200 rounded-[10px] px-3.5 py-2.5 text-[13px] text-gray-800 placeholder-gray-400 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500"
                 />
                 <p className="text-red-500 text-[10px]">Double-check your address. Incorrect addresses may result in lost funds.</p>
               </div>
@@ -204,17 +204,17 @@ export default function WithdrawPage() {
               <div className="space-y-1.5">
                 <label className="block text-[#0f172a] text-[12px] font-bold">Withdrawal Amount *</label>
                 <div className="relative flex items-center">
-                  <span className="absolute left-3.5 text-[#3b82f6] font-bold text-[14px]">$</span>
+                  <span className="absolute left-3.5 text-[#8b5cf6] font-bold text-[14px]">$</span>
                   <input 
                     type="number"
                     value={amount}
                     onChange={(e) => setAmount(e.target.value)}
                     placeholder="0.00"
-                    className="w-full bg-white border border-gray-200 rounded-[10px] pl-8 pr-16 py-2.5 text-[14px] font-medium text-gray-800 placeholder-gray-400 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                    className="w-full bg-white border border-gray-200 rounded-[10px] pl-8 pr-16 py-2.5 text-[14px] font-medium text-gray-800 placeholder-gray-400 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500"
                   />
                   <button 
                     onClick={() => setAmount(totalBalance.toString())}
-                    className="absolute right-2 bg-[#3b82f6] text-white text-[10px] font-bold px-2.5 py-1 rounded-sm hover:bg-blue-600 transition-colors"
+                    className="absolute right-2 bg-[#8b5cf6] text-white text-[10px] font-bold px-2.5 py-1 rounded-sm hover:bg-purple-600 transition-colors"
                   >
                     MAX
                   </button>
@@ -241,7 +241,7 @@ export default function WithdrawPage() {
                   value={withdrawalPassword}
                   onChange={(e) => setWithdrawalPassword(e.target.value)}
                   placeholder="Enter your login password"
-                  className="w-full bg-white border border-gray-200 rounded-[10px] px-3.5 py-2.5 text-[13px] text-gray-800 placeholder-gray-400 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                  className="w-full bg-white border border-gray-200 rounded-[10px] px-3.5 py-2.5 text-[13px] text-gray-800 placeholder-gray-400 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500"
                 />
               </div>
 

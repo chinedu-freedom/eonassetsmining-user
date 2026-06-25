@@ -18,23 +18,23 @@ export default function TeamListPage() {
       <div className="bg-[#f8f9fa] px-4 py-4 flex items-center gap-3 sticky top-0 z-20">
         <button
           onClick={() => router.back()}
-          className="w-9 h-9 bg-white border border-gray-200 rounded-[10px] flex items-center justify-center transition-colors text-gray-700 shadow-sm hover:bg-gray-50 shrink-0"
+          className="w-9 h-9 bg-white border border-gray-200 rounded-[10px] flex items-center justify-center transition-colors text-gray-700 shadow-sm hover:bg-gray-50 shrink-0 cursor-pointer"
         >
           <ArrowLeft size={16} />
         </button>
-        <h1 className="text-[#1e3a8a] text-[18px] font-bold">Team List</h1>
+        <h1 className="text-[#4c1d95] text-[18px] font-bold">Team List</h1>
       </div>
 
       <div className="px-4 max-w-[480px] mx-auto w-full flex-1 flex flex-col pb-10">
 
         {/* Tabs */}
         <div className="bg-[#f1f5f9] p-1.5 rounded-[12px] flex mt-2 mb-6">
-          {[1, 2, 3].map((level) => (
+          {[1, 2, 3, 4].map((level) => (
             <button
               key={level}
               onClick={() => setActiveTab(level)}
               className={`flex-1 py-2.5 text-[13px] font-medium rounded-[8px] transition-all ${activeTab === level
-                  ? 'bg-white text-[#1e3a8a] shadow-sm'
+                  ? 'bg-white text-[#4c1d95] shadow-sm'
                   : 'text-[#64748b] hover:text-[#334155]'
                 }`}
             >
@@ -46,7 +46,7 @@ export default function TeamListPage() {
         {/* Content */}
         {isLoading ? (
           <div className="flex flex-col items-center justify-center flex-1 min-h-[300px]">
-            <Loader2 className="w-8 h-8 animate-spin text-[#3b82f6] mb-3" />
+            <Loader2 className="w-8 h-8 animate-spin text-[#8b5cf6] mb-3" />
             <span className="text-[12px] text-gray-500 font-medium">Loading team members...</span>
           </div>
         ) : teamList.length === 0 ? (
@@ -84,13 +84,18 @@ export default function TeamListPage() {
 
                 {/* Financials */}
                 <div className="text-right flex flex-col items-end justify-center">
-                  <div className="text-[#1e3a8a] font-bold text-[15px] leading-tight">
+                  <div className="text-[#4c1d95] font-bold text-[15px] leading-tight">
                     ${Number(user.balance).toFixed(2)}
                   </div>
                   <div className="text-gray-400 text-[10px] mb-1.5">Balance</div>
                   
+                  <div className="text-[#f59e0b] font-bold text-[13px] leading-tight mt-0.5">
+                    ${Number(user.deposited_amount || 0).toFixed(2)}
+                  </div>
+                  <div className="text-gray-400 text-[10px] mb-1.5">Deposited</div>
+
                   <div className="text-[#059669] font-bold text-[13px] leading-tight mt-0.5">
-                    ${Number(user.invested_amount).toFixed(2)}
+                    ${Number(user.invested_amount || 0).toFixed(2)}
                   </div>
                   <div className="text-gray-400 text-[10px]">Invested</div>
                 </div>
