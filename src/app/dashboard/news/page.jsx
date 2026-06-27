@@ -12,7 +12,7 @@ export default function NewsPage() {
   return (
     <div className="flex flex-col h-full bg-[#f8f9fa] overflow-y-auto  [&::-webkit-scrollbar]:hidden">
       {/* Header */}
-      <div className="bg-[#8b5cf6] bg-gradient-to-r from-[#8b5cf6] to-[#2563eb] px-4 pt-5 pb-5 shadow-sm z-10 sticky top-0 flex items-center justify-between gap-2">
+      <div className="bg-gradient-to-br from-[#4c1d95] to-[#0f172a] px-4 pt-5 pb-5 shadow-sm z-10 sticky top-0 flex items-center justify-between gap-2">
         <div className="flex items-center gap-3">
           <Link href="/dashboard" className="w-8 h-8 bg-white/20 rounded-xl flex items-center justify-center text-white hover:bg-white/30 transition-colors shrink-0 cursor-pointer">
             <ArrowLeft size={16} />

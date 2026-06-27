@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Wallet, Eye, EyeOff, ChevronDown, ChevronUp, Download, Upload, Clock, ArrowRight, ArrowLeft, Receipt, Loader2, ArrowUpRight, ArrowDownLeft } from "lucide-react";
+import { Wallet, Eye, EyeOff, ChevronDown, ChevronUp, Download, Upload, Clock, ArrowRight, Receipt, Loader2, ArrowUpRight, ArrowDownLeft, ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useFetchData } from "@/hooks/useApi";
@@ -10,26 +10,24 @@ import { toast } from "react-hot-toast";
 import { useSharedSettings } from "@/hooks/useSharedSettings";
 
 export default function WalletPage() {
-  const { currency, setCurrency, showBalance, setShowBalance } = useSharedSettings();
   const router = useRouter();
+  const { currency, setCurrency, showBalance, setShowBalance } = useSharedSettings();
   const [liveExchangeRate, setLiveExchangeRate] = useState(null);
 
   const { data: userRes, isLoading: loadingUser } = useFetchData("/users/me", ["user"]);
   const { data: txRes, isLoading: loadingTx } = useFetchData("/users/transactions", ["transactions"]);
 
-  const userProfile = userRes?.user || {};
+  const user = userRes?.user || {};
   const transactions = txRes?.transactions || [];
 
-  const toggleCurrency = () => {
-    if (!userProfile?.country) return;
-    const localCurrency = userProfile.country.currency?.trim() ? userProfile.country.currency : "NGN";
-    setCurrency(prev => prev === "USDT" ? localCurrency : "USDT");
-  };
+  const mainBalance = Number(user.balance || 0);
+  const giftBalance = Number(user.gift_balance || 0);
+  const totalBalance = mainBalance + giftBalance;
 
   useEffect(() => {
     const fetchLiveRate = async () => {
-      if (userProfile?.country) {
-        const targetCurrency = userProfile.country.currency?.trim() ? userProfile.country.currency : "NGN";
+      if (user?.country) {
+        const targetCurrency = user.country.currency_code?.trim() ? user.country.currency_code : "NGN";
         if (targetCurrency !== 'USDT' && targetCurrency !== 'USD') {
           try {
             const res = await fetch(`https://api.exchangerate-api.com/v4/latest/USD`);
@@ -44,29 +42,34 @@ export default function WalletPage() {
       }
     };
     fetchLiveRate();
-  }, [userProfile?.country]);
+  }, [user?.country]);
 
-  const getDisplayValue = (amountUSD) => {
+  const toggleCurrency = () => {
+    if (!user?.country) return;
+    const localCurrency = user.country.currency_code?.trim() ? user.country.currency_code : "NGN";
+    setCurrency(prev => prev === "USDT" ? localCurrency : "USDT");
+  };
+
+  const formatMoney = (amountUSD) => {
     const usd = parseFloat(amountUSD || 0);
-    
     if (currency === "USDT") {
       return `$${usd.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
     } else {
-      const exchangeRate = liveExchangeRate !== null ? liveExchangeRate : parseFloat(userProfile?.country?.exchange_rate || 1);
+      const exchangeRate = liveExchangeRate !== null ? liveExchangeRate : parseFloat(user?.country?.exchange_rate || 1);
       const localBalance = usd * exchangeRate;
-      const symbol = userProfile?.country?.currency_symbol || "";
+      const symbol = user?.country?.currency_symbol || "";
       return `${symbol}${localBalance.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
     }
   };
 
-  const balanceValues = {
-    total: getDisplayValue(parseFloat(userProfile?.balance || 0) + parseFloat(userProfile?.gift_balance || 0)),
-    earning: getDisplayValue(userProfile?.balance),
-    gift: getDisplayValue(userProfile?.gift_balance)
+  const currentBalance = {
+    total: formatMoney(totalBalance),
+    main: formatMoney(mainBalance),
+    gift: formatMoney(giftBalance)
   };
 
   const handleAction = (actionPath) => {
-    if (userProfile && !userProfile.email_verified) {
+    if (user && !user.email_verified) {
       toast.error("Please verify your email to perform this action");
       router.push("/dashboard/settings/auth");
       return;
@@ -94,51 +97,59 @@ export default function WalletPage() {
 
       <div className="px-4 pt-4 pb-4 space-y-3 max-w-[480px] mx-auto w-full">
         {/* Balance Card */}
-        <div className="bg-gradient-to-br from-[#4c1d95] to-[#0f172a] rounded-2xl p-[18px] text-white shadow-lg relative overflow-hidden border border-white/10">
+        <div className="bg-gradient-to-br from-[#4c1d95] to-[#0f172a] rounded-[16px] p-[16px] text-white shadow-lg relative overflow-hidden border border-white/10">
           {/* Background decoration */}
-          <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/3 blur-2xl pointer-events-none"></div>
-          
-          <div className="flex justify-between items-start mb-2 relative z-10">
-            <p className="text-white/80 text-[13px] font-medium">Total Balance</p>
-            <button 
+          <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/3 blur-2xl"></div>
+
+          {/* Top section */}
+          <div className="flex justify-between items-start mb-1 relative z-10">
+            <span className="text-[10px] text-white/90">Total Balance</span>
+            <button
               onClick={toggleCurrency}
-              className="bg-white/10 px-2 py-1 cursor-pointer rounded-md text-[11px] font-bold flex items-center gap-1 hover:bg-white/20 transition-colors backdrop-blur-sm border border-white/10"
+              className="flex items-center gap-1 bg-white/10 px-2 py-1 rounded text-[9px] font-bold hover:bg-white/20 transition-colors cursor-pointer border border-white/10 backdrop-blur-sm"
             >
-              {currency} <span className="text-[7px] opacity-70 cursor-pointer">▼</span>
+              {currency === "USDT" ? "USDT" : (user?.country?.currency_code || "NGN")} {currency === "USDT" ? <ChevronDown size={10} /> : <ChevronUp size={10} />}
             </button>
           </div>
-          
+
+          {/* Main Balance */}
           <div className="flex items-center gap-2 mb-4 relative z-10">
-            <h2 className="text-[28px] font-bold tracking-wider leading-none">
-              {loadingUser ? <Loader2 className="w-6 h-6 animate-spin" /> : showBalance ? balanceValues.total : "****"}
-            </h2>
-            <button 
+            <span className="text-[24px] font-bold tracking-tight">
+              {loadingUser ? <Loader2 className="w-5 h-5 animate-spin" /> : showBalance ? currentBalance.total : "****"}
+            </span>
+            <button
               onClick={() => setShowBalance(!showBalance)}
-              className="text-white/60 hover:text-white transition-colors ml-1 cursor-pointer"
+              className="text-white/80 hover:text-white transition-colors p-1"
             >
-              {showBalance ? <Eye size={18} /> : <EyeOff size={18} />}
+              {showBalance ? <Eye size={14} /> : <EyeOff size={14} />}
             </button>
           </div>
 
-          <div className="grid grid-cols-2 gap-2 mb-4 relative z-10">
-            <div className="bg-white/10 rounded-lg p-2.5 backdrop-blur-sm border border-white/5">
-              <span className="text-[9px] font-bold text-white/60 uppercase tracking-wider block mb-1">Earning Balance</span>
-              <span className="text-[14px] font-bold">{loadingUser ? "..." : showBalance ? balanceValues.earning : "****"}</span>
+          {/* Sub Balances */}
+          <div className="flex gap-2.5 mb-3.5 relative z-10">
+            <div className="bg-white/10 rounded-lg p-2 flex-1 border border-white/10 backdrop-blur-sm">
+              <div className="text-[7px] font-bold text-white/80 uppercase tracking-wide mb-1">Earning Balance</div>
+              <div className="text-[12px] font-bold">{loadingUser ? "..." : showBalance ? currentBalance.main : "****"}</div>
             </div>
-            <div className="bg-white/10 rounded-lg p-2.5 backdrop-blur-sm border border-white/5">
-              <span className="text-[9px] font-bold text-white/60 uppercase tracking-wider block mb-1">Gift Balance</span>
-              <span className="text-[14px] font-bold">{loadingUser ? "..." : showBalance ? balanceValues.gift : "****"}</span>
+            <div className="bg-white/10 rounded-lg p-2 flex-1 border border-white/10 backdrop-blur-sm">
+              <div className="text-[7px] font-bold text-white/80 uppercase tracking-wide mb-1">Gift Balance</div>
+              <div className="text-[12px] font-bold">{loadingUser ? "..." : showBalance ? currentBalance.gift : "****"}</div>
             </div>
           </div>
 
+          {/* Actions */}
           <div className="flex gap-2.5 relative z-10">
-            <button onClick={() => handleAction("?depositModal=true")} className="flex-1 bg-white text-[#4c1d95] py-2 rounded-lg text-[13px] font-semibold flex items-center justify-center gap-1.5 hover:bg-gray-50 transition-colors shadow-md cursor-pointer">
-              <Download size={16} />
-              Deposit
+            <button 
+              onClick={() => handleAction("?depositModal=true")}
+              className="cursor-pointer flex-1 bg-white text-[#4c1d95] flex items-center justify-center gap-1.5 py-2 rounded-[8px] text-[11px] font-bold hover:bg-gray-50 transition-colors shadow-sm"
+            >
+              <Download size={12} /> Deposit
             </button>
-            <button onClick={() => handleAction("/dashboard/wallet/withdraw")} className="flex-1 bg-white/10 text-white py-2 rounded-lg text-[13px] font-semibold flex items-center justify-center gap-1.5 hover:bg-white/20 transition-colors border border-white/15 backdrop-blur-sm cursor-pointer">
-              <Upload size={16} />
-              Withdraw
+            <button 
+              onClick={() => handleAction("/dashboard/wallet/withdraw")}
+              className="cursor-pointer flex-1 bg-white/10 text-white flex items-center justify-center gap-1.5 py-2 rounded-[8px] text-[11px] font-bold hover:bg-white/20 transition-colors border border-white/15 backdrop-blur-sm"
+            >
+              <Upload size={12} /> Withdraw
             </button>
           </div>
         </div>

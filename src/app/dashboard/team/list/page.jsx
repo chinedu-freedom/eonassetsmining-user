@@ -33,7 +33,7 @@ export default function TeamListPage() {
             <button
               key={level}
               onClick={() => setActiveTab(level)}
-              className={`flex-1 py-2.5 text-[13px] font-medium rounded-[8px] transition-all ${activeTab === level
+              className={`cursor-pointer flex-1 py-2.5 text-[13px] font-medium rounded-[8px] transition-all ${activeTab === level
                   ? 'bg-white text-[#4c1d95] shadow-sm'
                   : 'text-[#64748b] hover:text-[#334155]'
                 }`}

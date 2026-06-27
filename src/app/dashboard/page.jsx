@@ -47,7 +47,7 @@ export default function DashboardPage() {
 
   const toggleCurrency = () => {
     if (!userProfile?.country) return;
-    const localCurrency = userProfile.country.currency?.trim() ? userProfile.country.currency : "NGN";
+    const localCurrency = userProfile.country.currency_code?.trim() ? userProfile.country.currency_code : "NGN";
     setCurrency(prev => prev === "USDT" ? localCurrency : "USDT");
   };
 
@@ -61,7 +61,7 @@ export default function DashboardPage() {
   useEffect(() => {
     const fetchLiveRate = async () => {
       if (userProfile?.country) {
-        const targetCurrency = userProfile.country.currency?.trim() ? userProfile.country.currency : "NGN";
+        const targetCurrency = userProfile.country.currency_code?.trim() ? userProfile.country.currency_code : "NGN";
         if (targetCurrency !== 'USDT' && targetCurrency !== 'USD') {
           try {
             const res = await fetch(`https://api.exchangerate-api.com/v4/latest/USD`);
@@ -79,24 +79,23 @@ export default function DashboardPage() {
   }, [userProfile?.country]);
 
   // Convert balance based on selected currency
-  const getDisplayValue = (amountUSD) => {
-    const usd = parseFloat(amountUSD || 0);
+  const getDisplayBalance = () => {
+    if (!userProfile) return "$0.00";
+    
+    const balanceUSD = parseFloat(userProfile.balance || 0) + parseFloat(userProfile.gift_balance || 0);
     
     if (currency === "USDT") {
-      return `$${usd.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+      return `$${balanceUSD.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
     } else {
-      const exchangeRate = liveExchangeRate !== null ? liveExchangeRate : parseFloat(userProfile?.country?.exchange_rate || 1);
-      const localBalance = usd * exchangeRate;
-      const symbol = userProfile?.country?.currency_symbol || "";
+      // Use live exchange rate if available, fallback to database static rate, then fallback to 1
+      const exchangeRate = liveExchangeRate !== null ? liveExchangeRate : parseFloat(userProfile.country?.exchange_rate || 1);
+      const localBalance = balanceUSD * exchangeRate;
+      const symbol = userProfile.country?.currency_symbol || "";
       return `${symbol}${localBalance.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
     }
   };
 
-  const balanceValues = {
-    total: getDisplayValue(parseFloat(userProfile?.balance || 0) + parseFloat(userProfile?.gift_balance || 0)),
-    earning: getDisplayValue(userProfile?.balance),
-    gift: getDisplayValue(userProfile?.gift_balance)
-  };
+  const currentBalanceTotal = getDisplayBalance();
 
   return (
     <div className="flex flex-col h-full bg-[#f8f9fa] overflow-y-auto  [&::-webkit-scrollbar]:hidden">
@@ -139,13 +138,13 @@ export default function DashboardPage() {
               onClick={toggleCurrency}
               className="bg-white/10 px-2 py-1 cursor-pointer rounded-md text-[11px] font-bold flex items-center gap-1 hover:bg-white/20 transition-colors backdrop-blur-sm border border-white/10"
             >
-              {currency} <span className="text-[7px] opacity-70 cursor-pointer">▼</span>
+              {currency === "USDT" ? "USDT" : (userProfile?.country?.currency_code || "NGN")} <span className="text-[7px] opacity-70 cursor-pointer">▼</span>
             </button>
           </div>
           
-          <div className="flex items-center gap-2 mb-4 relative z-10">
+          <div className="flex items-center gap-2 mb-5 relative z-10">
             <h2 className="text-[28px] font-bold tracking-wider leading-none">
-              {showBalance ? balanceValues.total : "****"}
+              {showBalance ? currentBalanceTotal : "****"}
             </h2>
             <button 
               onClick={() => setShowBalance(!showBalance)}
@@ -153,17 +152,6 @@ export default function DashboardPage() {
             >
               {showBalance ? <Eye size={18} /> : <EyeOff size={18} />}
             </button>
-          </div>
-
-          <div className="grid grid-cols-2 gap-2 mb-4 relative z-10">
-            <div className="bg-white/10 rounded-lg p-2.5 backdrop-blur-sm border border-white/5">
-              <span className="text-[9px] font-bold text-white/60 uppercase tracking-wider block mb-1">Earning Balance</span>
-              <span className="text-[14px] font-bold">{showBalance ? balanceValues.earning : "****"}</span>
-            </div>
-            <div className="bg-white/10 rounded-lg p-2.5 backdrop-blur-sm border border-white/5">
-              <span className="text-[9px] font-bold text-white/60 uppercase tracking-wider block mb-1">Gift Balance</span>
-              <span className="text-[14px] font-bold">{showBalance ? balanceValues.gift : "****"}</span>
-            </div>
           </div>
 
           <div className="flex gap-2.5 relative z-10">

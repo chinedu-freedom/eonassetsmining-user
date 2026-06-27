@@ -122,7 +122,7 @@ export default function TransactionsPage() {
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`flex items-center gap-1.5 px-3.5 py-2 rounded-full whitespace-nowrap text-[12px] font-bold transition-all cursor-pointer ${isActive
+                className={`cursor-pointer flex items-center gap-1.5 px-3.5 py-2 rounded-full whitespace-nowrap text-[12px] font-bold transition-all ${isActive
                     ? 'bg-[#8b5cf6] text-white shadow-[0_4px_10px_rgba(37,99,235,0.25)]'
                     : 'bg-white text-gray-500 border border-gray-200 hover:bg-gray-50'
                   }`}
