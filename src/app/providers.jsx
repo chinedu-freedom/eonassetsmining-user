@@ -6,8 +6,11 @@ import { useState, useEffect } from "react";
 import { PWAProvider } from "@/components/PWAProvider";
 import { useFetchData } from "@/hooks/useApi";
 
+import { usePathname } from "next/navigation";
+
 function AppLoader({ children }) {
   const [mounted, setMounted] = useState(false);
+  const pathname = usePathname();
   
   useEffect(() => {
     setMounted(true);
@@ -16,6 +19,12 @@ function AppLoader({ children }) {
   const { isLoading } = useFetchData("/settings", ["platform-settings"], {
     enabled: mounted,
   });
+
+  const isAuthPage = pathname === "/" || pathname?.startsWith("/auth");
+
+  if (isAuthPage) {
+    return children;
+  }
 
   if (!mounted || isLoading) {
     return (
