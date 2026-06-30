@@ -7,7 +7,9 @@ import { useFetchData } from "@/hooks/useApi";
 export default function TeamPage() {
   const router = useRouter();
   
-  const { data: teamRes, isLoading } = useFetchData("/users/me/team", ["team-stats"]);
+  const { data: teamRes, isLoading } = useFetchData("/users/team", ["team-stats"]);
+  const { data: settingsRes } = useFetchData("/settings", ["platform-settings"]);
+  const settings = settingsRes?.settings || {};
   
   const stats = teamRes?.data;
   const overview = stats?.overview || { new_members_today: 0, new_earnings_today: 0, total_team: 0 };
@@ -72,7 +74,7 @@ export default function TeamPage() {
                   <div className="text-white/70 text-[11px]">New Members</div>
                 </div>
                 <div className="flex flex-col items-center">
-                  <div className="text-[28px] font-bold mb-1 leading-none">{Number(overview.new_earnings_today).toFixed(2)}</div>
+                  <div className="text-[28px] font-bold mb-1 leading-none">{settings.currency_symbol || "$"}{Number(overview.new_earnings_today).toFixed(2)}</div>
                   <div className="text-white/70 text-[11px]">New Earnings</div>
                 </div>
               </div>
@@ -153,11 +155,11 @@ export default function TeamPage() {
                       <div className="text-gray-400 text-[10px]">Commission</div>
                     </div>
                     <div>
-                      <div className="text-[#4c1d95] text-[16px] font-bold mb-1">{Number(l1.total_deposits || 0).toFixed(2)}</div>
+                      <div className="text-[#4c1d95] text-[16px] font-bold mb-1">{settings.currency_symbol || "$"}{Number(l1.total_deposits || 0).toFixed(2)}</div>
                       <div className="text-gray-400 text-[10px]">Total Deposit</div>
                     </div>
                     <div>
-                      <div className="text-[#4c1d95] text-[16px] font-bold mb-1">{Number(l1.total_earnings).toFixed(2)}</div>
+                      <div className="text-[#4c1d95] text-[16px] font-bold mb-1">{settings.currency_symbol || "$"}{Number(l1.total_earnings).toFixed(2)}</div>
                       <div className="text-gray-400 text-[10px]">Total Earnings</div>
                     </div>
                   </div>
@@ -178,11 +180,11 @@ export default function TeamPage() {
                       <div className="text-gray-400 text-[10px]">Commission</div>
                     </div>
                     <div>
-                      <div className="text-[#4c1d95] text-[16px] font-bold mb-1">{Number(l2.total_deposits || 0).toFixed(2)}</div>
+                      <div className="text-[#4c1d95] text-[16px] font-bold mb-1">{settings.currency_symbol || "$"}{Number(l2.total_deposits || 0).toFixed(2)}</div>
                       <div className="text-gray-400 text-[10px]">Total Deposit</div>
                     </div>
                     <div>
-                      <div className="text-[#4c1d95] text-[16px] font-bold mb-1">{Number(l2.total_earnings).toFixed(2)}</div>
+                      <div className="text-[#4c1d95] text-[16px] font-bold mb-1">{settings.currency_symbol || "$"}{Number(l2.total_earnings).toFixed(2)}</div>
                       <div className="text-gray-400 text-[10px]">Total Earnings</div>
                     </div>
                   </div>
@@ -203,11 +205,11 @@ export default function TeamPage() {
                       <div className="text-gray-400 text-[10px]">Commission</div>
                     </div>
                     <div>
-                      <div className="text-[#4c1d95] text-[16px] font-bold mb-1">{Number(l3.total_deposits || 0).toFixed(2)}</div>
+                      <div className="text-[#4c1d95] text-[16px] font-bold mb-1">{settings.currency_symbol || "$"}{Number(l3.total_deposits || 0).toFixed(2)}</div>
                       <div className="text-gray-400 text-[10px]">Total Deposit</div>
                     </div>
                     <div>
-                      <div className="text-[#4c1d95] text-[16px] font-bold mb-1">{Number(l3.total_earnings).toFixed(2)}</div>
+                      <div className="text-[#4c1d95] text-[16px] font-bold mb-1">{settings.currency_symbol || "$"}{Number(l3.total_earnings).toFixed(2)}</div>
                       <div className="text-gray-400 text-[10px]">Total Earnings</div>
                     </div>
                   </div>
@@ -228,11 +230,11 @@ export default function TeamPage() {
                       <div className="text-gray-400 text-[10px]">Commission</div>
                     </div>
                     <div>
-                      <div className="text-[#4c1d95] text-[16px] font-bold mb-1">{Number(l4.total_deposits || 0).toFixed(2)}</div>
+                      <div className="text-[#4c1d95] text-[16px] font-bold mb-1">{settings.currency_symbol || "$"}{Number(l4.total_deposits || 0).toFixed(2)}</div>
                       <div className="text-gray-400 text-[10px]">Total Deposit</div>
                     </div>
                     <div>
-                      <div className="text-[#4c1d95] text-[16px] font-bold mb-1">{Number(l4.total_earnings).toFixed(2)}</div>
+                      <div className="text-[#4c1d95] text-[16px] font-bold mb-1">{settings.currency_symbol || "$"}{Number(l4.total_earnings).toFixed(2)}</div>
                       <div className="text-gray-400 text-[10px]">Total Earnings</div>
                     </div>
                   </div>

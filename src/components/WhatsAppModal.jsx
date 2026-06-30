@@ -61,7 +61,7 @@ export default function WhatsAppModal() {
           <h2 className="text-[18px] font-bold text-[#0f172a] mb-3">Official Information Release</h2>
           
           <p className="text-[13px] text-gray-500 mb-8 leading-relaxed">
-            Join our official WhatsApp group to get the latest news and welfare information about Polychainapp Platform.
+            Join our official WhatsApp group to get the latest news and welfare information about {settingsRes?.settings?.site_name || "Polychainapp"} Platform.
           </p>
           
           <Button 

@@ -4,7 +4,7 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { forgotPasswordSchema } from "@/lib/schemas";
-import { usePost } from "@/hooks/useApi"; // ✅ new centralized hook
+import { usePost, useFetchData } from "@/hooks/useApi"; // ✅ new centralized hook
 import { Input } from "@/components/ui/auth-input";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
@@ -21,6 +21,11 @@ export default function ForgotPasswordPage() {
   } = useForm({
     resolver: zodResolver(forgotPasswordSchema),
   });
+
+  const { data: settingsResponse } = useFetchData("/settings", ["platform-settings"]);
+  const settings = settingsResponse?.settings || {};
+  const siteName = settings.site_name || "Polychainapp";
+  const siteLogo = settings.platform_logo || null;
 
   // ✅ usePost hook
   const requestOtpMutation = usePost("/auth/forgot-password", null);
@@ -40,10 +45,21 @@ export default function ForgotPasswordPage() {
       {/* Left section (Form) */}
       <div className="min-h-screen flex flex-col justify-center items-center w-full lg:w-1/2 px-8 lg:px-16 py-12">
         <div className="w-full max-w-sm">
-          <div className="mb-10">
+          <div className="mb-10 flex flex-col items-center text-center">
+            {siteLogo ? (
+              <div className="w-16 h-16 rounded-full overflow-hidden shadow-sm flex items-center justify-center bg-gray-50 border border-gray-100 mb-4">
+                <img src={siteLogo} alt="Logo" className="w-full h-full object-contain" />
+              </div>
+            ) : (
+              <div className="w-16 h-16 bg-gradient-to-br from-[#4c1d95] to-[#0f172a] rounded-full flex items-center justify-center shadow-sm mb-4">
+                <div className="text-white text-xs font-bold tracking-wider">
+                  {siteName.substring(0, 4).toUpperCase()}
+                </div>
+              </div>
+            )}
             <h1 className="text-2xl font-bold text-gray-900 mb-1">Forgot Password?</h1>
             <p className="text-gray-500 text-sm">
-              Enter your registered email and we’ll send you a password reset link.
+              Enter your registered email and we’ll send you a password reset link for {siteName}.
             </p>
           </div>
 

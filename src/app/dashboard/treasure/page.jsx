@@ -20,6 +20,8 @@ export default function TreasurePage() {
 
   const { data: historyData, isLoading } = useFetchData("/users/treasure/history", ["treasure-history"]);
   const claimMutation = usePost("/users/treasure/claim", "treasure-history");
+  const { data: settingsRes } = useFetchData("/settings", ["platform-settings"]);
+  const settings = settingsRes?.settings || {};
 
   const claims = historyData?.claims || [];
 
@@ -177,7 +179,7 @@ export default function TreasurePage() {
                     </div>
                     <div className="text-right">
                       <div className="text-[14px] font-bold text-[#10b981]">
-                        +${Number(claim.reward_amount).toFixed(2)}
+                        +{settings.currency_symbol || "$"}{Number(claim.reward_amount).toFixed(2)}
                       </div>
                       <div className="text-[10px] text-gray-400 font-medium bg-gray-50 px-1.5 py-0.5 rounded mt-1 inline-block">
                         Claimed

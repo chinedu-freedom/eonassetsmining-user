@@ -8,18 +8,23 @@ import { Input } from "@/components/ui/auth-input";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { setAuthToken } from "@/config/axiosInstance";
 import { Controller } from "react-hook-form";
 import { useFetchData } from "@/hooks/useApi";
 import ReactSelect from "react-select";
-export default function SignupPage() {
+import { useEffect, Suspense } from "react";
+
+function SignupForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const refCode = searchParams.get("ref");
 
   const {
     register,
     handleSubmit,
     control,
+    setValue,
     formState: { errors },
   } = useForm({
     resolver: zodResolver(signupSchema),
@@ -35,9 +40,20 @@ export default function SignupPage() {
   });
 
   const signupMutation = usePost("/auth/register", null);
+  const { data: settingsResponse } = useFetchData("/settings", ["platform-settings"]);
+  const settings = settingsResponse?.settings || {};
+  const siteName = settings.site_name || "Polychainapp";
+  const siteLogo = settings.platform_logo || null;
+
   const { data: countriesRes, isLoading: isLoadingCountries } = useFetchData("/auth/countries", ["countries"]);
   const countries = Array.isArray(countriesRes) ? countriesRes : countriesRes?.data || [];
   const countryOptions = countries.map(c => ({ value: c.id, label: c.country_name }));
+
+  useEffect(() => {
+    if (refCode) {
+      setValue("referred_by_code", refCode);
+    }
+  }, [refCode, setValue]);
 
   const onSubmit = (data) => {
     const payload = {
@@ -64,10 +80,21 @@ export default function SignupPage() {
       {/* Left section */}
       <div className="w-full max-w-xl flex items-center justify-center p-8 overflow-y-auto">
         <div className="w-full max-w-md">
-          <div className="mb-10">
+          <div className="mb-10 flex flex-col items-center text-center">
+            {siteLogo ? (
+              <div className="w-16 h-16 rounded-full overflow-hidden shadow-sm flex items-center justify-center bg-gray-50 border border-gray-100 mb-4">
+                <img src={siteLogo} alt="Logo" className="w-full h-full object-contain" />
+              </div>
+            ) : (
+              <div className="w-16 h-16 bg-gradient-to-br from-[#4c1d95] to-[#0f172a] rounded-full flex items-center justify-center shadow-sm mb-4">
+                <div className="text-white text-xs font-bold tracking-wider">
+                  {siteName.substring(0, 4).toUpperCase()}
+                </div>
+              </div>
+            )}
             <h1 className="text-2xl font-bold text-gray-900 mb-1">Sign up</h1>
             <p className="text-gray-500 text-sm">
-              Sign up for free and start growing your wealth today
+              Sign up for free and start growing your wealth today on {siteName}
             </p>
           </div>
 
@@ -171,7 +198,17 @@ export default function SignupPage() {
 
             {/* Referral Code */}
             <div>
-              <Input label="Invitation Code (Optional)" {...register("referred_by_code")} />
+              <Controller
+                control={control}
+                name="referred_by_code"
+                defaultValue={refCode || ""}
+                render={({ field }) => (
+                  <Input 
+                    label="Invitation Code (Optional)" 
+                    {...field} 
+                  />
+                )}
+              />
               {errors.referred_by_code && (
                 <p className="text-red-500 text-sm mt-1">
                   {errors.referred_by_code.message}
@@ -205,5 +242,13 @@ export default function SignupPage() {
       {/* Right section */}
 
     </div>
+  );
+}
+
+export default function SignupPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center">Loading...</div>}>
+      <SignupForm />
+    </Suspense>
   );
 }

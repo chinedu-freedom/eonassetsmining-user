@@ -1,14 +1,18 @@
 import { NumericFormat } from "react-number-format";
+import { useFetchData } from "@/hooks/useApi";
 
 export default function CurrencyFormatter({ amount }) {
-  if (!amount) return;
+  const { data: settingsRes } = useFetchData("/settings", ["platform-settings"]);
+  const symbol = settingsRes?.settings?.currency_symbol || "$";
+
+  if (amount === undefined || amount === null) return null;
 
   return (
     <NumericFormat
       value={amount}
       displayType="text"
       thousandSeparator=","
-      prefix="$"
+      prefix={symbol}
     />
   );
 }

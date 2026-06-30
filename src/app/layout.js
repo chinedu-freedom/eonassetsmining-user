@@ -12,16 +12,41 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-export const metadata = {
-  title: "Polychainapp",
-  description: "The Ultimate Crypto Asset Mining Platform",
-  manifest: "/manifest.json",
-  appleWebApp: {
-    capable: true,
-    statusBarStyle: "default",
+export async function generateMetadata() {
+  try {
+    const apiBase = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001/api";
+    const res = await fetch(`${apiBase}/settings`, { 
+      next: { revalidate: 60 }
+    });
+    if (res.ok) {
+      const data = await res.json();
+      const siteName = data?.settings?.site_name || "Polychainapp";
+      const siteTitle = data?.settings?.site_title || "The Ultimate Crypto Asset Mining Platform";
+      return {
+        title: siteName,
+        description: siteTitle,
+        manifest: "/manifest.json",
+        appleWebApp: {
+          capable: true,
+          statusBarStyle: "default",
+          title: siteName,
+        },
+      };
+    }
+  } catch (error) {
+    // Ignore error and fallback to default
+  }
+  return {
     title: "Polychainapp",
-  },
-};
+    description: "The Ultimate Crypto Asset Mining Platform",
+    manifest: "/manifest.json",
+    appleWebApp: {
+      capable: true,
+      statusBarStyle: "default",
+      title: "Polychainapp",
+    },
+  };
+}
 
 import { Providers } from "./providers";
 import { Toaster } from "sonner";

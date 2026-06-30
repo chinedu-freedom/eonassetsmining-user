@@ -5,7 +5,7 @@ import { useState, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { otpSchema } from "@/lib/schemas";
-import { usePost } from "@/hooks/useApi"; 
+import { usePost, useFetchData } from "@/hooks/useApi"; 
 import { Input } from "@/components/ui/auth-input";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
@@ -20,6 +20,11 @@ export default function VerifyOtpPage() {
   const { handleSubmit, setValue } = useForm({
     resolver: zodResolver(otpSchema),
   });
+
+  const { data: settingsResponse } = useFetchData("/settings", ["platform-settings"]);
+  const settings = settingsResponse?.settings || {};
+  const siteName = settings.site_name || "Polychainapp";
+  const siteLogo = settings.platform_logo || null;
 
   const verifyOtpMutation = usePost("/auth/verify-otp", null);
   const resendOtpMutation = usePost("/auth/forgot-password", null);
@@ -72,10 +77,21 @@ export default function VerifyOtpPage() {
     <div className="min-h-screen flex items-center justify-center bg-white">
       {/* Left side (OTP Form) */}
       <div className="min-h-screen flex flex-col justify-center items-center w-full lg:w-1/2 px-8 lg:px-16 py-12">
-        <div className="w-full max-w-sm text-center">
+        <div className="w-full max-w-sm text-center flex flex-col items-center">
+          {siteLogo ? (
+            <div className="w-16 h-16 rounded-full overflow-hidden shadow-sm flex items-center justify-center bg-gray-50 border border-gray-100 mb-4">
+              <img src={siteLogo} alt="Logo" className="w-full h-full object-contain" />
+            </div>
+          ) : (
+            <div className="w-16 h-16 bg-gradient-to-br from-[#4c1d95] to-[#0f172a] rounded-full flex items-center justify-center shadow-sm mb-4">
+              <div className="text-white text-xs font-bold tracking-wider">
+                {siteName.substring(0, 4).toUpperCase()}
+              </div>
+            </div>
+          )}
           <h2 className="text-2xl font-bold text-gray-900 mb-2">Verify OTP</h2>
           <p className="text-sm text-gray-500 mb-8">
-            Enter the 4-digit code sent to your email.
+            Enter the 4-digit code sent to your email to access {siteName}.
           </p>
 
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">

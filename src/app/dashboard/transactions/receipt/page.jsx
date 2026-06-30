@@ -5,17 +5,22 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { ArrowLeft, Image as ImageIcon, FileText } from "lucide-react";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
+import { useFetchData } from "@/hooks/useApi";
 
 function ReceiptContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const receiptRef = useRef(null);
 
+  const { data: settingsRes } = useFetchData("/settings", ["platform-settings"]);
+  const siteName = settingsRes?.settings?.site_name || "Polychainapp";
+  const symbol = settingsRes?.settings?.currency_symbol || "$";
+
   // Extract from URL query params
   const id = searchParams.get("id") || "0";
   const title = searchParams.get("title") || "Receipt";
   const date = searchParams.get("date") || "N/A";
-  const amount = searchParams.get("amount") || "$0.00";
+  const amount = searchParams.get("amount") || `${symbol}0.00`;
   const status = searchParams.get("status") || "SUCCESS";
   const type = searchParams.get("type") || "Transaction";
   
@@ -35,7 +40,7 @@ function ReceiptContent() {
       const canvas = await html2canvas(receiptRef.current, { scale: 2 });
       const image = canvas.toDataURL("image/png", 1.0);
       const link = document.createElement("a");
-      link.download = `Polychainapp-${title}-Receipt.png`;
+      link.download = `${siteName}-${title}-Receipt.png`;
       link.href = image;
       link.click();
     } catch (error) {
@@ -54,7 +59,7 @@ function ReceiptContent() {
         format: [canvas.width, canvas.height]
       });
       pdf.addImage(imgData, "PNG", 0, 0, canvas.width, canvas.height);
-      pdf.save(`Polychainapp-${title}-Receipt.pdf`);
+      pdf.save(`${siteName}-${title}-Receipt.pdf`);
     } catch (error) {
       console.error("Failed to generate PDF", error);
     }
@@ -82,13 +87,13 @@ function ReceiptContent() {
         >
           {/* Watermarks */}
           <div className="absolute inset-0 pointer-events-none flex flex-col items-center justify-center gap-12 z-0 opacity-[0.03]">
-             <span className="text-[32px] font-bold tracking-wider text-[#4c1d95] whitespace-nowrap -rotate-45">Polychainapp</span>
-             <span className="text-[32px] font-bold tracking-wider text-[#4c1d95] whitespace-nowrap -rotate-45 ml-24">Polychainapp</span>
-             <span className="text-[32px] font-bold tracking-wider text-[#4c1d95] whitespace-nowrap -rotate-45 -ml-24">Polychainapp</span>
+             <span className="text-[32px] font-bold tracking-wider text-[#4c1d95] whitespace-nowrap -rotate-45">{siteName}</span>
+             <span className="text-[32px] font-bold tracking-wider text-[#4c1d95] whitespace-nowrap -rotate-45 ml-24">{siteName}</span>
+             <span className="text-[32px] font-bold tracking-wider text-[#4c1d95] whitespace-nowrap -rotate-45 -ml-24">{siteName}</span>
           </div>
 
           <div className="w-full flex justify-between items-center mb-6 relative z-10">
-            <div className="text-[#4c1d95] font-bold text-[14px]">Polychainapp</div>
+            <div className="text-[#4c1d95] font-bold text-[14px]">{siteName}</div>
             <div className="text-gray-400 text-[10px] truncate max-w-[150px]">{receiptTitle}</div>
           </div>
 
@@ -133,7 +138,7 @@ function ReceiptContent() {
 
           <div className="w-full bg-[#f0f9ff] border-l-[3px] border-[#8b5cf6] rounded-r-[8px] p-3 mt-2 relative z-10">
             <p className="text-[#64748b] text-[10px] leading-relaxed">
-              Transaction processed by <span className="font-bold text-[#0f172a]">Polychainapp</span>. Thank you for being a valued member of our platform.
+              Transaction processed by <span className="font-bold text-[#0f172a]">{siteName}</span>. Thank you for being a valued member of our platform.
             </p>
           </div>
         </div>

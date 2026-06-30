@@ -39,6 +39,8 @@ export default function TransactionsPage() {
   };
 
   const { data: txRes, isLoading } = useFetchData("/users/transactions", ["transactions"]);
+  const { data: settingsRes } = useFetchData("/settings", ["platform-settings"]);
+  const settings = settingsRes?.settings || {};
   const rawTransactions = txRes?.transactions || [];
 
   const transactions = rawTransactions.map(tx => {
@@ -47,13 +49,14 @@ export default function TransactionsPage() {
     // Determine sign: if it's an investment or withdrawal, it's typically a debit (-)
     // Actually balance_after - balance_before is more reliable
     const diff = parseFloat(tx.balance_after) - parseFloat(tx.balance_before);
+    const baseSymbol = settings.currency_symbol || "$";
     let amountStr = "";
     if (diff > 0) {
-      amountStr = `+$${Math.abs(diff).toFixed(2)}`;
+      amountStr = `+${baseSymbol}${Math.abs(diff).toFixed(2)}`;
     } else if (diff < 0) {
-      amountStr = `-$${Math.abs(diff).toFixed(2)}`;
+      amountStr = `-${baseSymbol}${Math.abs(diff).toFixed(2)}`;
     } else {
-      amountStr = `$${parseFloat(tx.amount).toFixed(2)}`;
+      amountStr = `${baseSymbol}${parseFloat(tx.amount).toFixed(2)}`;
     }
 
     return {
@@ -99,7 +102,7 @@ export default function TransactionsPage() {
               <BarChart2 size={16} />
             </div>
             <div className="text-[#0f172a] font-bold text-[18px] mb-0.5">
-              ${totalVolume.toFixed(2)}
+              {settings.currency_symbol || "$"}{totalVolume.toFixed(2)}
             </div>
             <div className="text-gray-400 text-[11px]">Total Volume</div>
           </div>

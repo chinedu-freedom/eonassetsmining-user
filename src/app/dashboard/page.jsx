@@ -43,12 +43,18 @@ export default function DashboardPage() {
   const { data: languagesResponse } = useFetchData("/auth/languages", ["languages"]);
   const dynamicLanguages = languagesResponse?.data || [];
 
+  const { data: settingsResponse } = useFetchData("/settings", ["platform-settings"]);
+  const settings = settingsResponse?.settings || {};
+  const siteName = settings.site_name || "Polychainapp";
+  const siteLogo = settings.platform_logo || null;
+
   const [liveExchangeRate, setLiveExchangeRate] = useState(null);
 
   const toggleCurrency = () => {
     if (!userProfile?.country) return;
     const localCurrency = userProfile.country.currency_code?.trim() ? userProfile.country.currency_code : "NGN";
-    setCurrency(prev => prev === "USDT" ? localCurrency : "USDT");
+    const baseCurrency = settings.currency_name || "USDT";
+    setCurrency(prev => prev === baseCurrency ? localCurrency : baseCurrency);
   };
 
   useEffect(() => {
@@ -62,7 +68,8 @@ export default function DashboardPage() {
     const fetchLiveRate = async () => {
       if (userProfile?.country) {
         const targetCurrency = userProfile.country.currency_code?.trim() ? userProfile.country.currency_code : "NGN";
-        if (targetCurrency !== 'USDT' && targetCurrency !== 'USD') {
+        const baseCurrency = settings.currency_name || "USDT";
+        if (targetCurrency !== baseCurrency && targetCurrency !== 'USD') {
           try {
             const res = await fetch(`https://api.exchangerate-api.com/v4/latest/USD`);
             const data = await res.json();
@@ -76,16 +83,18 @@ export default function DashboardPage() {
       }
     };
     fetchLiveRate();
-  }, [userProfile?.country]);
+  }, [userProfile?.country, settings.currency_name]);
 
   // Convert balance based on selected currency
   const getDisplayBalance = () => {
-    if (!userProfile) return "$0.00";
+    const baseSymbol = settings.currency_symbol || "$";
+    if (!userProfile) return `${baseSymbol}0.00`;
     
     const balanceUSD = parseFloat(userProfile.balance || 0) + parseFloat(userProfile.gift_balance || 0);
+    const baseCurrency = settings.currency_name || "USDT";
     
-    if (currency === "USDT") {
-      return `$${balanceUSD.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    if (currency === "USDT" || currency === baseCurrency) {
+      return `${baseSymbol}${balanceUSD.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
     } else {
       // Use live exchange rate if available, fallback to database static rate, then fallback to 1
       const exchangeRate = liveExchangeRate !== null ? liveExchangeRate : parseFloat(userProfile.country?.exchange_rate || 1);
@@ -103,10 +112,18 @@ export default function DashboardPage() {
       {/* Header */}
       <div className="bg-white px-4 pt-4 pb-3 flex justify-between items-center rounded-b-[20px] shadow-sm z-10 relative">
         <div className="flex items-center gap-2">
-          <div className="w-9 h-9 bg-gradient-to-br from-[#4c1d95] to-[#0f172a] rounded-full flex items-center justify-center shadow-sm">
-            <div className="text-white text-[9px] font-bold tracking-wider">Poly</div>
-          </div>
-          <span className="text-[#4c1d95] font-bold text-[15px]">Polychainapp</span>
+          {siteLogo ? (
+            <div className="w-9 h-9 rounded-full overflow-hidden shadow-sm flex items-center justify-center bg-gray-50 border border-gray-100">
+              <img src={siteLogo} alt="Logo" className="w-full h-full object-contain" />
+            </div>
+          ) : (
+            <div className="w-9 h-9 bg-gradient-to-br from-[#4c1d95] to-[#0f172a] rounded-full flex items-center justify-center shadow-sm">
+              <div className="text-white text-[9px] font-bold tracking-wider">
+                {siteName.substring(0, 4).toUpperCase()}
+              </div>
+            </div>
+          )}
+          <span className="text-[#4c1d95] font-bold text-[15px]">{siteName}</span>
         </div>
         <div className="flex items-center gap-2">
           <button 
@@ -138,7 +155,7 @@ export default function DashboardPage() {
               onClick={toggleCurrency}
               className="bg-white/10 px-2 py-1 cursor-pointer rounded-md text-[11px] font-bold flex items-center gap-1 hover:bg-white/20 transition-colors backdrop-blur-sm border border-white/10"
             >
-              {currency === "USDT" ? "USDT" : (userProfile?.country?.currency_code || "NGN")} <span className="text-[7px] opacity-70 cursor-pointer">▼</span>
+              {currency === (settings.currency_name || "USDT") ? (settings.currency_name || "USDT") : (userProfile?.country?.currency_code || "NGN")} <span className="text-[7px] opacity-70 cursor-pointer">▼</span>
             </button>
           </div>
           
@@ -171,7 +188,7 @@ export default function DashboardPage() {
           <Volume2 className="text-[#8b5cf6] shrink-0" size={16} />
           <div className="overflow-hidden whitespace-nowrap w-full relative">
             <p className="text-[12px] text-gray-600 animate-[marquee_15s_linear_infinite] inline-block">
-              Start mining today and grow your wealth with us. Welcome to Polychainapp!
+              Start mining today and grow your wealth with us. Welcome to {siteName}!
             </p>
           </div>
         </div>
@@ -297,7 +314,7 @@ export default function DashboardPage() {
                       <p className={`text-[${activity.name ? '11px' : '12px'}] text-gray-500 leading-tight ${activity.name ? '' : 'mb-0.5'}`}>{activity.text}</p>
                     </div>
                   </div>
-                  <div className={`font-semibold ${activity.iconCol} text-[13px]`}>{activity.amount}</div>
+                  <div className={`font-semibold ${activity.iconCol} text-[13px]`}>{activity.amount.replace('$', settings.currency_symbol || '$')}</div>
                 </div>
               ))}
             </div>

@@ -77,7 +77,7 @@ export default function WithdrawPage() {
             {isLoading ? (
                <Loader2 size={24} className="animate-spin text-white/70" />
             ) : (
-               `$${totalBalance.toFixed(2)}`
+               `${settings.currency_symbol || "$"}${totalBalance.toFixed(2)}`
             )}
           </div>
         </div>
@@ -128,7 +128,7 @@ export default function WithdrawPage() {
             </div>
             <div className="flex gap-2 items-start text-[11px] text-[#92400e]/80 font-medium">
               <span className="font-bold">3.</span>
-              <p>You can make a minimum withdrawal of ${minWithdrawal.toFixed(2)}</p>
+              <p>You can make a minimum withdrawal of {settings.currency_symbol || "$"}{minWithdrawal.toFixed(2)}</p>
             </div>
             <div className="flex gap-2 items-start text-[11px] text-[#92400e]/80 font-medium">
               <span className="font-bold">4.</span>
@@ -204,7 +204,7 @@ export default function WithdrawPage() {
               <div className="space-y-1.5">
                 <label className="block text-[#0f172a] text-[12px] font-bold">Withdrawal Amount *</label>
                 <div className="relative flex items-center">
-                  <span className="absolute left-3.5 text-[#8b5cf6] font-bold text-[14px]">$</span>
+                  <span className="absolute left-3.5 text-[#8b5cf6] font-bold text-[14px]">{settings.currency_symbol || "$"}</span>
                   <input 
                     type="number"
                     value={amount}
@@ -219,18 +219,18 @@ export default function WithdrawPage() {
                     MAX
                   </button>
                 </div>
-                <p className="text-gray-500 text-[10px]">Min: ${minWithdrawal.toFixed(2)} - Max: ${maxWithdrawal.toFixed(2)}</p>
+                <p className="text-gray-500 text-[10px]">Min: {settings.currency_symbol || "$"}{minWithdrawal.toFixed(2)} - Max: {settings.currency_symbol || "$"}{maxWithdrawal.toFixed(2)}</p>
               </div>
 
               <div className="bg-[#fffbeb] border border-[#fde68a] rounded-[10px] p-3 space-y-2">
                 <div className="flex justify-between items-center text-[12px] text-[#b45309]">
                   <span>Charge ({withdrawalCharge.toFixed(2)}%)</span>
-                  <span className="font-medium text-red-500">-${feeAmount.toFixed(2)}</span>
+                  <span className="font-medium text-red-500">-{settings.currency_symbol || "$"}{feeAmount.toFixed(2)}</span>
                 </div>
                 <div className="w-full border-t border-dashed border-[#fde68a]"></div>
                 <div className="flex justify-between items-center text-[12px] font-bold text-[#92400e]">
                   <span>You will receive</span>
-                  <span>${amount ? (Number(amount) - feeAmount).toFixed(2) : "0.00"}</span>
+                  <span>{settings.currency_symbol || "$"}{amount ? (Number(amount) - feeAmount).toFixed(2) : "0.00"}</span>
                 </div>
               </div>
 

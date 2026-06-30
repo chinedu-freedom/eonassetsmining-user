@@ -98,7 +98,7 @@ export default function DepositModal() {
                       </span>
                     </h4>
                     <p className="text-[12px] text-gray-500 mt-0.5">
-                      Limit: ${settings?.min_deposit || 10} - ${settings?.max_deposit || 100000}
+                      Limit: {settings?.currency_symbol || "$"}{settings?.min_deposit || 10} - {settings?.currency_symbol || "$"}{settings?.max_deposit || 100000}
                     </p>
                   </div>
                 </div>

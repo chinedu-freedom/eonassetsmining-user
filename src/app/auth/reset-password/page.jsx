@@ -5,7 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Input } from "@/components/ui/auth-input";
 import { Button } from "@/components/ui/button";
-import { usePost } from "@/hooks/useApi";
+import { usePost, useFetchData } from "@/hooks/useApi";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 
@@ -15,6 +15,11 @@ export default function ResetPasswordPage() {
     newPassword: "",
     confirmPassword: "",
   });
+
+  const { data: settingsResponse } = useFetchData("/settings", ["platform-settings"]);
+  const settings = settingsResponse?.settings || {};
+  const siteName = settings.site_name || "Polychainapp";
+  const siteLogo = settings.platform_logo || null;
 
   // ✅ usePost hook
   const resetPasswordMutation = usePost("/auth/reset-password", null);
@@ -76,12 +81,23 @@ export default function ResetPasswordPage() {
     <div className="min-h-screen flex items-center justify-center bg-white">
       <div className="min-h-screen flex flex-col justify-center items-center w-full lg:w-1/2 px-8 lg:px-16 py-12">
         <div className="w-full max-w-sm">
-          <div className="mb-10">
+          <div className="mb-10 flex flex-col items-center text-center">
+            {siteLogo ? (
+              <div className="w-16 h-16 rounded-full overflow-hidden shadow-sm flex items-center justify-center bg-gray-50 border border-gray-100 mb-4">
+                <img src={siteLogo} alt="Logo" className="w-full h-full object-contain" />
+              </div>
+            ) : (
+              <div className="w-16 h-16 bg-gradient-to-br from-[#4c1d95] to-[#0f172a] rounded-full flex items-center justify-center shadow-sm mb-4">
+                <div className="text-white text-xs font-bold tracking-wider">
+                  {siteName.substring(0, 4).toUpperCase()}
+                </div>
+              </div>
+            )}
             <h1 className="text-2xl font-bold text-gray-900 mb-1">
               Reset Password
             </h1>
             <p className="text-gray-500 text-sm">
-              Enter your new password and confirm it below.
+              Enter your new password and confirm it below for {siteName}.
             </p>
           </div>
 

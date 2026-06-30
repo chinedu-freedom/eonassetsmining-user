@@ -38,6 +38,9 @@ export default function AboutPage() {
   const { data: teamRes, isLoading: isLoadingTeam } = useFetchData("/team-members", ["about-team-members"]);
   const teamMembers = Array.isArray(teamRes?.teamMembers) ? teamRes.teamMembers : [];
 
+  const { data: settingsRes } = useFetchData("/settings", ["platform-settings"]);
+  const siteName = settingsRes?.settings?.site_name || "Polychainapp";
+
   return (
     <div className="flex flex-col h-full bg-[#f8f9fa] overflow-y-auto [&::-webkit-scrollbar]:hidden">
       {/* Header */}
@@ -59,7 +62,7 @@ export default function AboutPage() {
             <ShieldCheck size={10} /> Trusted Platform
           </div>
           
-          <h2 className="text-[20px] font-black mb-1.5 leading-tight relative z-10">Welcome to Polychainapp</h2>
+          <h2 className="text-[20px] font-black mb-1.5 leading-tight relative z-10">Welcome to {siteName}</h2>
           <p className="text-[10px] text-white/90 leading-relaxed max-w-[250px] mx-auto mb-1 relative z-10">
             Your trusted partner for smart investments. We blend deep liquidity, smart automation, and an easy-to-use interface so anyone can grow consistently.
           </p>
@@ -72,7 +75,7 @@ export default function AboutPage() {
             <div className="text-[8px] font-bold text-gray-400 tracking-wider">USERS</div>
           </div>
           <div className="bg-white rounded-[12px] py-2.5 px-1 text-center shadow-[0_2px_8px_-4px_rgba(0,0,0,0.1)] border border-gray-100">
-            <div className="text-[#4c1d95] text-[14px] font-bold mb-0.5">$10M+</div>
+            <div className="text-[#4c1d95] text-[14px] font-bold mb-0.5">{settingsRes?.settings?.currency_symbol || "$"}10M+</div>
             <div className="text-[8px] font-bold text-gray-400 tracking-wider">VOLUME</div>
           </div>
           <div className="bg-white rounded-[12px] py-2.5 px-1 text-center shadow-[0_2px_8px_-4px_rgba(0,0,0,0.1)] border border-gray-100">
@@ -134,9 +137,9 @@ export default function AboutPage() {
           )}
         </div>
 
-        {/* Why Choose Polychainapp */}
+        {/* Why Choose siteName */}
         <div className="mt-6">
-          <h3 className="text-[#4c1d95] font-bold text-[14px] text-center mb-3">Why Choose Polychainapp?</h3>
+          <h3 className="text-[#4c1d95] font-bold text-[14px] text-center mb-3">Why Choose {siteName}?</h3>
           
           <div className="space-y-2">
             {/* Card 1 */}
@@ -240,10 +243,10 @@ export default function AboutPage() {
           <div className="absolute bottom-0 left-0 w-20 h-20 bg-white/10 rounded-full blur-xl translate-y-1/2 -translate-x-1/4"></div>
           
           <div className="relative z-10">
-            <h3 className="text-[14px] font-bold mb-1.5">Ready to Grow With Polychainapp?</h3>
+            <h3 className="text-[14px] font-bold mb-1.5">Ready to Grow With {siteName}?</h3>
             <p className="text-white/90 text-[10px] leading-relaxed mb-4 max-w-[240px] mx-auto">
               Complete your profile, activate a plan, and start collecting daily rewards.
-            </p>
+            </p>e
             <button 
               onClick={() => router.push('/dashboard/mining')}
               className="cursor-pointer bg-white text-[#8b5cf6] flex items-center justify-center gap-1.5 w-full py-2.5 rounded-[10px] text-[12px] font-bold hover:bg-gray-50 active:scale-[0.98] transition-all shadow-sm"

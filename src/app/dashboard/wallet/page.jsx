@@ -17,6 +17,9 @@ export default function WalletPage() {
   const { data: userRes, isLoading: loadingUser } = useFetchData("/users/me", ["user"]);
   const { data: txRes, isLoading: loadingTx } = useFetchData("/users/transactions", ["transactions"]);
 
+  const { data: settingsRes } = useFetchData("/settings", ["platform-settings"]);
+  const settings = settingsRes?.settings || {};
+
   const user = userRes?.user || {};
   const transactions = txRes?.transactions || [];
 
@@ -28,7 +31,8 @@ export default function WalletPage() {
     const fetchLiveRate = async () => {
       if (user?.country) {
         const targetCurrency = user.country.currency_code?.trim() ? user.country.currency_code : "NGN";
-        if (targetCurrency !== 'USDT' && targetCurrency !== 'USD') {
+        const baseCurrency = settings.currency_name || "USDT";
+        if (targetCurrency !== baseCurrency && targetCurrency !== 'USD') {
           try {
             const res = await fetch(`https://api.exchangerate-api.com/v4/latest/USD`);
             const data = await res.json();
@@ -42,18 +46,21 @@ export default function WalletPage() {
       }
     };
     fetchLiveRate();
-  }, [user?.country]);
+  }, [user?.country, settings.currency_name]);
 
   const toggleCurrency = () => {
     if (!user?.country) return;
     const localCurrency = user.country.currency_code?.trim() ? user.country.currency_code : "NGN";
-    setCurrency(prev => prev === "USDT" ? localCurrency : "USDT");
+    const baseCurrency = settings.currency_name || "USDT";
+    setCurrency(prev => prev === baseCurrency ? localCurrency : baseCurrency);
   };
 
   const formatMoney = (amountUSD) => {
     const usd = parseFloat(amountUSD || 0);
-    if (currency === "USDT") {
-      return `$${usd.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    const baseCurrency = settings.currency_name || "USDT";
+    const baseSymbol = settings.currency_symbol || "$";
+    if (currency === "USDT" || currency === baseCurrency) {
+      return `${baseSymbol}${usd.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
     } else {
       const exchangeRate = liveExchangeRate !== null ? liveExchangeRate : parseFloat(user?.country?.exchange_rate || 1);
       const localBalance = usd * exchangeRate;
@@ -108,7 +115,7 @@ export default function WalletPage() {
               onClick={toggleCurrency}
               className="flex items-center gap-1 bg-white/10 px-2 py-1 rounded text-[9px] font-bold hover:bg-white/20 transition-colors cursor-pointer border border-white/10 backdrop-blur-sm"
             >
-              {currency === "USDT" ? "USDT" : (user?.country?.currency_code || "NGN")} {currency === "USDT" ? <ChevronDown size={10} /> : <ChevronUp size={10} />}
+              {currency === (settings.currency_name || "USDT") ? (settings.currency_name || "USDT") : (user?.country?.currency_code || "NGN")} {currency === (settings.currency_name || "USDT") ? <ChevronDown size={10} /> : <ChevronUp size={10} />}
             </button>
           </div>
 
@@ -184,7 +191,7 @@ export default function WalletPage() {
                      </div>
                      <div className="text-right">
                         <div className={`text-[13px] font-bold ${tx.type === 'DEPOSIT' || tx.type.includes('reward') ? 'text-green-500' : 'text-red-500'}`}>
-                          {tx.type === 'DEPOSIT' || tx.type.includes('reward') ? '+' : '-'}${Number(tx.amount).toFixed(2)}
+                          {tx.type === 'DEPOSIT' || tx.type.includes('reward') ? '+' : '-'}{settings.currency_symbol || "$"}{Number(tx.amount).toFixed(2)}
                         </div>
                      </div>
                    </div>

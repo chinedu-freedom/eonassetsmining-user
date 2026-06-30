@@ -11,6 +11,9 @@ export default function NewsArticlePage() {
 
   const article = data?.news;
 
+  const { data: settingsRes } = useFetchData("/settings", ["platform-settings"]);
+  const siteName = settingsRes?.settings?.site_name || "Polychainapp";
+
   return (
     <div className="flex flex-col h-full bg-[#f8f9fa] overflow-y-auto  [&::-webkit-scrollbar]:hidden">
       {/* Header */}
@@ -68,7 +71,7 @@ export default function NewsArticlePage() {
               <div className="w-full h-[140px] bg-gradient-to-r from-purple-500 to-[#0f172a] rounded-xl mb-6 shadow-inner relative overflow-hidden flex items-center justify-center">
                 <div className="absolute inset-0 bg-black/20"></div>
                 <span className="text-white/50 text-[10px] font-bold tracking-widest uppercase z-10 flex items-center gap-2">
-                  <ImageIcon size={14} /> Polychainapp News
+                  <ImageIcon size={14} /> {siteName} News
                 </span>
               </div>
             )}

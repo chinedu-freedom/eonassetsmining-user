@@ -9,7 +9,7 @@ export default function TeamListPage() {
   const router = useRouter();
   const [activeTab, setActiveTab] = useState(1);
 
-  const { data: teamListRes, isLoading } = useFetchData(`/users/me/team/list?level=${activeTab}`, ["team-list", activeTab]);
+  const { data: teamListRes, isLoading } = useFetchData(`/users/team/list?level=${activeTab}`, ["team-list", activeTab]);
   const teamList = teamListRes?.data || [];
 
   return (
@@ -63,7 +63,7 @@ export default function TeamListPage() {
         ) : (
           <div className="space-y-3">
             {teamList.map((user) => (
-              <div key={user.id} className="bg-white rounded-[16px] p-4 flex items-center justify-between shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] border border-gray-100">
+              <div key={user.id} className="bg-white rounded-[16px] px-4 py-3 flex items-center justify-between shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] border border-gray-100">
                 <div className="flex items-center gap-4">
                   {/* Avatar */}
                   <div className="w-[48px] h-[48px] rounded-full bg-gradient-to-br from-[#0d9488] to-[#2563eb] flex items-center justify-center text-white font-bold text-[20px] shrink-0">
@@ -72,11 +72,11 @@ export default function TeamListPage() {
                   
                   {/* User Info */}
                   <div>
-                    <h3 className="text-[#0f172a] font-bold text-[15px]">{user.username}</h3>
-                    <p className="text-[#64748b] text-[12px] mt-0.5">
+                    <h3 className="text-[#0f172a] font-bold text-[15px] -mb-0.5">{user.username}</h3>
+                    <p className="text-[#64748b] text-[12px] ">
                       Joined {new Date(user.joined_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
                     </p>
-                    <p className={`text-[12px] font-bold mt-1 ${user.status === 'Active' ? 'text-[#059669]' : 'text-gray-400'}`}>
+                    <p className={`text-[12px] font-bold ${user.status === 'Active' ? 'text-[#059669]' : 'text-gray-400'}`}>
                       {user.status}
                     </p>
                   </div>
@@ -84,20 +84,26 @@ export default function TeamListPage() {
 
                 {/* Financials */}
                 <div className="text-right flex flex-col items-end justify-center">
-                  <div className="text-[#4c1d95] font-bold text-[15px] leading-tight">
-                    ${Number(user.balance).toFixed(2)}
+                  <div className="flex items-baseline gap-2 -mb-0.5">
+                    <span className="text-gray-400 text-[11px]">Balance:</span>
+                    <span className="text-[#4c1d95] font-bold text-[14px]">
+                      ${Number(user.balance).toFixed(2)}
+                    </span>
                   </div>
-                  <div className="text-gray-400 text-[10px] mb-1.5">Balance</div>
                   
-                  <div className="text-[#f59e0b] font-bold text-[13px] leading-tight mt-0.5">
-                    ${Number(user.deposited_amount || 0).toFixed(2)}
+                  <div className="flex items-baseline gap-2 -mb-0.5">
+                    <span className="text-gray-400 text-[11px]">Deposited:</span>
+                    <span className="text-[#f59e0b] font-bold text-[13px]">
+                      ${Number(user.deposited_amount || 0).toFixed(2)}
+                    </span>
                   </div>
-                  <div className="text-gray-400 text-[10px] mb-1.5">Deposited</div>
 
-                  <div className="text-[#059669] font-bold text-[13px] leading-tight mt-0.5">
-                    ${Number(user.invested_amount || 0).toFixed(2)}
+                  <div className="flex items-baseline gap-2 -mb-0.5">
+                    <span className="text-gray-400 text-[11px]">Invested:</span>
+                    <span className="text-[#059669] font-bold text-[13px]">
+                      ${Number(user.invested_amount || 0).toFixed(2)}
+                    </span>
                   </div>
-                  <div className="text-gray-400 text-[10px]">Invested</div>
                 </div>
               </div>
             ))}

@@ -14,6 +14,8 @@ export default function MiningPlansPage() {
 
   const { data: plansRes, isLoading } = useFetchData("/plans", ["plans"]);
   const { data: userRes } = useFetchData("/users/me", ["user"]);
+  const { data: settingsRes } = useFetchData("/settings", ["platform-settings"]);
+  const settings = settingsRes?.settings || {};
   const plans = Array.isArray(plansRes?.data) 
     ? [...plansRes.data].sort((a, b) => {
         if (a.created_at && b.created_at) {
@@ -94,7 +96,8 @@ export default function MiningPlansPage() {
 
   // Format currency helper
   const formatCurrency = (val) => {
-    return `$${val.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    const symbol = settings.currency_symbol || "$";
+    return `${symbol}${val.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
   };
 
   return (

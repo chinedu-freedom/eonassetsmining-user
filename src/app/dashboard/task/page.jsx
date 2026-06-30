@@ -3,12 +3,89 @@
 import { ArrowLeft, Gift, Lock, CheckCircle2, Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useFetchData, usePost } from "@/hooks/useApi";
+import { useRef, useEffect } from "react";
+import { toast } from "sonner";
 
 export default function TaskPage() {
   const router = useRouter();
 
-  const { data: tasksData, isLoading } = useFetchData("/users/tasks", ["user-tasks"]);
+  const { data: tasksData, isLoading, refetch } = useFetchData("/users/tasks", ["user-tasks"]);
   const claimMutation = usePost("/users/tasks/claim", "user-tasks");
+  const { data: settingsRes } = useFetchData("/settings", ["platform-settings"]);
+  const settings = settingsRes?.settings || {};
+
+  const confettiCanvasRef = useRef(null);
+  const confettiRef = useRef(null);
+
+  useEffect(() => {
+    if (!confettiCanvasRef.current) return;
+    class Confetti {
+        constructor(canvas) {
+            this.canvas = canvas;
+            this.ctx = canvas.getContext('2d');
+            this.particles = [];
+            this.running = false;
+        }
+        resize() {
+            this.canvas.width = window.innerWidth;
+            this.canvas.height = window.innerHeight;
+        }
+        launch(count = 150) {
+            this.resize();
+            this.canvas.style.display = 'block';
+            this.particles = [];
+            const colors = ['#8b5cf6', '#22c55e', '#f59e0b', '#ef4444', '#8b5cf6', '#06b6d4'];
+            for (let i = 0; i < count; i++) {
+                this.particles.push({
+                    x: Math.random() * this.canvas.width,
+                    y: -20 - Math.random() * 200,
+                    size: Math.random() * 10 + 4,
+                    speedY: Math.random() * 4 + 2,
+                    speedX: (Math.random() - 0.5) * 6,
+                    rotation: Math.random() * 360,
+                    rotSpeed: (Math.random() - 0.5) * 15,
+                    color: colors[Math.floor(Math.random() * colors.length)],
+                    shape: Math.random() > 0.5 ? 'rect' : 'circle'
+                });
+            }
+            this.running = true;
+            this.animate();
+        }
+        animate() {
+            if (!this.running) return;
+            this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+            let active = 0;
+            this.particles.forEach(p => {
+                if (p.y < this.canvas.height + 50) {
+                    active++;
+                    p.y += p.speedY;
+                    p.x += p.speedX;
+                    p.rotation += p.rotSpeed;
+                    p.speedY += 0.15;
+                    this.ctx.save();
+                    this.ctx.translate(p.x, p.y);
+                    this.ctx.rotate(p.rotation * Math.PI / 180);
+                    this.ctx.fillStyle = p.color;
+                    if (p.shape === 'rect') {
+                        this.ctx.fillRect(-p.size/2, -p.size/4, p.size, p.size/2);
+                    } else {
+                        this.ctx.beginPath();
+                        this.ctx.arc(0, 0, p.size/2, 0, Math.PI * 2);
+                        this.ctx.fill();
+                    }
+                    this.ctx.restore();
+                }
+            });
+            if (active > 0) {
+                requestAnimationFrame(() => this.animate());
+            } else {
+                this.running = false;
+                this.canvas.style.display = 'none';
+            }
+        }
+    }
+    confettiRef.current = new Confetti(confettiCanvasRef.current);
+  }, []);
 
   const tasks = tasksData?.tasks || [];
   const todayInvites = tasksData?.todayReferralsCount || 0;
@@ -18,7 +95,12 @@ export default function TaskPage() {
   const claimedTasks = tasks.filter(t => t.isClaimed).length;
 
   const handleClaim = (taskId) => {
-    claimMutation.mutate({ taskId });
+    claimMutation.mutate({ taskId }, {
+      onSuccess: () => {
+        confettiRef.current?.launch(150);
+        refetch();
+      }
+    });
   };
 
   return (
@@ -77,7 +159,7 @@ export default function TaskPage() {
                       <div>
                         <h3 className="text-[14px] font-bold text-[#1e293b] leading-tight mb-0.5">{task.task_name}</h3>
                         <div className="flex items-center gap-2 text-[12px]">
-                          <span className="text-[#f59e0b] font-bold">${Number(task.reward_amount).toFixed(2)}</span>
+                          <span className="text-[#f59e0b] font-bold">{settings.currency_symbol || "$"}{Number(task.reward_amount).toFixed(2)}</span>
                           <span className="text-gray-500">{task.required_referrals} invites today</span>
                         </div>
                       </div>
@@ -119,6 +201,11 @@ export default function TaskPage() {
           )}
         </div>
       </div>
+      <canvas 
+        ref={confettiCanvasRef} 
+        className="pointer-events-none fixed inset-0 z-[100] w-full h-full" 
+        style={{ display: 'none' }}
+      />
     </div>
   );
 }

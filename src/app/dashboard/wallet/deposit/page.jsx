@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { ArrowLeft, Wallet, Info, ChevronDown, CheckCircle2, ChevronRight, Download, X } from "lucide-react";
 import { useFetchData, usePost } from "@/hooks/useApi";
@@ -8,7 +8,7 @@ import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import Image from "next/image";
 
-export default function DepositPage() {
+function DepositContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const cryptoId = searchParams.get("cryptoId");
@@ -57,7 +57,7 @@ export default function DepositPage() {
     const maxDep = Number(settings?.max_deposit || 100000);
 
     if (selectedCrypto && (Number(amount) < minDep || Number(amount) > maxDep)) {
-      return toast.error(`Amount must be between $${minDep} and $${maxDep}`);
+      return toast.error(`Amount must be between ${settings.currency_symbol || "$"}${minDep} and ${settings.currency_symbol || "$"}${maxDep}`);
     }
 
     submitDeposit(
@@ -122,7 +122,7 @@ export default function DepositPage() {
                       {selectedCrypto.network}
                     </span>
                   </h3>
-                  <p className="text-[12px] text-gray-500">Limits: ${settings?.min_deposit || 10} - ${settings?.max_deposit || 100000}</p>
+                  <p className="text-[12px] text-gray-500">Limits: {settings.currency_symbol || "$"}{settings?.min_deposit || 10} - {settings.currency_symbol || "$"}{settings?.max_deposit || 100000}</p>
                 </div>
               </div>
               <button 
@@ -136,12 +136,12 @@ export default function DepositPage() {
             {/* Deposit Amount Section */}
             <div className="bg-white border border-gray-100 rounded-[12px] p-5 shadow-sm space-y-5">
               <div className="flex items-center gap-2">
-                <div className="w-6 h-6 bg-purple-50 rounded-full flex items-center justify-center text-purple-500 font-bold text-[14px]">$</div>
+                <div className="w-6 h-6 bg-purple-50 rounded-full flex items-center justify-center text-purple-500 font-bold text-[14px]">{settings.currency_symbol || "$"}</div>
                 <h3 className="font-bold text-[#4c1d95]">Deposit Amount</h3>
               </div>
 
               <div className="relative">
-                <div className="absolute left-4 top-1/2 -translate-y-1/2 text-purple-500 font-bold text-[20px]">$</div>
+                <div className="absolute left-4 top-1/2 -translate-y-1/2 text-purple-500 font-bold text-[20px]">{settings.currency_symbol || "$"}</div>
                 <input 
                   type="number"
                   value={amount}
@@ -162,7 +162,7 @@ export default function DepositPage() {
                         : 'bg-gray-50 border-gray-100 text-gray-600 hover:bg-gray-100'
                     }`}
                   >
-                    {preset}
+                    {settings.currency_symbol || "$"}{preset}
                   </button>
                 ))}
               </div>
@@ -170,10 +170,10 @@ export default function DepositPage() {
               <div className="bg-[#10b981] rounded-[12px] p-4 text-white flex items-center justify-between shadow-[0_4px_12px_-4px_rgba(16,185,129,0.5)]">
                 <div>
                   <p className="text-[12px] font-medium text-white/80">You will receive</p>
-                  <p className="text-[24px] font-bold">${getEstimatedCrypto()}</p>
+                  <p className="text-[24px] font-bold">{settings.currency_symbol || "$"}{getEstimatedCrypto()}</p>
                 </div>
                 <div className="text-[11px] font-medium text-white/90 text-right">
-                  <div>Rate: 1 $ = 1 {selectedCrypto.symbol.toUpperCase()}</div>
+                  <div>Rate: 1 {settings.currency_symbol || "$"} = 1 {selectedCrypto.symbol.toUpperCase()}</div>
                   {Number(settings?.deposit_charge || 0) > 0 && (
                     <div className="mt-0.5">Fee: {settings.deposit_charge}%</div>
                   )}
@@ -191,7 +191,7 @@ export default function DepositPage() {
               <div className="space-y-3">
                 <div className="flex items-start gap-3">
                   <div className="w-5 h-5 rounded-full bg-[#8b5cf6] text-white flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5">1</div>
-                  <p className="text-[13px] text-gray-600">Enter amount (${settings?.min_deposit || 10} - ${settings?.max_deposit || 100000})</p>
+                  <p className="text-[13px] text-gray-600">Enter amount ({settings.currency_symbol || "$"}{settings?.min_deposit || 10} - {settings.currency_symbol || "$"}{settings?.max_deposit || 100000})</p>
                 </div>
                 <div className="flex items-start gap-3">
                   <div className="w-5 h-5 rounded-full bg-[#8b5cf6] text-white flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5">2</div>
@@ -221,5 +221,17 @@ export default function DepositPage() {
         )}
       </div>
     </div>
+  );
+}
+
+export default function DepositPage() {
+  return (
+    <Suspense fallback={
+      <div className="flex justify-center py-20">
+        <Loader2 className="animate-spin text-purple-500" size={32} />
+      </div>
+    }>
+      <DepositContent />
+    </Suspense>
   );
 }

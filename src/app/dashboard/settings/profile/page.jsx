@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { ArrowLeft, User, Mail, Phone, Share2, Calendar, Info, Loader2 } from "lucide-react";
+import { ArrowLeft, User, Mail, Share2, Calendar, Info, Loader2 } from "lucide-react";
 import { useFetchData } from "@/hooks/useApi";
 
 export default function MyProfilePage() {
@@ -49,15 +49,6 @@ export default function MyProfilePage() {
                   <div className="flex items-center gap-3">
                     <Mail size={16} className="text-[#8b5cf6] fill-[#8b5cf6]/20" />
                     <span className="text-[#0f172a] text-[14px]">{user.email || "N/A"}</span>
-                  </div>
-                </div>
-
-                {/* Phone Number */}
-                <div className="p-4">
-                  <div className="text-gray-400 text-[10px] font-medium tracking-wide uppercase mb-1.5">Phone Number</div>
-                  <div className="flex items-center gap-3">
-                    <Phone size={16} className="text-[#8b5cf6] fill-[#8b5cf6]/20" />
-                    <span className="text-[#0f172a] text-[14px]">{user.phone_number || "N/A"}</span>
                   </div>
                 </div>
 

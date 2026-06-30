@@ -26,9 +26,12 @@ export default function InvitePage() {
   
   const invitationCode = user?.referral_code || "------";
 
+  const { data: settingsRes } = useFetchData("/settings", ["platform-settings"]);
+  const siteName = settingsRes?.settings?.site_name || "Polychainapp";
+
   useEffect(() => {
     if (invitationCode && invitationCode !== "------") {
-      setInvitationLink(`${window.location.origin}/register?ref=${invitationCode}`);
+      setInvitationLink(`${window.location.origin}/auth/register?ref=${invitationCode}`);
     }
   }, [invitationCode]);
 
@@ -42,8 +45,8 @@ export default function InvitePage() {
     if (navigator.share && invitationLink) {
       try {
         await navigator.share({
-          title: 'Join Polychainapp',
-          text: 'Use my invitation code to join Polychainapp and start earning!',
+          title: `Join ${siteName}`,
+          text: `Use my invitation code to join ${siteName} and start earning!`,
           url: invitationLink,
         });
       } catch (err) {
@@ -97,7 +100,7 @@ export default function InvitePage() {
       <div className="px-4 mt-2 flex flex-col items-center max-w-[480px] mx-auto w-full z-10">
         
         <p className="text-white/80 text-center text-[11px] leading-snug mb-5 max-w-[260px]">
-          Let's pass Polychainapp to the world together, so everyone feels joy and reward
+          Let's pass {siteName} to the world together, so everyone feels joy and reward
         </p>
 
         {/* QR Code */}

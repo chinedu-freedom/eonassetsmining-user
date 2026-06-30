@@ -41,6 +41,8 @@ export default function AccountPage() {
   const router = useRouter();
   const { isInstallable, installPWA } = usePWA();
   const { currency, setCurrency, showBalance, setShowBalance } = useSharedSettings();
+  const { data: settingsRes } = useFetchData("/settings", ["platform-settings"]);
+  const settings = settingsRes?.settings || {};
   const [showLanguageModal, setShowLanguageModal] = useState(false);
   const [currentLang, setCurrentLang] = useState("EN");
   const [searchQuery, setSearchQuery] = useState("");
@@ -111,15 +113,18 @@ export default function AccountPage() {
   const toggleCurrency = () => {
     if (!userProfile?.country) return;
     const localCurrency = userProfile.country.currency_code?.trim() ? userProfile.country.currency_code : "NGN";
-    setCurrency(prev => prev === "USDT" ? localCurrency : "USDT");
+    const baseCurrency = settings.currency_name || "USDT";
+    setCurrency(prev => prev === baseCurrency ? localCurrency : baseCurrency);
   };
 
   // Convert balance based on selected currency
   const getDisplayValue = (amountUSD) => {
     const usd = parseFloat(amountUSD || 0);
+    const baseCurrency = settings.currency_name || "USDT";
+    const baseSymbol = settings.currency_symbol || "$";
     
-    if (currency === "USDT") {
-      return `$${usd.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    if (currency === "USDT" || currency === baseCurrency) {
+      return `${baseSymbol}${usd.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
     } else {
       const exchangeRate = liveExchangeRate !== null ? liveExchangeRate : parseFloat(userProfile?.country?.exchange_rate || 1);
       const localBalance = usd * exchangeRate;
@@ -129,7 +134,7 @@ export default function AccountPage() {
   };
 
   const balanceValues = {
-    total: getDisplayValue(userProfile?.balance),
+    total: getDisplayValue(Number(userProfile?.balance || 0) + Number(userProfile?.gift_balance || 0)),
     deposit: getDisplayValue(userProfile?.statistics?.total_deposit),
     withdraw: getDisplayValue(userProfile?.statistics?.total_withdrawal),
     income: getDisplayValue(userProfile?.statistics?.total_income)
@@ -201,7 +206,7 @@ export default function AccountPage() {
               onClick={toggleCurrency}
               className="bg-white/10 px-2 cursor-pointer py-1 rounded-md text-[11px] font-bold flex items-center gap-1 hover:bg-white/20 transition-colors backdrop-blur-sm border border-white/10"
             >
-              {currency === "USDT" ? "USDT" : (userProfile?.country?.currency_code || "NGN")} <span className="text-[7px] opacity-70 cursor-pointer">▼</span>
+              {currency === (settings.currency_name || "USDT") ? (settings.currency_name || "USDT") : (userProfile?.country?.currency_code || "NGN")} <span className="text-[7px] opacity-70 cursor-pointer">▼</span>
             </button>
           </div>
           

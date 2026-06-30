@@ -3,7 +3,7 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { loginSchema } from "@/lib/schemas";
-import { usePost } from "@/hooks/useApi";
+import { usePost, useFetchData } from "@/hooks/useApi";
 import { setAuthToken } from "@/config/axiosInstance";
 import { Input } from "@/components/ui/auth-input";
 import { Button } from "@/components/ui/button";
@@ -32,6 +32,11 @@ export default function LoginPage() {
       keepMeLoggedIn: false,
     },
   });
+
+  const { data: settingsResponse } = useFetchData("/settings", ["platform-settings"]);
+  const settings = settingsResponse?.settings || {};
+  const siteName = settings.site_name || "Polychainapp";
+  const siteLogo = settings.platform_logo || null;
 
   useEffect(() => {
     setIsMounted(true);
@@ -78,12 +83,23 @@ export default function LoginPage() {
     <div className="min-h-screen flex items-center justify-center bg-white">
       <div className="flex flex-col justify-center items-center w-full max-w-xl px-8 py-12">
         <div className="w-full max-w-sm">
-          <div className="mb-10">
+          <div className="mb-10 flex flex-col items-center text-center">
+            {siteLogo ? (
+              <div className="w-16 h-16 rounded-full overflow-hidden shadow-sm flex items-center justify-center bg-gray-50 border border-gray-100 mb-4">
+                <img src={siteLogo} alt="Logo" className="w-full h-full object-contain" />
+              </div>
+            ) : (
+              <div className="w-16 h-16 bg-gradient-to-br from-[#4c1d95] to-[#0f172a] rounded-full flex items-center justify-center shadow-sm mb-4">
+                <div className="text-white text-xs font-bold tracking-wider">
+                  {siteName.substring(0, 4).toUpperCase()}
+                </div>
+              </div>
+            )}
             <h1 className="text-2xl font-bold text-gray-900 mb-1">
               Welcome back
             </h1>
             <p className="text-gray-500 text-sm">
-              Login to access your investment dashboard
+              Login to access your investment dashboard on {siteName}
             </p>
           </div>
 

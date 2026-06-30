@@ -21,6 +21,11 @@ function VerifyEmailContent() {
   const searchParams = useSearchParams();
   const token = searchParams.get("token");
 
+  const { data: settingsResponse } = useFetchData("/settings", ["platform-settings"]);
+  const settings = settingsResponse?.settings || {};
+  const siteName = settings.site_name || "Polychainapp";
+  const siteLogo = settings.platform_logo || null;
+
   const resendEmailMutation = usePost("/auth/resend-verification", null);
 
   const { data: verificationData, isLoading: isVerifying, isError: isVerificationError, error: verificationError } = useFetchData(
@@ -233,12 +238,23 @@ function VerifyEmailContent() {
     <div className="min-h-screen flex items-center justify-center bg-white">
       <div className="flex flex-col justify-center items-center w-full max-w-xl px-8 py-12 overflow-y-auto">
         <div className="w-full max-w-md">
-          <div className="mb-8 md:mb-10">
+          <div className="mb-8 md:mb-10 flex flex-col items-center text-center">
+            {siteLogo ? (
+              <div className="w-16 h-16 rounded-full overflow-hidden shadow-sm flex items-center justify-center bg-gray-50 border border-gray-100 mb-4">
+                <img src={siteLogo} alt="Logo" className="w-full h-full object-contain" />
+              </div>
+            ) : (
+              <div className="w-16 h-16 bg-gradient-to-br from-[#4c1d95] to-[#0f172a] rounded-full flex items-center justify-center shadow-sm mb-4">
+                <div className="text-white text-xs font-bold tracking-wider">
+                  {siteName.substring(0, 4).toUpperCase()}
+                </div>
+              </div>
+            )}
             <h1 className="text-2xl font-bold text-gray-900 mb-1">
               Verify Your Email
             </h1>
             <p className="text-gray-500 text-sm">
-              We've sent a verification link to your email address
+              We've sent a verification link to your email address for {siteName}
             </p>
           </div>
 

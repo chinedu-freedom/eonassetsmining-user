@@ -151,6 +151,9 @@ export default function DailyCheckinModal() {
   const nextClaimDay = claimedToday ? currentStreak : currentStreak + 1;
   const displayDay = nextClaimDay > data.maxDays ? 1 : nextClaimDay;
 
+  const { data: settingsRes } = useFetchData("/settings", ["platform-settings"]);
+  const settings = settingsRes?.settings || {};
+
   const handleOpenChange = (open) => {
     setIsOpen(open);
     if (!open) {
@@ -175,12 +178,12 @@ export default function DailyCheckinModal() {
           
           <div className="grid grid-cols-4 gap-3 w-full mb-4">
             {rewards.slice(0, 4).map((reward, i) => (
-              <RewardCard key={reward.day} reward={reward} isNext={reward.day === displayDay && !claimedToday} />
+              <RewardCard key={reward.day} reward={reward} isNext={reward.day === displayDay && !claimedToday} settings={settings} />
             ))}
           </div>
           <div className="grid grid-cols-3 gap-3 w-full max-w-[280px] mb-8">
             {rewards.slice(4, 7).map((reward, i) => (
-              <RewardCard key={reward.day} reward={reward} isNext={reward.day === displayDay && !claimedToday} />
+              <RewardCard key={reward.day} reward={reward} isNext={reward.day === displayDay && !claimedToday} settings={settings} />
             ))}
           </div>
 
@@ -213,7 +216,7 @@ export default function DailyCheckinModal() {
   );
 }
 
-function RewardCard({ reward, isNext }) {
+function RewardCard({ reward, isNext, settings }) {
   const isClaimed = reward.status === 'claimed';
   const isAvailable = reward.status === 'available' || isNext;
   
@@ -245,7 +248,7 @@ function RewardCard({ reward, isNext }) {
       <span className={`text-xs font-bold 
         ${isClaimed ? 'text-green-500' : isAvailable ? 'text-[#8b5cf6]' : 'text-gray-400'}
       `}>
-        +${parseFloat(reward.amount).toFixed(2)}
+        +{settings?.currency_symbol || "$"}{parseFloat(reward.amount).toFixed(2)}
       </span>
     </div>
   );

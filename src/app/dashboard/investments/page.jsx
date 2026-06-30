@@ -4,10 +4,13 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { ArrowLeft, Plus, Wallet } from "lucide-react";
 import Link from "next/link";
+import { useFetchData } from "@/hooks/useApi";
 
 export default function MyInvestmentsPage() {
   const router = useRouter();
   const [activeTab, setActiveTab] = useState("active"); // "active" or "completed"
+  const { data: settingsRes } = useFetchData("/settings", ["platform-settings"]);
+  const settings = settingsRes?.settings || {};
 
   return (
     <div className="flex flex-col h-full bg-[#f8f9fa] overflow-y-auto  [&::-webkit-scrollbar]:hidden">
@@ -53,7 +56,7 @@ export default function MyInvestmentsPage() {
         {/* Stats Card */}
         <div className="bg-[#8b5cf6] rounded-lg px-4 py-2 text-white shadow-[0_4px_14px_rgba(59,130,246,0.3)] flex justify-between items-center">
           <div className="text-center flex-1">
-            <div className="text-[18px] font-bold tracking-tight">$0.00</div>
+            <div className="text-[18px] font-bold tracking-tight">{settings.currency_symbol || "$"}0.00</div>
             <div className="text-[10px] text-white/80">Total Invested</div>
           </div>
           <div className="text-center flex-1 border-x border-white/20">
@@ -61,7 +64,7 @@ export default function MyInvestmentsPage() {
             <div className="text-[10px] text-white/80 capitalize">{activeTab}</div>
           </div>
           <div className="text-center flex-1">
-            <div className="text-[18px] font-bold tracking-tight">$0.00</div>
+            <div className="text-[18px] font-bold tracking-tight">{settings.currency_symbol || "$"}0.00</div>
             <div className="text-[10px] text-white/80">Est. Monthly</div>
           </div>
         </div>

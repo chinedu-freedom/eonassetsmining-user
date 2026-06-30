@@ -141,6 +141,8 @@ export default function SpinPage() {
   // Fetch spin data
   const { data: spinRes, isLoading, refetch } = useFetchData('/users/spin');
   const postSpin = usePost('/users/spin');
+  const { data: settingsRes } = useFetchData('/settings', ['platform-settings']);
+  const settings = settingsRes?.settings || {};
 
   const spinData = spinRes?.data;
   
@@ -327,7 +329,7 @@ export default function SpinPage() {
               <span className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">Total Balance</span>
             </div>
             <div className="text-[20px] font-bold text-[#8b5cf6]">
-              ${Number(currentBalance).toFixed(2)}
+              {settings.currency_symbol || "$"}{Number(currentBalance).toFixed(2)}
             </div>
           </div>
 
@@ -346,7 +348,7 @@ export default function SpinPage() {
         <div className="flex justify-center mt-2 mb-6">
           <div className="bg-white px-5 py-2 rounded-full border border-gray-100 shadow-sm flex items-center gap-2">
             <div className="w-4 h-4 bg-gray-400 rounded-[4px]"></div>
-            <span className="text-[13px] font-bold text-[#475569]">Cost: ${cost.toFixed(2)}</span>
+            <span className="text-[13px] font-bold text-[#475569]">Cost: {settings.currency_symbol || "$"}{cost.toFixed(2)}</span>
           </div>
         </div>
 
@@ -451,10 +453,10 @@ export default function SpinPage() {
                   </div>
                   <div className="text-right">
                     <div className={`text-[15px] font-bold ${Number(win.reward_earned) > 0 ? 'text-[#16a34a]' : 'text-gray-500'}`}>
-                      {Number(win.reward_earned) > 0 ? `+$${Number(win.reward_earned).toFixed(2)}` : '0.00'}
+                      {Number(win.reward_earned) > 0 ? `+${settings.currency_symbol || "$"}${Number(win.reward_earned).toFixed(2)}` : '0.00'}
                     </div>
                     <div className="text-[12px] text-gray-400 mt-0.5">
-                      {win.spin_type === 'free' ? 'Free Spin' : `-$${cost.toFixed(2)}`}
+                      {win.spin_type === 'free' ? 'Free Spin' : `-${settings.currency_symbol || "$"}${cost.toFixed(2)}`}
                     </div>
                   </div>
                 </div>
@@ -500,7 +502,7 @@ export default function SpinPage() {
             {resultData.isWin ? (
               <div className="flex flex-col items-center gap-2 mb-2">
                 <p className="text-[#16a34a] text-[36px] font-extrabold leading-none">
-                  +${resultData.amount.toFixed(2)}
+                  +{settings.currency_symbol || "$"}{resultData.amount.toFixed(2)}
                 </p>
                 <p className="text-[#64748b] text-[14px]">
                   {resultData.message}
