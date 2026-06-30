@@ -10,6 +10,7 @@ import { toast } from "sonner";
 export default function DailyCheckinModal() {
   const [isOpen, setIsOpen] = useState(false);
   const { data, isLoading, refetch } = useFetchData("/users/checkin", "checkin-status");
+  const { data: settingsRes } = useFetchData("/settings", ["platform-settings"]);
   const claimMutation = usePost("/users/checkin");
 
   const confettiCanvasRef = useRef(null);
@@ -151,7 +152,6 @@ export default function DailyCheckinModal() {
   const nextClaimDay = claimedToday ? currentStreak : currentStreak + 1;
   const displayDay = nextClaimDay > data.maxDays ? 1 : nextClaimDay;
 
-  const { data: settingsRes } = useFetchData("/settings", ["platform-settings"]);
   const settings = settingsRes?.settings || {};
 
   const handleOpenChange = (open) => {
