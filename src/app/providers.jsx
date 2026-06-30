@@ -1,9 +1,32 @@
 "use client";
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import { PWAProvider } from "@/components/PWAProvider";
+import { useFetchData } from "@/hooks/useApi";
+
+function AppLoader({ children }) {
+  const [mounted, setMounted] = useState(false);
+  
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const { isLoading } = useFetchData("/settings", ["platform-settings"], {
+    enabled: mounted,
+  });
+
+  if (!mounted || isLoading) {
+    return (
+      <div className="fixed inset-0 flex items-center justify-center bg-white z-[9999]">
+        <div className="w-12 h-12 border-4 border-gray-100 border-t-[#2563eb] rounded-full animate-spin"></div>
+      </div>
+    );
+  }
+
+  return children;
+}
 
 export function Providers({ children }) {
   const [queryClient] = useState(
@@ -20,7 +43,9 @@ export function Providers({ children }) {
   return (
     <QueryClientProvider client={queryClient}>
       <PWAProvider>
-        {children}
+        <AppLoader>
+          {children}
+        </AppLoader>
       </PWAProvider>
     </QueryClientProvider>
   );
