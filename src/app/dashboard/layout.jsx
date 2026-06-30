@@ -13,7 +13,7 @@ export default function DashboardLayout({ children }) {
   if (isLoadingSettings || isLoadingProfile) {
     return (
       <div className="fixed inset-0 flex items-center justify-center bg-white z-[9999]">
-        <div className="w-12 h-12 border-4 border-gray-100 border-t-[#2563eb] rounded-full animate-spin"></div>
+        <div className="w-12 h-12 border-4 border-gray-100 border-t-[#8b5cf6] rounded-full animate-spin"></div>
       </div>
     );
   }
