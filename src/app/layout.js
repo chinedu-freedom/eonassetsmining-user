@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 
 export async function generateMetadata() {
   try {
-    const apiBase = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001/api";
+    const apiBase = process.env.NEXT_PUBLIC_API_URL;
     const res = await fetch(`${apiBase}/settings`, { 
       next: { revalidate: 60 }
     });

@@ -475,7 +475,7 @@ export default function DashboardPage() {
 
                       // Save to backend
                       try {
-                        await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api'}/users/me/language`, {
+                        await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/me/language`, {
                           method: 'PUT',
                           headers: {
                             'Content-Type': 'application/json',
