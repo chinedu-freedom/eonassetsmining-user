@@ -15,23 +15,26 @@ const geistMono = Geist_Mono({
 export async function generateMetadata() {
   try {
     const apiBase = process.env.NEXT_PUBLIC_API_URL;
-    const res = await fetch(`${apiBase}/settings`, { 
-      next: { revalidate: 60 }
-    });
-    if (res.ok) {
-      const data = await res.json();
-      const siteName = data?.settings?.site_name || "Polychainapp";
-      const siteTitle = data?.settings?.site_title || "The Ultimate Crypto Asset Mining Platform";
-      return {
-        title: siteName,
-        description: siteTitle,
-        manifest: "/manifest.json",
-        appleWebApp: {
-          capable: true,
-          statusBarStyle: "default",
+    if (apiBase && apiBase.startsWith("http")) {
+      const res = await fetch(`${apiBase}/settings`, { 
+        next: { revalidate: 60 },
+        signal: AbortSignal.timeout(2000)
+      });
+      if (res.ok) {
+        const data = await res.json();
+        const siteName = data?.settings?.site_name || "Polychainapp";
+        const siteTitle = data?.settings?.site_title || "The Ultimate Crypto Asset Mining Platform";
+        return {
           title: siteName,
-        },
-      };
+          description: siteTitle,
+          manifest: "/manifest.json",
+          appleWebApp: {
+            capable: true,
+            statusBarStyle: "default",
+            title: siteName,
+          },
+        };
+      }
     }
   } catch (error) {
     // Ignore error and fallback to default
