@@ -49,6 +49,59 @@ export default function DashboardPage() {
   const siteLogo = settings.platform_logo || null;
 
   const [liveExchangeRate, setLiveExchangeRate] = useState(null);
+  const [liveMarketData, setLiveMarketData] = useState([]);
+
+  useEffect(() => {
+    if (marketData && marketData.length > 0) {
+      setLiveMarketData(marketData);
+      
+      const fetchLivePrices = async () => {
+        try {
+          const promises = marketData.map(async (asset) => {
+            // Only try to fetch if we have a valid symbol
+            if (!asset.symbol) return null;
+            
+            try {
+              // Attempt to get USDT pair price from Binance (e.g. BTCUSDT)
+              const res = await fetch(`https://api.binance.com/api/v3/ticker/24hr?symbol=${asset.symbol.toUpperCase()}USDT`);
+              if (!res.ok) return null;
+              
+              const data = await res.json();
+              return {
+                symbol: asset.symbol,
+                current_price: parseFloat(data.lastPrice),
+                price_change_24h: parseFloat(data.priceChangePercent)
+              };
+            } catch (err) {
+              return null; // Ignore failed requests for individual coins
+            }
+          });
+
+          const results = await Promise.all(promises);
+          
+          setLiveMarketData(prev => prev.map(asset => {
+            const liveInfo = results.find(r => r && r.symbol === asset.symbol);
+            if (liveInfo) {
+              return {
+                ...asset,
+                current_price: liveInfo.current_price,
+                price_change_24h: liveInfo.price_change_24h
+              };
+            }
+            return asset; // Fallback to DB data if API fails
+          }));
+        } catch (error) {
+          console.error("Live price fetch failed:", error);
+        }
+      };
+
+      // Fetch immediately, then every 10 seconds
+      fetchLivePrices();
+      const interval = setInterval(fetchLivePrices, 10000); 
+
+      return () => clearInterval(interval);
+    }
+  }, [marketData]);
 
   const toggleCurrency = () => {
     if (!userProfile?.country) return;
@@ -377,15 +430,15 @@ export default function DashboardPage() {
                 <div className="flex items-center justify-center py-6">
                   <Loader2 className="w-6 h-6 animate-spin text-purple-500" />
                 </div>
-              ) : marketData.length === 0 ? (
+              ) : liveMarketData.length === 0 ? (
                 <div className="flex flex-col items-center justify-center py-6 text-center">
                   <p className="text-xs text-gray-500">No live market data available</p>
                 </div>
               ) : (
-                marketData.map((asset, index) => {
+                liveMarketData.map((asset, index) => {
                   const isPositive = parseFloat(asset.price_change_24h) >= 0;
                   return (
-                    <div key={asset.id} className={`flex items-center justify-between py-1 ${index !== marketData.length - 1 ? 'border-b border-gray-50 pb-2.5' : 'pb-1'}`}>
+                    <div key={asset.id} className={`flex items-center justify-between py-1 ${index !== liveMarketData.length - 1 ? 'border-b border-gray-50 pb-2.5' : 'pb-1'}`}>
                       <div className="flex items-center gap-2.5">
                         <div className="w-8 h-8 rounded-full flex items-center justify-center overflow-hidden">
                           {asset.logo_url ? (
