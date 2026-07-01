@@ -6,6 +6,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useFetchData } from "@/hooks/useApi";
+import { fetchData } from "@/config/apiHelpers";
 import { usePWA } from "@/components/PWAProvider";
 import { toast } from "sonner";
 import WhatsAppModal from "@/components/WhatsAppModal";
@@ -62,11 +63,10 @@ export default function DashboardPage() {
             if (!asset.symbol) return null;
             
             try {
-              // Using MEXC API instead of Binance because Binance is blocked by some ISPs
-              const res = await fetch(`https://api.mexc.com/api/v3/ticker/24hr?symbol=${asset.symbol.toUpperCase()}USDT`);
-              if (!res.ok) return null;
+              // Use backend proxy to bypass browser CORS and network blocks
+              const data = await fetchData(`/live-market/proxy?symbol=${asset.symbol.toUpperCase()}`);
+              if (!data || data.error || !data.lastPrice) return null;
               
-              const data = await res.json();
               return {
                 symbol: asset.symbol,
                 current_price: parseFloat(data.lastPrice),
