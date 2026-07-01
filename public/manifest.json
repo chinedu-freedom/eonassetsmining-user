@@ -1,7 +1,7 @@
 {
-  "name": "EonAssets",
-  "short_name": "EonAssets",
-  "description": "EonAssets - The Ultimate Crypto Asset Mining Platform",
+  "name": "Polychainapp",
+  "short_name": "Polychainapp",
+  "description": "Polychainapp - The Ultimate Crypto Asset Mining Platform",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",
