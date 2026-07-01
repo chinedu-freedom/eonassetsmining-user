@@ -62,15 +62,15 @@ export default function DashboardPage() {
             if (!asset.symbol) return null;
             
             try {
-              // Attempt to get USDT pair price from Binance (e.g. BTCUSDT)
-              const res = await fetch(`https://api.binance.com/api/v3/ticker/24hr?symbol=${asset.symbol.toUpperCase()}USDT`);
+              // Using MEXC API instead of Binance because Binance is blocked by some ISPs
+              const res = await fetch(`https://api.mexc.com/api/v3/ticker/24hr?symbol=${asset.symbol.toUpperCase()}USDT`);
               if (!res.ok) return null;
               
               const data = await res.json();
               return {
                 symbol: asset.symbol,
                 current_price: parseFloat(data.lastPrice),
-                price_change_24h: parseFloat(data.priceChangePercent)
+                price_change_24h: parseFloat(data.priceChangePercent) * 100 // MEXC returns decimal, so multiply by 100
               };
             } catch (err) {
               return null; // Ignore failed requests for individual coins
