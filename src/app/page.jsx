@@ -33,7 +33,7 @@ export default function LoginPage() {
     },
   });
 
-  const { data: settingsResponse } = useFetchData("/settings", ["platform-settings"]);
+  const { data: settingsResponse, isLoading: isLoadingSettings } = useFetchData("/settings", ["platform-settings"]);
   const settings = settingsResponse?.settings || {};
   const siteName = settings.site_name || "Polychainapp";
   const siteLogo = settings.platform_logo || null;
@@ -49,8 +49,12 @@ export default function LoginPage() {
 
   const loginMutation = usePost("/auth/login", null);
 
-  if (!isMounted) {
-    return null; // Prevents hydration mismatch
+  if (!isMounted || isLoadingSettings) {
+    return (
+      <div className="fixed inset-0 flex items-center justify-center bg-white z-[9999]">
+        <div className="w-12 h-12 border-4 border-gray-100 border-t-[#8b5cf6] rounded-full animate-spin"></div>
+      </div>
+    );
   }
 
   const onSubmit = (data) => {

@@ -8,8 +8,10 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Mail, CheckCircle, RefreshCw, AlertCircle, Clock } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { usePost, useFetchData } from "@/hooks/useApi";
+import { clearAuthToken } from "@/config/axiosInstance";
 
 function VerifyEmailContent() {
+  const [isMounted, setIsMounted] = useState(false);
   const [isResending, setIsResending] = useState(false);
   const [resendCount, setResendCount] = useState(0);
   const [countdown, setCountdown] = useState(600);
@@ -21,12 +23,24 @@ function VerifyEmailContent() {
   const searchParams = useSearchParams();
   const token = searchParams.get("token");
 
-  const { data: settingsResponse } = useFetchData("/settings", ["platform-settings"]);
+  const { data: settingsResponse, isLoading: isLoadingSettings } = useFetchData("/settings", ["platform-settings"]);
   const settings = settingsResponse?.settings || {};
   const siteName = settings.site_name || "Polychainapp";
   const siteLogo = settings.platform_logo || null;
 
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
   const resendEmailMutation = usePost("/auth/resend-verification", null);
+
+  if (!isMounted || isLoadingSettings) {
+    return (
+      <div className="fixed inset-0 flex items-center justify-center bg-white z-[9999]">
+        <div className="w-12 h-12 border-4 border-gray-100 border-t-[#8b5cf6] rounded-full animate-spin"></div>
+      </div>
+    );
+  }
 
   const { data: verificationData, isLoading: isVerifying, isError: isVerificationError, error: verificationError } = useFetchData(
     `/auth/verify-email?token=${token}`,
@@ -157,6 +171,7 @@ function VerifyEmailContent() {
     localStorage.removeItem("verificationCountdown");
     localStorage.removeItem("lastVerificationResend");
     localStorage.removeItem("isInitialCountdown");
+    clearAuthToken();
     router.push("/");
   };
 

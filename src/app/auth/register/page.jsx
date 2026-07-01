@@ -13,12 +13,13 @@ import { setAuthToken } from "@/config/axiosInstance";
 import { Controller } from "react-hook-form";
 import { useFetchData } from "@/hooks/useApi";
 import ReactSelect from "react-select";
-import { useEffect, Suspense } from "react";
+import { useEffect, useState, Suspense } from "react";
 
 function SignupForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const refCode = searchParams.get("ref");
+  const [isMounted, setIsMounted] = useState(false);
 
   const {
     register,
@@ -40,7 +41,7 @@ function SignupForm() {
   });
 
   const signupMutation = usePost("/auth/register", null);
-  const { data: settingsResponse } = useFetchData("/settings", ["platform-settings"]);
+  const { data: settingsResponse, isLoading: isLoadingSettings } = useFetchData("/settings", ["platform-settings"]);
   const settings = settingsResponse?.settings || {};
   const siteName = settings.site_name || "Polychainapp";
   const siteLogo = settings.platform_logo || null;
@@ -50,10 +51,19 @@ function SignupForm() {
   const countryOptions = countries.map(c => ({ value: c.id, label: c.country_name }));
 
   useEffect(() => {
+    setIsMounted(true);
     if (refCode) {
       setValue("referred_by_code", refCode);
     }
   }, [refCode, setValue]);
+
+  if (!isMounted || isLoadingSettings) {
+    return (
+      <div className="fixed inset-0 flex items-center justify-center bg-white z-[9999]">
+        <div className="w-12 h-12 border-4 border-gray-100 border-t-[#8b5cf6] rounded-full animate-spin"></div>
+      </div>
+    );
+  }
 
   const onSubmit = (data) => {
     const payload = {

@@ -1,5 +1,7 @@
 "use client";
 
+import { useEffect } from "react";
+
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import { useFetchData } from "@/hooks/useApi";
 import { Loader2, X, Hexagon, CheckCircle2 } from "lucide-react";
@@ -26,14 +28,49 @@ export default function DepositModal() {
   );
   const settings = settingsRes?.settings || {};
 
+  // Track the page the user was on before opening the modal
+
+  useEffect(() => {
+    if (isVisible) {
+      const currentPath = window.location.pathname;
+      const currentSearch = window.location.search;
+      const hasCryptoId = new URLSearchParams(currentSearch).has('cryptoId');
+      
+      // Save return URL only if we're not on a plain deposit page (which requires a cryptoId to be valid)
+      if (currentPath !== '/dashboard/wallet/deposit' || hasCryptoId) {
+        sessionStorage.setItem('depositModalReturnPath', window.location.href);
+      }
+    }
+  }, [isVisible]);
+
   const handleClose = () => {
-    // Remove depositModal from URL
-    const params = new URLSearchParams(searchParams);
-    params.delete('depositModal');
-    router.replace(`${pathname}?${params.toString()}`, { scroll: false });
+    const returnUrl = sessionStorage.getItem('depositModalReturnPath');
+    sessionStorage.removeItem('depositModalReturnPath');
+    
+    if (returnUrl) {
+      try {
+        const urlObj = new URL(returnUrl);
+        urlObj.searchParams.delete('depositModal');
+        router.push(urlObj.pathname + urlObj.search, { scroll: false });
+        return;
+      } catch (e) {
+        console.error("Error parsing return URL:", e);
+      }
+    }
+    
+    // Fallback routing
+    if (pathname === '/dashboard/wallet/deposit') {
+      router.push('/dashboard/wallet');
+    } else {
+      const params = new URLSearchParams(searchParams);
+      params.delete('depositModal');
+      router.replace(`${pathname}?${params.toString()}`, { scroll: false });
+    }
   };
 
   const handleSelectCrypto = (crypto) => {
+    // Clear return path so it doesn't conflict with future closures
+    sessionStorage.removeItem('depositModalReturnPath');
     handleClose();
     setTimeout(() => {
       router.push(`/dashboard/wallet/deposit?cryptoId=${crypto.id}`);
@@ -48,65 +85,62 @@ export default function DepositModal() {
       onClick={handleClose}
     >
       <div 
-        className="bg-white rounded-t-[24px] sm:rounded-[20px] w-full max-w-[450px] overflow-hidden shadow-2xl animate-slide-up flex flex-col max-h-[85vh] mt-auto sm:mt-0 cursor-pointer"
+        className="bg-white rounded-t-[20px] sm:rounded-[16px] w-full max-w-[400px] overflow-hidden shadow-2xl animate-slide-up flex flex-col max-h-[70vh] md:max-h-[80vh] mt-auto sm:mt-0 cursor-pointer"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="px-5 py-4 border-b border-gray-100 flex items-center justify-between sticky top-0 bg-white z-10 shrink-0">
+        <div className="px-4 py-3 border-b border-gray-100 flex items-center justify-between sticky top-0 bg-white z-10 shrink-0">
           <div>
-            <h3 className="font-bold text-[18px] text-gray-800">Deposit Method</h3>
-            <p className="text-[13px] text-gray-500">Select cryptocurrency</p>
+            <h3 className="font-bold text-[16px] text-gray-800">Deposit Method</h3>
+            <p className="text-[12px] text-gray-500">Select cryptocurrency</p>
           </div>
           <button 
             onClick={handleClose}
-            className="w-8 h-8 bg-gray-50 hover:bg-gray-100 rounded-full flex items-center justify-center transition-colors text-gray-500 cursor-pointer"
+            className="w-7 h-7 bg-gray-50 hover:bg-gray-100 rounded-full flex items-center justify-center transition-colors text-gray-500 cursor-pointer"
           >
-            <X size={18} />
+            <X size={16} />
           </button>
         </div>
 
-        <div className="p-4 overflow-y-auto overflow-x-hidden flex-1 space-y-3 pb-[80px] sm:pb-4 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+        <div className="p-3 overflow-y-auto overflow-x-hidden flex-1 pb-[80px] sm:pb-3 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
           {isLoadingCryptos || isLoadingSettings ? (
-            <div className="flex flex-col items-center justify-center py-10 space-y-3">
-              <Loader2 className="w-8 h-8 text-purple-500 animate-spin" />
-              <p className="text-sm text-gray-500">Loading methods...</p>
+            <div className="flex flex-col items-center justify-center py-8 space-y-2">
+              <Loader2 className="w-6 h-6 text-purple-500 animate-spin" />
+              <p className="text-xs text-gray-500">Loading methods...</p>
             </div>
           ) : cryptos.length === 0 ? (
-            <div className="text-center py-10 text-gray-500">
+            <div className="text-center py-8 text-gray-500 text-sm">
               No deposit methods available.
             </div>
           ) : (
-            cryptos.map((crypto) => (
-              <div 
-                key={crypto.id}
-                onClick={() => handleSelectCrypto(crypto)}
-                className="p-4 rounded-[16px] border border-gray-100 bg-white hover:bg-gray-50 shadow-sm cursor-pointer transition-all flex items-center justify-between group"
-              >
-                <div className="flex items-center gap-4">
-                  {/* Square shape maintained per user request */}
-                  <div className="w-12 h-12 bg-gray-50 group-hover:bg-white rounded-[12px] flex items-center justify-center border border-gray-100 shrink-0 overflow-hidden shadow-inner">
+            <div className="grid grid-cols-2 gap-2.5">
+              {cryptos.map((crypto) => (
+                <div 
+                  key={crypto.id}
+                  onClick={() => handleSelectCrypto(crypto)}
+                  className="p-3 rounded-[12px] border border-gray-100 bg-white hover:bg-gray-50 hover:border-purple-200 shadow-sm cursor-pointer transition-all flex flex-col items-center justify-center text-center group aspect-square select-none"
+                >
+                  {/* Square shape for icon */}
+                  <div className="w-11 h-11 bg-gray-50 group-hover:bg-white rounded-[10px] flex items-center justify-center border border-gray-100 shrink-0 overflow-hidden shadow-inner p-1.5 mb-2">
                     {crypto.icon ? (
-                      <Image src={crypto.icon} alt={crypto.name} width={48} height={48} className="object-cover" />
+                      <img src={crypto.icon} alt={crypto.name} className="w-full h-full object-contain" />
                     ) : (
-                      <Hexagon className="text-gray-400" size={24} />
+                      <Hexagon className="text-gray-400" size={22} />
                     )}
                   </div>
-                  <div>
-                    <h4 className="font-bold text-gray-800 uppercase flex items-center gap-2">
-                      {crypto.name}
-                      <span className="text-[10px] px-2 py-0.5 bg-gray-100 text-gray-500 rounded-full font-medium tracking-wide">
-                        {crypto.network}
-                      </span>
-                    </h4>
-                    <p className="text-[12px] text-gray-500 mt-0.5">
-                      Limit: {settings?.currency_symbol || "$"}{settings?.min_deposit || 10} - {settings?.currency_symbol || "$"}{settings?.max_deposit || 100000}
-                    </p>
-                  </div>
+                  
+                  <h4 className="font-bold text-[13px] text-gray-800 uppercase flex flex-col items-center gap-1">
+                    <span>{crypto.name}</span>
+                    <span className="text-[8.5px] px-1.5 py-0.5 bg-purple-50 text-purple-600 rounded-full font-medium tracking-wide">
+                      {crypto.network}
+                    </span>
+                  </h4>
+                  
+                  <p className="text-[9.5px] text-gray-400 mt-1.5 leading-tight">
+                    Min: {settings?.currency_symbol || "$"}{settings?.min_deposit || 10}
+                  </p>
                 </div>
-                
-                <div className="w-5 h-5 rounded-full border-2 flex items-center justify-center transition-colors border-gray-200 group-hover:border-blue-300">
-                </div>
-              </div>
-            ))
+              ))}
+            </div>
           )}
         </div>
       </div>

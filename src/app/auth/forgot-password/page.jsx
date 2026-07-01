@@ -10,9 +10,11 @@ import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
 
 export default function ForgotPasswordPage() {
   const router = useRouter();
+  const [isMounted, setIsMounted] = useState(false);
 
   const {
     register,
@@ -22,13 +24,25 @@ export default function ForgotPasswordPage() {
     resolver: zodResolver(forgotPasswordSchema),
   });
 
-  const { data: settingsResponse } = useFetchData("/settings", ["platform-settings"]);
+  const { data: settingsResponse, isLoading: isLoadingSettings } = useFetchData("/settings", ["platform-settings"]);
   const settings = settingsResponse?.settings || {};
   const siteName = settings.site_name || "Polychainapp";
   const siteLogo = settings.platform_logo || null;
 
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
   // ✅ usePost hook
   const requestOtpMutation = usePost("/auth/forgot-password", null);
+
+  if (!isMounted || isLoadingSettings) {
+    return (
+      <div className="fixed inset-0 flex items-center justify-center bg-white z-[9999]">
+        <div className="w-12 h-12 border-4 border-gray-100 border-t-[#8b5cf6] rounded-full animate-spin"></div>
+      </div>
+    );
+  }
 
   const onSubmit = (data) => {
     localStorage.setItem("resetEmail", data.email);

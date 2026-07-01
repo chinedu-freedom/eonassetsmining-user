@@ -2,11 +2,33 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Wallet, Info, Hexagon, X } from "lucide-react";
+import { ArrowLeft, Wallet, Info, Hexagon, X, Eye, EyeOff } from "lucide-react";
 import { useFetchData, usePost } from "@/hooks/useApi";
 import Link from "next/link";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
+
+const parseNoticeToLines = (htmlString) => {
+  if (!htmlString) return [];
+  
+  // Extract list items if present
+  const liMatches = htmlString.match(/<li[^>]*>([\s\S]*?)<\/li>/gi);
+  if (liMatches && liMatches.length > 0) {
+    return liMatches.map(li => li.replace(/^<li[^>]*>/i, '').replace(/<\/li>$/i, '').trim()).filter(Boolean);
+  }
+  
+  // Extract paragraphs if present
+  const pMatches = htmlString.match(/<p[^>]*>([\s\S]*?)<\/p>/gi);
+  if (pMatches && pMatches.length > 0) {
+    return pMatches.map(p => p.replace(/^<p[^>]*>/i, '').replace(/<\/p>$/i, '').trim()).filter(Boolean);
+  }
+  
+  // Split by <br> or newline tags
+  return htmlString
+    .split(/<br\s*\/?>/gi)
+    .map(line => line.trim())
+    .filter(Boolean);
+};
 
 export default function WithdrawPage() {
   const router = useRouter();
@@ -15,6 +37,7 @@ export default function WithdrawPage() {
   const [walletAddress, setWalletAddress] = useState("");
   const [amount, setAmount] = useState("");
   const [withdrawalPassword, setWithdrawalPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   
   const { mutate: submitWithdrawal, isPending: isSubmitting } = usePost("/users/withdraw");
   
@@ -44,6 +67,7 @@ export default function WithdrawPage() {
     setWalletAddress("");
     setAmount("");
     setWithdrawalPassword("");
+    setShowPassword(false);
   };
 
   return (
@@ -111,29 +135,44 @@ export default function WithdrawPage() {
         </div>
 
         {/* Info Box */}
-        <div className="bg-[#fffbeb] border border-[#fde68a] rounded-[16px] p-4 shadow-sm">
-          <div className="flex items-center gap-1.5 mb-3">
-            <Info size={16} className="text-[#b45309] fill-[#fde68a]" />
-            <h3 className="text-[#92400e] font-bold text-[13px]">Important Information</h3>
+        <div className="bg-[#fffbeb] border border-[#fde68a] rounded-[16px] p-5 shadow-sm space-y-3.5">
+          <div className="flex items-center gap-2.5 text-[#92400e]">
+            <Info size={19} className="text-[#d97706]" />
+            <h3 className="font-bold text-[15px]">Important Information</h3>
           </div>
           
-          <div className="space-y-2.5">
-            <div className="flex gap-2 items-start text-[11px] text-[#92400e]/80 font-medium">
-              <span className="font-bold">1.</span>
-              <p>Follow the below steps to make your withdrawal in the correct manner</p>
-            </div>
-            <div className="flex gap-2 items-start text-[11px] text-[#92400e]/80 font-medium">
-              <span className="font-bold">2.</span>
-              <p>Enter your wallet address to withdraw correctly</p>
-            </div>
-            <div className="flex gap-2 items-start text-[11px] text-[#92400e]/80 font-medium">
-              <span className="font-bold">3.</span>
-              <p>You can make a minimum withdrawal of {settings.currency_symbol || "$"}{minWithdrawal.toFixed(2)}</p>
-            </div>
-            <div className="flex gap-2 items-start text-[11px] text-[#92400e]/80 font-medium">
-              <span className="font-bold">4.</span>
-              <p>Withdrawal may take 5 - 10 minutes with a {withdrawalCharge}% charge</p>
-            </div>
+          <div className="text-[13px] text-amber-900/90 leading-normal">
+            {settings.withdrawal_notice && parseNoticeToLines(settings.withdrawal_notice).length > 0 ? (
+              <div className="space-y-1">
+                {parseNoticeToLines(settings.withdrawal_notice).map((line, idx) => (
+                  <div key={idx} className="flex items-start gap-3">
+                    <div className="w-5 h-5 rounded-full bg-[#d97706] text-white flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5">
+                      {idx + 1}
+                    </div>
+                    <p className="leading-normal font-medium text-amber-900/90 mt-0.5" dangerouslySetInnerHTML={{ __html: line }} />
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="space-y-3.5">
+                <div className="flex items-start gap-3">
+                  <div className="w-5 h-5 rounded-full bg-[#d97706] text-white flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5">1</div>
+                  <p className="leading-normal font-medium">Follow the below steps to make your withdrawal in the correct manner</p>
+                </div>
+                <div className="flex items-start gap-3">
+                  <div className="w-5 h-5 rounded-full bg-[#d97706] text-white flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5">2</div>
+                  <p className="leading-normal font-medium">Enter your wallet address to withdraw correctly</p>
+                </div>
+                <div className="flex items-start gap-3">
+                  <div className="w-5 h-5 rounded-full bg-[#d97706] text-white flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5">3</div>
+                  <p className="leading-normal font-medium">You can make a minimum withdrawal of {settings.currency_symbol || "$"}{minWithdrawal.toFixed(2)}</p>
+                </div>
+                <div className="flex items-start gap-3">
+                  <div className="w-5 h-5 rounded-full bg-[#d97706] text-white flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5">4</div>
+                  <p className="leading-normal font-medium">Withdrawal may take 5 - 10 minutes with a {withdrawalCharge}% charge</p>
+                </div>
+              </div>
+            )}
           </div>
         </div>
 
@@ -236,13 +275,22 @@ export default function WithdrawPage() {
 
               <div className="space-y-1.5">
                 <label className="block text-[#0f172a] text-[12px] font-bold">Withdrawal Password *</label>
-                <input 
-                  type="password"
-                  value={withdrawalPassword}
-                  onChange={(e) => setWithdrawalPassword(e.target.value)}
-                  placeholder="Enter your login password"
-                  className="w-full bg-white border border-gray-200 rounded-[10px] px-3.5 py-2.5 text-[13px] text-gray-800 placeholder-gray-400 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500"
-                />
+                <div className="relative flex items-center">
+                  <input 
+                    type={showPassword ? "text" : "password"}
+                    value={withdrawalPassword}
+                    onChange={(e) => setWithdrawalPassword(e.target.value)}
+                    placeholder="Enter your withdrawal password"
+                    className="w-full bg-white border border-gray-200 rounded-[10px] pl-3.5 pr-11 py-2.5 text-[13px] text-gray-800 placeholder-gray-400 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3.5 text-gray-400 hover:text-gray-600 focus:outline-none cursor-pointer"
+                  >
+                    {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                  </button>
+                </div>
               </div>
 
             </div>
@@ -264,6 +312,7 @@ export default function WithdrawPage() {
                       setWalletAddress("");
                       setCryptoNetwork("");
                       setWithdrawalPassword("");
+                      setShowPassword(false);
                       toast.success("Withdrawal request submitted successfully!");
                     }
                   });

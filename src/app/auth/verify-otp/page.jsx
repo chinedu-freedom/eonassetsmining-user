@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { otpSchema } from "@/lib/schemas";
@@ -14,6 +14,7 @@ import { toast } from "sonner";
 
 export default function VerifyOtpPage() {
   const router = useRouter();
+  const [isMounted, setIsMounted] = useState(false);
   const [otp, setOtp] = useState(["", "", "", ""]);
   const inputsRef = useRef([]);
 
@@ -21,13 +22,25 @@ export default function VerifyOtpPage() {
     resolver: zodResolver(otpSchema),
   });
 
-  const { data: settingsResponse } = useFetchData("/settings", ["platform-settings"]);
+  const { data: settingsResponse, isLoading: isLoadingSettings } = useFetchData("/settings", ["platform-settings"]);
   const settings = settingsResponse?.settings || {};
   const siteName = settings.site_name || "Polychainapp";
   const siteLogo = settings.platform_logo || null;
 
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
   const verifyOtpMutation = usePost("/auth/verify-otp", null);
   const resendOtpMutation = usePost("/auth/forgot-password", null);
+
+  if (!isMounted || isLoadingSettings) {
+    return (
+      <div className="fixed inset-0 flex items-center justify-center bg-white z-[9999]">
+        <div className="w-12 h-12 border-4 border-gray-100 border-t-[#8b5cf6] rounded-full animate-spin"></div>
+      </div>
+    );
+  }
 
   const handleChange = (value, index) => {
     if (!/^[0-9]?$/.test(value)) return;

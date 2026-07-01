@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Input } from "@/components/ui/auth-input";
@@ -11,18 +11,31 @@ import { useRouter } from "next/navigation";
 
 export default function ResetPasswordPage() {
   const router = useRouter();
+  const [isMounted, setIsMounted] = useState(false);
   const [form, setForm] = useState({
     newPassword: "",
     confirmPassword: "",
   });
 
-  const { data: settingsResponse } = useFetchData("/settings", ["platform-settings"]);
+  const { data: settingsResponse, isLoading: isLoadingSettings } = useFetchData("/settings", ["platform-settings"]);
   const settings = settingsResponse?.settings || {};
   const siteName = settings.site_name || "Polychainapp";
   const siteLogo = settings.platform_logo || null;
 
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
   // ✅ usePost hook
   const resetPasswordMutation = usePost("/auth/reset-password", null);
+
+  if (!isMounted || isLoadingSettings) {
+    return (
+      <div className="fixed inset-0 flex items-center justify-center bg-white z-[9999]">
+        <div className="w-12 h-12 border-4 border-gray-100 border-t-[#8b5cf6] rounded-full animate-spin"></div>
+      </div>
+    );
+  }
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });

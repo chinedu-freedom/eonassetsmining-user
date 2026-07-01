@@ -99,7 +99,7 @@ export default function SecuritySettingsPage() {
                   type={showCurrent ? "text" : "password"}
                   value={currentPassword}
                   onChange={(e) => setCurrentPassword(e.target.value)}
-                  placeholder="Enter your login password"
+                  placeholder="Enter your withdrawal password"
                   className="w-full bg-white border border-gray-200 rounded-[10px] pl-3.5 pr-10 py-2.5 text-[13px] text-gray-800 placeholder-[#94a3b8] focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all"
                 />
                 <button
