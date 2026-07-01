@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { ArrowLeft, Wallet, X, Loader2, Zap, Clock, ShieldCheck, Cpu, TrendingUp, ChevronRight, Layers, Coins } from "lucide-react";
 import Link from "next/link";
 import { useFetchData } from "@/hooks/useApi";
+import { postData } from "@/config/apiHelpers";
 import { toast } from "react-hot-toast";
 
 export default function MiningPlansPage() {
@@ -17,12 +18,7 @@ export default function MiningPlansPage() {
   const { data: settingsRes } = useFetchData("/settings", ["platform-settings"]);
   const settings = settingsRes?.settings || {};
   const plans = Array.isArray(plansRes?.data) 
-    ? [...plansRes.data].sort((a, b) => {
-        if (a.created_at && b.created_at) {
-          return new Date(a.created_at) - new Date(b.created_at);
-        }
-        return a.id - b.id;
-      })
+    ? [...plansRes.data].sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime())
     : [];
   const router = useRouter();
 
@@ -41,23 +37,13 @@ export default function MiningPlansPage() {
     
     setIsInvesting(true);
     try {
-      const token = localStorage.getItem('token');
-      const res = await fetch('http://localhost:5000/api/plans/invest', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({
-          planId: selectedPlan.id,
-          amount: parseFloat(investmentAmount),
-          source: balanceSource
-        })
+      const data = await postData('/plans/invest', {
+        planId: selectedPlan.id,
+        amount: parseFloat(investmentAmount),
+        source: balanceSource
       });
-
-      const data = await res.json();
       
-      if (res.ok && data.success) {
+      if (data?.success) {
         toast.success(data.message || "Investment successful!");
         setSelectedPlan(null);
         setInvestmentAmount("");
@@ -156,7 +142,7 @@ export default function MiningPlansPage() {
                 <span className="text-[#1e293b] font-bold text-[11px]">{formatCurrency(Number(plan.max_investment))}</span>
               </div>
               <div className="flex justify-between items-center">
-                <span className="text-[#64748b] text-[11px] font-medium">Cycle duration:</span>
+                <span className="text-[#64748b] text-[11px] font-medium">Mining duration:</span>
                 <span className="text-[#1e293b] font-bold text-[11px]">{plan.duration} Days</span>
               </div>
             </div>
