@@ -276,7 +276,7 @@ export default function MiningPlansPage() {
             {/* Footer */}
             <div className="p-5 border-t border-gray-100 bg-white flex flex-col items-center gap-3">
               <div className="text-[12px] text-gray-500">
-                Total Balance: <span className="text-[#f59e0b] font-bold">{formatCurrency(balances[balanceSource])}</span>
+                 Balance: <span className="text-[#f59e0b] font-bold">{formatCurrency(balances[balanceSource])}</span>
               </div>
               <button 
                 onClick={handleInvest}

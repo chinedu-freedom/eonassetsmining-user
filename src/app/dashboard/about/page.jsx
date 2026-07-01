@@ -246,7 +246,7 @@ export default function AboutPage() {
             <h3 className="text-[14px] font-bold mb-1.5">Ready to Grow With {siteName}?</h3>
             <p className="text-white/90 text-[10px] leading-relaxed mb-4 max-w-[240px] mx-auto">
               Complete your profile, activate a plan, and start collecting daily rewards.
-            </p>e
+            </p>
             <button 
               onClick={() => router.push('/dashboard/mining')}
               className="cursor-pointer bg-white text-[#8b5cf6] flex items-center justify-center gap-1.5 w-full py-2.5 rounded-[10px] text-[12px] font-bold hover:bg-gray-50 active:scale-[0.98] transition-all shadow-sm"
