@@ -131,7 +131,7 @@ export default function DepositModal() {
                   <h4 className="font-bold text-[13px] text-gray-800 uppercase flex flex-col items-center gap-1">
                     <span>{crypto.name}</span>
                     <span className="text-[8.5px] px-1.5 py-0.5 bg-purple-50 text-purple-600 rounded-full font-medium tracking-wide">
-                      {crypto.network}
+                      {crypto.symbol}-{crypto.network}
                     </span>
                   </h4>
                   

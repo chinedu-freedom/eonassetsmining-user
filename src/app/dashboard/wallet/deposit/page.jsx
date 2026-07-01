@@ -193,7 +193,7 @@ function DepositContent() {
                   <h3 className="font-bold text-[13px] text-[#4c1d95] uppercase flex items-center gap-1.5">
                     {selectedCrypto.name} 
                     <span className="text-[8.5px] px-1.5 py-0.5 bg-purple-100 text-purple-600 rounded-md font-medium tracking-wide">
-                      {selectedCrypto.network}
+                      {selectedCrypto.symbol}-{selectedCrypto.network}
                     </span>
                   </h3>
                   <p className="text-[11px] text-gray-500">Limits: {settings.currency_symbol || "$"}{settings?.min_deposit || 10} - {settings.currency_symbol || "$"}{settings?.max_deposit || 100000}</p>
