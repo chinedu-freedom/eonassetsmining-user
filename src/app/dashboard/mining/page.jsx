@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Wallet, X, Loader2, Zap, Clock, ShieldCheck, Cpu, TrendingUp, ChevronRight } from "lucide-react";
+import { ArrowLeft, Wallet, X, Loader2, Zap, Clock, ShieldCheck, Cpu, TrendingUp, ChevronRight, Layers, Coins } from "lucide-react";
 import Link from "next/link";
 import { useFetchData } from "@/hooks/useApi";
 import { toast } from "react-hot-toast";
@@ -97,7 +97,7 @@ export default function MiningPlansPage() {
   // Format currency helper
   const formatCurrency = (val) => {
     const symbol = settings.currency_symbol || "$";
-    return `${symbol}${val.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    return `${symbol}${val.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 2 })}`;
   };
 
   return (
@@ -115,13 +115,8 @@ export default function MiningPlansPage() {
         </Link>
       </div>
 
-      {/* <div className="px-4 mt-3 mb-2">
-        <h2 className="text-[18px] font-bold text-[#0f172a]">Investment Plans</h2>
-        <p className="text-[12px] text-gray-500 mt-0.5">Select a plan to start earning daily profits.</p>
-      </div> */}
-
       {/* Plans List */}
-      <div className="px-4 pt-2 pb-24 space-y-3 max-w-[480px] mt-2 mx-auto w-full">
+      <div className="px-4 pt-4 pb-24 space-y-4 max-w-[480px] mx-auto w-full">
         {isLoading ? (
           <div className="flex flex-col items-center justify-center py-12 text-gray-500">
             <Loader2 className="w-8 h-8 animate-spin mb-3 text-[#8b5cf6]" />
@@ -132,39 +127,53 @@ export default function MiningPlansPage() {
             <p className="text-sm font-medium">No plans available.</p>
           </div>
         ) : plans.map((plan) => (
-          <div key={plan.id} className="bg-white rounded-xl p-4 border border-gray-200 shadow-sm flex flex-col gap-3">
+          <div key={plan.id} className="bg-white rounded-[12px] p-3 border border-gray-100 shadow-[0_2px_8px_rgba(0,0,0,0.04)] flex flex-col gap-3">
             {/* Header */}
             <div className="flex justify-between items-start">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-[#f5f3ff] border border-purple-50 flex items-center justify-center overflow-hidden shrink-0">
+              <div className="flex items-center gap-2.5">
+                <div className="w-10 h-10 rounded-full bg-[#f5f3ff] flex items-center justify-center shrink-0">
                   {plan.image ? (
-                    <img src={plan.image} alt={plan.name} className="w-full h-full object-cover" />
+                    <img src={plan.image} alt={plan.name} className="w-full h-full object-cover rounded-full" />
                   ) : (
-                    <Cpu className="text-[#8b5cf6]" size={20} />
+                    <Layers className="text-[#8b5cf6]" size={18} strokeWidth={2.5} />
                   )}
                 </div>
                 <div>
-                  <h2 className="text-[#0f172a] font-bold text-[15px]">{plan.name}</h2>
-                  <p className="text-gray-500 text-[11px] font-medium">{plan.duration} Days Contract</p>
+                  <h2 className="text-[#1e293b] font-extrabold text-[13px] uppercase tracking-wide">{plan.name}</h2>
+                  <div className="inline-block bg-gray-50 text-gray-500 text-[9px] font-medium px-1.5 py-0.5 rounded mt-0.5">
+                    Daily Return
+                  </div>
                 </div>
               </div>
-              <div className="text-right">
-                <div className="text-[#22c55e] font-bold text-[18px] leading-none mb-1">{Number(plan.daily_income).toFixed(1)}%</div>
-                {/* <div className="text-gray-400 text-[10px] font-medium uppercase tracking-wide">Daily Profit</div> */}
-                <div className="text-[10px] text-gray-500 leading-tight">
-                {/* <div className="text-[10px] text-gray-500 mt-1.5 leading-tight"> */}
-                  Min: <span className="text-[#0f172a] font-semibold">{formatCurrency(Number(plan.min_investment))}</span><br/>
-                  Max: <span className="text-[#0f172a] font-semibold">{formatCurrency(Number(plan.max_investment))}</span>
+              <div className="flex flex-col items-end justify-center">
+                <div className="text-[#8b5cf6] font-extrabold text-[18px] leading-none mt-1">
+                  {Number(plan.daily_income).toFixed(1)}%
                 </div>
+              </div>
+            </div>
+
+            {/* Details */}
+            <div className="flex flex-col gap-1.5 mt-0.5">
+              <div className="flex justify-between items-center">
+                <span className="text-[#64748b] text-[11px] font-medium">Minimum Entry:</span>
+                <span className="text-[#1e293b] font-bold text-[11px]">{formatCurrency(Number(plan.min_investment))}</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-[#64748b] text-[11px] font-medium">Maximum Entry:</span>
+                <span className="text-[#1e293b] font-bold text-[11px]">{formatCurrency(Number(plan.max_investment))}</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-[#64748b] text-[11px] font-medium">Cycle duration:</span>
+                <span className="text-[#1e293b] font-bold text-[11px]">{plan.duration} Days</span>
               </div>
             </div>
 
             {/* Action Button */}
             <button
               onClick={() => handleMineClick(plan)}
-              className="cursor-pointer w-full bg-[#8b5cf6] text-white font-medium py-2.5 rounded-lg hover:bg-purple-600 transition-colors text-[13px] shadow-sm"
+              className="cursor-pointer w-full mt-0.5 bg-[#8b5cf6] text-white font-bold py-2 rounded-lg hover:bg-purple-600 transition-colors text-[12px] shadow-sm flex items-center justify-center gap-2"
             >
-             Mine
+             <Cpu size={14} /> Mine
             </button>
           </div>
         ))}

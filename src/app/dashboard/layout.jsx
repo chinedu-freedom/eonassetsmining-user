@@ -7,7 +7,7 @@ import DepositModal from "@/components/DepositModal";
 import { useFetchData } from "@/hooks/useApi";
 
 import { useRouter, usePathname } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 
 export default function DashboardLayout({ children }) {
   const router = useRouter();
@@ -17,11 +17,20 @@ export default function DashboardLayout({ children }) {
 
   const user = userRes?.user;
 
+  const isProtectedRoute = useMemo(() => {
+    const protectedRoutes = [
+      "/dashboard/mining",
+      "/dashboard/wallet/deposit",
+      "/dashboard/wallet/withdraw"
+    ];
+    return protectedRoutes.some(route => pathname.startsWith(route));
+  }, [pathname]);
+
   useEffect(() => {
-    if (!isLoadingProfile && user && user.email_verified === false && pathname !== "/dashboard/settings/auth") {
+    if (!isLoadingProfile && user && user.email_verified === false && isProtectedRoute) {
       router.replace("/dashboard/settings/auth");
     }
-  }, [user, isLoadingProfile, router, pathname]);
+  }, [user, isLoadingProfile, router, isProtectedRoute]);
 
   if (isLoadingSettings || isLoadingProfile) {
     return (
@@ -31,7 +40,7 @@ export default function DashboardLayout({ children }) {
     );
   }
 
-  if (user && user.email_verified === false && pathname !== "/dashboard/settings/auth") {
+  if (user && user.email_verified === false && isProtectedRoute) {
     return null;
   }
 
