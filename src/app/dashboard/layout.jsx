@@ -6,22 +6,22 @@ import DailyCheckinModal from "@/components/DailyCheckinModal";
 import DepositModal from "@/components/DepositModal";
 import { useFetchData } from "@/hooks/useApi";
 
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { useEffect } from "react";
 
 export default function DashboardLayout({ children }) {
   const router = useRouter();
+  const pathname = usePathname();
   const { isLoading: isLoadingSettings } = useFetchData("/settings", ["platform-settings"]);
   const { data: userRes, isLoading: isLoadingProfile } = useFetchData("/users/me", ["user-profile"]);
 
   const user = userRes?.user;
 
   useEffect(() => {
-    if (!isLoadingProfile && user && user.email_verified === false) {
-      localStorage.setItem("registerEmail", user.email);
-      router.replace("/auth/verify-email");
+    if (!isLoadingProfile && user && user.email_verified === false && pathname !== "/dashboard/settings/auth") {
+      router.replace("/dashboard/settings/auth");
     }
-  }, [user, isLoadingProfile, router]);
+  }, [user, isLoadingProfile, router, pathname]);
 
   if (isLoadingSettings || isLoadingProfile) {
     return (
@@ -31,7 +31,7 @@ export default function DashboardLayout({ children }) {
     );
   }
 
-  if (user && user.email_verified === false) {
+  if (user && user.email_verified === false && pathname !== "/dashboard/settings/auth") {
     return null;
   }
 

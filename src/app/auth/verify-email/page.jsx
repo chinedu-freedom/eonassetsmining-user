@@ -385,12 +385,14 @@ function VerifyEmailContent() {
 
           <p className="text-center text-sm text-gray-500 mt-6">
             Need help?{" "}
-            <Link
-              href="/contact"
+            <a
+              href={settings?.whatsapp_support ? `https://wa.me/${settings.whatsapp_support.replace(/[^0-9]/g, '')}` : "#"}
+              target="_blank"
+              rel="noopener noreferrer"
               className="text-purple-600 font-medium hover:underline cursor-pointer"
             >
               Contact Support
-            </Link>
+            </a>
           </p>
         </div>
       </div>
