@@ -4,8 +4,12 @@ import { useState, useEffect } from "react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { X, Send } from "lucide-react";
+import { useFetchData } from "@/hooks/useApi";
 
 export default function TelegramModal({ isOpen, setIsOpen }) {
+  const { data: settingsResponse } = useFetchData("/settings", ["platform-settings"]);
+  const settings = settingsResponse?.settings || {};
+  const telegramLink = settings.telegram_community || settings.telegram_group || "https://t.me";
   useEffect(() => {
     // Only show automatically once per session/visit if we want, but user requested "immediately when page loads"
     // The parent component can handle setting isOpen to true on mount.
@@ -38,7 +42,7 @@ export default function TelegramModal({ isOpen, setIsOpen }) {
             className="w-full bg-[#0ea5e9] hover:bg-[#0284c7] text-white rounded-[12px] h-[44px] text-[14px] font-bold shadow-md transition-all flex items-center gap-2"
             onClick={() => {
               setIsOpen(false);
-              window.open('https://t.me/your_telegram_channel', '_blank');
+              window.open(telegramLink, '_blank');
             }}
           >
             <Send size={16} fill="currentColor" className="ml-[-2px] mt-[1px]" />
