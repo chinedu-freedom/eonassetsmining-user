@@ -34,14 +34,6 @@ function VerifyEmailContent() {
 
   const resendEmailMutation = usePost("/auth/resend-verification", null);
 
-  if (!isMounted || isLoadingSettings) {
-    return (
-      <div className="fixed inset-0 flex items-center justify-center bg-white z-[9999]">
-        <div className="w-12 h-12 border-4 border-gray-100 border-t-[#8b5cf6] rounded-full animate-spin"></div>
-      </div>
-    );
-  }
-
   const { data: verificationData, isLoading: isVerifying, isError: isVerificationError, error: verificationError } = useFetchData(
     `/auth/verify-email?token=${token}`,
     ["verify-email", token],
@@ -105,6 +97,14 @@ function VerifyEmailContent() {
       return () => clearTimeout(timer);
     }
   }, [countdown, token]);
+
+  if (!isMounted || isLoadingSettings) {
+    return (
+      <div className="fixed inset-0 flex items-center justify-center bg-white z-[9999]">
+        <div className="w-12 h-12 border-4 border-gray-100 border-t-[#8b5cf6] rounded-full animate-spin"></div>
+      </div>
+    );
+  }
 
   const formatCountdown = (seconds) => {
     const minutes = Math.floor(seconds / 60);
