@@ -268,7 +268,7 @@ export default function MiningPlansPage() {
                 </div>
                 <div className="flex justify-between items-center pb-2">
                   <span className="text-gray-500 text-[12px]">Capital Return</span>
-                  <span className="text-[#8b5cf6] text-[14px] font-bold">Yes</span>
+                  <span className="text-red-500 text-[14px] font-bold">No</span>
                 </div>
               </div>
             </div>
