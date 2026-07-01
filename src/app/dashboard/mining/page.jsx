@@ -129,8 +129,8 @@ export default function MiningPlansPage() {
         ) : plans.map((plan) => (
           <div key={plan.id} className="bg-white rounded-[12px] p-3 border border-gray-100 shadow-[0_2px_8px_rgba(0,0,0,0.04)] flex flex-col gap-3">
             {/* Header */}
-            <div className="flex justify-between items-start">
-              <div className="flex items-center gap-2.5">
+            <div className="flex justify-between items-center">
+              <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-full bg-[#f5f3ff] flex items-center justify-center shrink-0">
                   {plan.image ? (
                     <img src={plan.image} alt={plan.name} className="w-full h-full object-cover rounded-full" />
@@ -138,17 +138,10 @@ export default function MiningPlansPage() {
                     <Layers className="text-[#8b5cf6]" size={18} strokeWidth={2.5} />
                   )}
                 </div>
-                <div>
-                  <h2 className="text-[#1e293b] font-extrabold text-[13px] uppercase tracking-wide">{plan.name}</h2>
-                  <div className="inline-block bg-gray-50 text-gray-500 text-[9px] font-medium px-1.5 py-0.5 rounded mt-0.5">
-                    Daily Return
-                  </div>
-                </div>
+                <h2 className="text-[#1e293b] font-extrabold text-[14px] uppercase tracking-wide">{plan.name}</h2>
               </div>
-              <div className="flex flex-col items-end justify-center">
-                <div className="text-[#8b5cf6] font-extrabold text-[18px] leading-none mt-1">
-                  {Number(plan.daily_income).toFixed(1)}%
-                </div>
+              <div className="text-[#8b5cf6] font-extrabold text-[18px] leading-none">
+                {Number(plan.daily_income).toFixed(1)}%
               </div>
             </div>
 
