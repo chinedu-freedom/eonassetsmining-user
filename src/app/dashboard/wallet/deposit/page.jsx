@@ -39,8 +39,6 @@ function DepositContent() {
   const [amount, setAmount] = useState("");
   const [paymentAddress, setPaymentAddress] = useState("");
   const [trackId, setTrackId] = useState(null);
-  const [isDynamic, setIsDynamic] = useState(false);
-  const [txHash, setTxHash] = useState("");
   const [copied, setCopied] = useState(false);
 
   const { data: cryptosRes, isLoading: isLoadingCryptos } = useFetchData("/settings/payout-cryptos", ["payout-cryptos"]);
@@ -75,7 +73,6 @@ function DepositContent() {
   };
 
   const { mutate: submitDeposit, isPending } = usePost("/users/deposit");
-  const { mutate: notifyDeposit, isPending: isNotifying } = usePost("/users/deposit-notify");
 
   const handleProceed = () => {
     if (!amount || isNaN(amount) || Number(amount) <= 0) {
@@ -95,7 +92,6 @@ function DepositContent() {
           if (res.success) {
             setPaymentAddress(res.address);
             setTrackId(res.trackId || null);
-            setIsDynamic(!!res.dynamic);
             setStep(2);
             // toast.success("Payment details generated!");
           } else {
@@ -119,35 +115,7 @@ function DepositContent() {
     });
   };
 
-  const handleNotifyPayment = () => {
-    if (!isDynamic && !txHash.trim()) {
-      return toast.error("Transaction Hash is required for manual deposits");
-    }
 
-    notifyDeposit(
-      {
-        amount: Number(amount),
-        cryptoId: selectedCrypto.id,
-        trackId: trackId,
-        txHash: txHash.trim()
-      },
-      {
-        onSuccess: (res) => {
-          if (res.success) {
-            // toast.success("Deposit request received successfully. Your account will be credited automatically once confirmed.");
-            setTimeout(() => {
-              router.push("/dashboard/wallet");
-            }, 3000);
-          } else {
-            toast.error(res.message || "Could not record payment. Please contact support.");
-          }
-        },
-        onError: (err) => {
-          toast.error(err.message || "Network error. Please try again or contact support.");
-        }
-      }
-    );
-  };
 
   return (
     <div className="flex flex-col h-full bg-[#f8f9fa] overflow-y-auto [&::-webkit-scrollbar]:hidden relative">
@@ -361,31 +329,16 @@ function DepositContent() {
                 </p>
               </div>
 
-              {/* Transaction Hash Input (Only if static/not dynamic) */}
-              {!isDynamic && (
-                <div className="space-y-1 pt-1">
-                  <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider block">Transaction Hash (TxHash)</label>
-                  <input
-                    type="text"
-                    value={txHash}
-                    onChange={(e) => setTxHash(e.target.value)}
-                    placeholder="Enter transaction hash"
-                    className="w-full h-[38px] bg-gray-50 border border-gray-100 rounded-lg px-3 text-[11.5px] focus:outline-none focus:border-purple-300 focus:ring-1 focus:ring-purple-100 transition-all font-mono"
-                  />
-                  <p className="text-[8.5px] text-gray-400">Provide the transaction hash/id from your wallet to help verify deposit.</p>
-                </div>
-              )}
             </div>
 
-            {/* Notify Button */}
-            <button
-              onClick={handleNotifyPayment}
-              disabled={isNotifying || (!isDynamic && !txHash)}
-              className="w-full bg-[#8b5cf6] hover:bg-[#7c3aed] text-white py-2.5 rounded-[8px] font-bold text-[13px] transition-all shadow-[0_4px_12px_-4px_rgba(139,92,246,0.4)] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 mt-2 cursor-pointer"
-            >
-              {isNotifying ? <Loader2 className="animate-spin" size={16} /> : <CheckCircle2 size={16} />}
-              I've Sent the Payment
-            </button>
+            {/* Waiting for Payment Notification */}
+            <div className="bg-white border border-gray-100 rounded-[10px] p-4 shadow-sm flex flex-col items-center justify-center space-y-3">
+              <Loader2 className="animate-spin text-purple-500" size={28} />
+              <div className="text-center">
+                <h4 className="text-[13px] font-bold text-[#4c1d95]">Awaiting Payment</h4>
+                <p className="text-[11px] text-gray-500">Your balance will be credited automatically once the network confirms your transaction. You can safely leave this page.</p>
+              </div>
+            </div>
           </>
         )}
       </div>
