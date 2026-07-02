@@ -97,7 +97,7 @@ function DepositContent() {
             setTrackId(res.trackId || null);
             setIsDynamic(!!res.dynamic);
             setStep(2);
-            toast.success("Payment details generated!");
+            // toast.success("Payment details generated!");
           } else {
             toast.error(res.message || "Failed to generate payment details");
           }
@@ -134,7 +134,7 @@ function DepositContent() {
       {
         onSuccess: (res) => {
           if (res.success) {
-            toast.success("Deposit request received successfully. Your account will be credited automatically once confirmed.");
+            // toast.success("Deposit request received successfully. Your account will be credited automatically once confirmed.");
             setTimeout(() => {
               router.push("/dashboard/wallet");
             }, 3000);
