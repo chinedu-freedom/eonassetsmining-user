@@ -134,10 +134,10 @@ export default function DailyCheckinModal() {
       const result = await claimMutation.mutateAsync({});
       if (result.success) {
         confettiRef.current?.launch(150);
-        // toast.success("Reward Claimed!", {
-        //   description: result.message,
-        // });
         await refetch();
+        setTimeout(() => {
+          handleOpenChange(false);
+        }, 2000);
       }
     } catch (error) {
       toast.error("Claim Failed", {
@@ -163,16 +163,16 @@ export default function DailyCheckinModal() {
 
   return (
     <Dialog open={isOpen} onOpenChange={handleOpenChange}>
-      <DialogContent className="cursor-pointer sm:max-w-[400px] p-0 overflow-hidden bg-white rounded-2xl border-0 shadow-2xl">
+      <DialogContent className="cursor-pointer sm:max-w-[400px] p-0 overflow-hidden bg-[#131F37] rounded-2xl border border-white/5 shadow-2xl">
         <div className="p-8 flex flex-col items-center">
           
-          <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mb-4 text-orange-500 shadow-sm relative overflow-hidden">
+          <div className="w-16 h-16 bg-orange-500/20 rounded-full flex items-center justify-center mb-4 text-orange-400 shadow-sm relative overflow-hidden">
             <Gift className="w-8 h-8" />
             <div className="absolute top-1 right-1 text-[10px]">✨</div>
           </div>
           
-          <h2 className="text-xl font-bold text-gray-900 mb-1">Daily Rewards</h2>
-          <p className="text-sm text-gray-500 mb-8 text-center px-4">
+          <h2 className="text-xl font-bold text-white/90 mb-1">Daily Rewards</h2>
+          <p className="text-sm text-gray-400 mb-8 text-center px-4">
             Check in for 7 consecutive days to get maximum rewards. Missing a day resets your streak!
           </p>
           
@@ -188,7 +188,7 @@ export default function DailyCheckinModal() {
           </div>
 
           {claimedToday ? (
-            <div className="w-full bg-gray-50 text-gray-500 border border-gray-100 rounded-xl py-4 font-bold text-center tracking-[0.2em] shadow-inner text-lg">
+            <div className="w-full bg-white/5 text-gray-400 border border-white/5 rounded-xl py-4 font-bold text-center tracking-[0.2em] shadow-inner text-lg">
               {timeLeft}
             </div>
           ) : (
@@ -223,18 +223,18 @@ function RewardCard({ reward, isNext, settings }) {
   return (
     <div className={`
       flex flex-col items-center justify-center p-3 rounded-xl border-2 transition-all
-      ${isClaimed ? 'border-green-500 bg-green-50' : ''}
-      ${isAvailable ? 'border-[#8b5cf6] bg-purple-50 shadow-sm scale-105 z-10 relative' : ''}
-      ${reward.status === 'locked' && !isNext ? 'border-gray-100 bg-gray-50/50' : ''}
+      ${isClaimed ? 'border-[#10b981] bg-[#10b981]/10' : ''}
+      ${isAvailable ? 'border-[#8b5cf6] bg-[#8b5cf6]/10 shadow-sm scale-105 z-10 relative' : ''}
+      ${reward.status === 'locked' && !isNext ? 'border-white/5 bg-white/5' : ''}
     `}>
       <span className={`text-[11px] font-bold tracking-wider uppercase mb-2 
-        ${isClaimed ? 'text-green-500' : isAvailable ? 'text-[#8b5cf6]' : 'text-gray-400'}
+        ${isClaimed ? 'text-[#10b981]' : isAvailable ? 'text-[#8b5cf6]' : 'text-gray-400'}
       `}>
         Day {reward.day}
       </span>
       
       <div className={`w-8 h-8 rounded-full flex items-center justify-center mb-2 shadow-sm
-        ${isClaimed ? 'bg-green-500 text-white' : isAvailable ? 'bg-[#f59e0b] text-white' : 'bg-gray-200 text-gray-400'}
+        ${isClaimed ? 'bg-[#10b981] text-white' : isAvailable ? 'bg-[#f59e0b] text-white' : 'bg-white/10 text-gray-400'}
       `}>
         {isClaimed ? (
           <Check className="w-5 h-5" strokeWidth={3} />
@@ -246,7 +246,7 @@ function RewardCard({ reward, isNext, settings }) {
       </div>
       
       <span className={`text-xs font-bold 
-        ${isClaimed ? 'text-green-500' : isAvailable ? 'text-[#8b5cf6]' : 'text-gray-400'}
+        ${isClaimed ? 'text-[#10b981]' : isAvailable ? 'text-[#8b5cf6]' : 'text-gray-400'}
       `}>
         +{settings?.currency_symbol || "$"}{parseFloat(reward.amount).toFixed(2)}
       </span>

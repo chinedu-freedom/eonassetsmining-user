@@ -141,19 +141,19 @@ export default function AccountPage() {
   };
 
   const menuItems = [
-    { icon: Info, label: "About Us", href: "/dashboard/about", color: "text-[#8b5cf6]", bg: "bg-[#f5f3ff]" },
-    { icon: Users, label: "Invite", href: "/dashboard/invite", color: "text-[#8b5cf6]", bg: "bg-[#f5f3ff]" },
-    { icon: Clock, label: "Transactions", href: "/dashboard/transactions", color: "text-[#8b5cf6]", bg: "bg-[#f5f3ff]" },
-    { icon: Settings, label: "Settings", href: "/dashboard/settings", color: "text-[#8b5cf6]", bg: "bg-[#f5f3ff]" },
-    { icon: Download, label: "Download App", href: "#", color: "text-[#8b5cf6]", bg: "bg-[#f5f3ff]" },
-    { icon: HelpCircle, label: "Help Center", href: "/dashboard/help", color: "text-[#8b5cf6]", bg: "bg-[#f5f3ff]" },
-    { icon: LogOut, label: "Logout", href: "#", color: "text-[#ef4444]", bg: "bg-[#fee2e2]" },
+    { icon: Info, label: "About Us", href: "/dashboard/about", color: "text-purple-400", bg: "bg-purple-900/20" },
+    { icon: Users, label: "Invite", href: "/dashboard/invite", color: "text-purple-400", bg: "bg-purple-900/20" },
+    { icon: Clock, label: "Transactions", href: "/dashboard/transactions", color: "text-purple-400", bg: "bg-purple-900/20" },
+    { icon: Settings, label: "Settings", href: "/dashboard/settings", color: "text-purple-400", bg: "bg-purple-900/20" },
+    { icon: Download, label: "Download App", href: "#", color: "text-purple-400", bg: "bg-purple-900/20" },
+    { icon: HelpCircle, label: "Help Center", href: "/dashboard/help", color: "text-purple-400", bg: "bg-purple-900/20" },
+    { icon: LogOut, label: "Logout", href: "#", color: "text-red-400", bg: "bg-red-900/20" },
   ];
 
   return (
-    <div className="flex flex-col h-full bg-[#f8f9fa] overflow-y-auto  [&::-webkit-scrollbar]:hidden">
+    <div className="flex flex-col h-full bg-transparent overflow-y-auto  [&::-webkit-scrollbar]:hidden">
       {/* Header */}
-      <div className="bg-white px-4 pt-4 pb-3 flex justify-between items-center rounded-b-[20px] shadow-sm z-10 sticky top-0">
+      <div className="bg-[#131F37] px-4 pt-4 pb-3 flex justify-between items-center rounded-b-[20px] shadow-sm z-10 sticky top-0 border-b border-white/5">
         <div className="flex items-center gap-2">
           <label className="relative w-9 h-9 bg-gradient-to-br from-[#4c1d95] to-[#0f172a] rounded-full flex items-center justify-center text-white shadow-sm cursor-pointer overflow-hidden group shrink-0">
             {profilePic ? (
@@ -172,21 +172,21 @@ export default function AccountPage() {
             />
           </label>
           <div>
-            <h1 className="text-[#4c1d95] text-[15px] font-bold leading-tight">{userProfile?.full_name || "..."}</h1>
+            <h1 className="text-white/90 text-[15px] font-bold leading-tight">{userProfile?.full_name || "..."}</h1>
             <p className="text-gray-400 text-[10px] mt-0.5">{userProfile?.email || "..."}</p>
           </div>
         </div>
         <div className="flex items-center gap-2">
           <button 
             onClick={() => setShowLanguageModal(true)}
-            className="flex items-center gap-1 bg-white border border-gray-200 px-2.5 py-1 rounded-sm cursor-pointer text-[11px] font-bold text-[#4c1d95] shadow-sm hover:bg-gray-50 transition-colors"
+            className="flex items-center gap-1 bg-white/5 border border-white/5 px-2.5 py-1 rounded-sm cursor-pointer text-[11px] font-bold text-white/90 shadow-sm hover:bg-white/10 transition-colors"
           >
             <Globe size={13} className="text-[#8b5cf6]" />
             {currentLang}
           </button>
           <Link 
             href="/dashboard/help"
-            className="bg-[#f5f3ff] p-1.5 rounded-full text-[#8b5cf6] hover:bg-[#ede9fe] transition-colors cursor-pointer"
+            className="bg-white/5 p-1.5 rounded-full text-[#8b5cf6] hover:bg-white/10 transition-colors cursor-pointer"
           >
             <MessageCircle size={16} />
           </Link>
@@ -223,7 +223,7 @@ export default function AccountPage() {
           </div>
 
           <div className="flex gap-2.5 relative z-10">
-            <Link href="?depositModal=true" className="flex-1 bg-white text-[#4c1d95] py-2 rounded-lg text-[13px] font-semibold flex items-center justify-center gap-1.5 hover:bg-gray-50 transition-colors shadow-md cursor-pointer">
+            <Link href="?depositModal=true" className="flex-1 bg-[#8b5cf6] text-white py-2 rounded-lg text-[13px] font-semibold flex items-center justify-center gap-1.5 hover:bg-purple-600 transition-colors shadow-md cursor-pointer">
               <Wallet size={16} />
               Deposit
             </Link>
@@ -235,61 +235,61 @@ export default function AccountPage() {
         </div>
 
         {/* Account Overview */}
-        <div className="bg-white rounded-[16px] p-[16px] border border-gray-100 shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)]">
+        <div className="bg-[#131F37] rounded-[16px] p-[16px] border border-white/5 shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)]">
           <div className="flex items-center gap-1.5 mb-3.5">
             <BarChart3 size={14} className="text-[#8b5cf6]" />
-            <h2 className="text-[#334155] font-bold text-[13px]">Account Overview</h2>
+            <h2 className="text-white/90 font-bold text-[13px]">Account Overview</h2>
           </div>
 
           <div className="grid grid-cols-2 gap-2.5">
             {/* Total Deposit */}
-            <div className="bg-[#f8f9fa] rounded-[12px] p-3 flex flex-col gap-2 border border-gray-50">
+            <div className="bg-white/5 rounded-[12px] p-3 flex flex-col gap-2 border border-white/5">
               <div className="flex items-center gap-2">
-                <div className="w-7 h-7 bg-[#dcfce7] rounded-[8px] flex items-center justify-center text-[#16a34a]">
+                <div className="w-7 h-7 bg-green-900/20 rounded-[8px] flex items-center justify-center text-green-400">
                   <Wallet size={12} />
                 </div>
                 <span className="text-[8px] font-bold text-gray-400 uppercase tracking-wider">Total Deposit</span>
               </div>
-              <div className="text-[13px] font-bold text-[#0f172a] ml-1">{showBalance ? balanceValues.deposit : "****"}</div>
+              <div className="text-[13px] font-bold text-white/90 ml-1">{showBalance ? balanceValues.deposit : "****"}</div>
             </div>
 
             {/* Total Withdraw */}
-            <div className="bg-[#f8f9fa] rounded-[12px] p-3 flex flex-col gap-2 border border-gray-50">
+            <div className="bg-white/5 rounded-[12px] p-3 flex flex-col gap-2 border border-white/5">
               <div className="flex items-center gap-2">
-                <div className="w-7 h-7 bg-[#fee2e2] rounded-[8px] flex items-center justify-center text-[#ef4444]">
+                <div className="w-7 h-7 bg-red-900/20 rounded-[8px] flex items-center justify-center text-red-400">
                   <CreditCard size={12} />
                 </div>
                 <span className="text-[8px] font-bold text-gray-400 uppercase tracking-wider">Total Withdraw</span>
               </div>
-              <div className="text-[13px] font-bold text-[#0f172a] ml-1">{showBalance ? balanceValues.withdraw : "****"}</div>
+              <div className="text-[13px] font-bold text-white/90 ml-1">{showBalance ? balanceValues.withdraw : "****"}</div>
             </div>
 
             {/* Total Income */}
-            <div className="bg-[#f8f9fa] rounded-[12px] p-3 flex flex-col gap-2 border border-gray-50">
+            <div className="bg-white/5 rounded-[12px] p-3 flex flex-col gap-2 border border-white/5">
               <div className="flex items-center gap-2">
-                <div className="w-7 h-7 bg-[#ede9fe] rounded-[8px] flex items-center justify-center text-[#8b5cf6]">
+                <div className="w-7 h-7 bg-purple-900/20 rounded-[8px] flex items-center justify-center text-purple-400">
                   <BarChart2 size={12} />
                 </div>
                 <span className="text-[8px] font-bold text-gray-400 uppercase tracking-wider">Total Income</span>
               </div>
-              <div className="text-[13px] font-bold text-[#0f172a] ml-1">{showBalance ? balanceValues.income : "****"}</div>
+              <div className="text-[13px] font-bold text-white/90 ml-1">{showBalance ? balanceValues.income : "****"}</div>
             </div>
 
             {/* Team Members */}
-            <div className="bg-[#f8f9fa] rounded-[12px] p-3 flex flex-col gap-2 border border-gray-50">
+            <div className="bg-white/5 rounded-[12px] p-3 flex flex-col gap-2 border border-white/5">
               <div className="flex items-center gap-2">
-                <div className="w-7 h-7 bg-[#fef08a] rounded-[8px] flex items-center justify-center text-[#ca8a04]">
+                <div className="w-7 h-7 bg-amber-900/20 rounded-[8px] flex items-center justify-center text-amber-400">
                   <Users size={12} />
                 </div>
                 <span className="text-[8px] font-bold text-gray-400 uppercase tracking-wider">Team Members</span>
               </div>
-              <div className="text-[13px] font-bold text-[#0f172a] ml-1">{userProfile?.statistics?.team_members || 0}</div>
+              <div className="text-[13px] font-bold text-white/90 ml-1">{userProfile?.statistics?.team_members || 0}</div>
             </div>
           </div>
         </div>
 
         {/* Menu List */}
-        <div className="bg-white rounded-[16px] border border-gray-100 shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] overflow-hidden">
+        <div className="bg-[#131F37] rounded-[16px] border border-white/5 shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] overflow-hidden">
           {menuItems.map((item, index) => {
             const isDownload = item.label === "Download App";
             return (
@@ -313,19 +313,19 @@ export default function AccountPage() {
                     }
                   }
                 }}
-                className={`flex items-center justify-between px-4 py-3.5 hover:bg-gray-50 transition-colors ${
-                  index !== menuItems.length - 1 ? 'border-b border-gray-50' : ''
+                className={`flex items-center justify-between px-4 py-3.5 hover:bg-white/5 transition-colors ${
+                  index !== menuItems.length - 1 ? 'border-b border-white/5' : ''
                 }`}
               >
                 <div className="flex items-center gap-3">
                   <div className={`w-8 h-8 rounded-[10px] flex items-center justify-center ${item.bg} ${item.color}`}>
                     <item.icon size={14} />
                   </div>
-                  <span className={`text-[13px] font-medium ${item.label === 'Logout' ? 'text-[#ef4444]' : 'text-[#334155]'}`}>
+                  <span className={`text-[13px] font-medium ${item.label === 'Logout' ? 'text-red-400' : 'text-white/90'}`}>
                     {item.label}
                   </span>
                 </div>
-                <ChevronRight size={14} className="text-gray-300" />
+                <ChevronRight size={14} className="text-gray-400" />
               </Link>
             );
           })}
@@ -343,7 +343,7 @@ export default function AccountPage() {
           ></div>
 
           {/* Modal Content */}
-          <div className="relative bg-white w-full max-w-[480px] mx-auto rounded-t-[24px] overflow-hidden flex flex-col h-[75vh] animate-in slide-in-from-bottom-full duration-300">
+          <div className="relative bg-[#131F37] w-full max-w-[480px] mx-auto rounded-t-[24px] overflow-hidden flex flex-col h-[75vh] animate-in slide-in-from-bottom-full duration-300">
             
             {/* Header */}
             <div className="bg-[#8b5cf6] p-5 flex justify-between items-center text-white">
@@ -357,14 +357,14 @@ export default function AccountPage() {
             </div>
 
             {/* Search */}
-            <div className="p-3 border-b border-gray-100 flex items-center gap-2">
+            <div className="p-3 border-b border-white/5 flex items-center gap-2">
               <Search size={16} className="text-gray-400 ml-2" />
               <input 
                 type="text"
                 placeholder="Search language..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full py-2 px-2 text-[13px] outline-none placeholder:text-gray-400"
+                className="w-full py-2 px-2 text-[13px] outline-none placeholder:text-gray-400 bg-transparent text-white/90"
               />
             </div>
 
@@ -411,22 +411,22 @@ export default function AccountPage() {
                     }}
                     className={`w-full flex items-center justify-between p-3 rounded-[12px] border transition-colors ${
                       isSelected 
-                        ? 'border-[#8b5cf6] bg-[#f5f3ff]' 
-                        : 'border-gray-200 hover:border-[#8b5cf6] bg-white'
+                        ? 'border-[#8b5cf6] bg-white/5' 
+                        : 'border-white/5 hover:border-[#8b5cf6] bg-transparent'
                     }`}
                   >
                     <div className="flex items-center gap-3">
-                      <div className="relative w-10 h-10 bg-white border border-gray-100 rounded-xl flex items-center justify-center text-[12px] font-bold text-gray-400 shadow-sm">
+                      <div className="relative w-10 h-10 bg-[#131F37] border border-white/5 rounded-xl flex items-center justify-center text-[12px] font-bold text-gray-400 shadow-sm">
                         {lang.language_code.substring(0, 2).toUpperCase()}
                         {isSelected && (
-                          <div className="absolute -top-1 -right-1 bg-white rounded-full">
+                          <div className="absolute -top-1 -right-1 bg-[#131F37] rounded-full">
                             <CheckCircle2 size={14} className="text-[#10b981]" fill="#fff" />
                           </div>
                         )}
                       </div>
                       <div className="text-left">
-                        <div className="text-[13px] font-bold text-[#0f172a]">{lang.native_name}</div>
-                        <div className="text-[11px] text-gray-500">{lang.language_name}</div>
+                        <div className="text-[13px] font-bold text-white/90">{lang.native_name}</div>
+                        <div className="text-[11px] text-gray-400">{lang.language_name}</div>
                       </div>
                     </div>
                     <ChevronRight size={16} className={isSelected ? 'text-[#8b5cf6]' : 'text-gray-300'} />
@@ -441,13 +441,13 @@ export default function AccountPage() {
       {/* Coming Soon Toast */}
       {showToast && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center pointer-events-none p-4">
-          <div className="bg-white rounded-[24px] shadow-[0_8px_30px_rgb(0,0,0,0.12)] px-5 py-4 flex items-center gap-4 animate-in fade-in zoom-in-95 duration-300 pointer-events-auto max-w-[320px] w-full border border-gray-100/50">
-            <div className="w-12 h-12 bg-[#f5f3ff] rounded-[14px] flex items-center justify-center shrink-0">
+          <div className="bg-[#131F37] rounded-[24px] shadow-[0_8px_30px_rgb(0,0,0,0.12)] px-5 py-4 flex items-center gap-4 animate-in fade-in zoom-in-95 duration-300 pointer-events-auto max-w-[320px] w-full border border-white/5">
+            <div className="w-12 h-12 bg-white/5 rounded-[14px] flex items-center justify-center shrink-0">
               <div className="w-6 h-6 bg-[#8b5cf6] rounded-full flex items-center justify-center text-white">
                 <Info size={14} strokeWidth={3} />
               </div>
             </div>
-            <span className="text-[#0f172a] text-[18px] font-bold">Coming soon</span>
+            <span className="text-white/90 text-[18px] font-bold">Coming soon</span>
           </div>
         </div>
       )}

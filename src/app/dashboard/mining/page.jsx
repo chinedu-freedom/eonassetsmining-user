@@ -87,14 +87,14 @@ export default function MiningPlansPage() {
   };
 
   return (
-    <div className="flex flex-col h-full bg-[#f8f9fa] overflow-y-auto  [&::-webkit-scrollbar]:hidden relative">
+    <div className="flex flex-col h-full bg-transparent overflow-y-auto  [&::-webkit-scrollbar]:hidden relative">
       {/* Header */}
-      <div className="bg-white px-4 pt-4 pb-3 flex justify-between items-center shadow-sm z-10 sticky top-0 border-b border-gray-100">
+      <div className="bg-[#131F37] px-4 pt-4 pb-3 flex justify-between items-center shadow-sm z-10 sticky top-0 border-b border-white/5">
         <div className="flex items-center gap-3">
-          <Link href="/dashboard" className="w-8 h-8 bg-gray-50 rounded-xl flex items-center justify-center text-gray-500 hover:bg-gray-100 transition-colors cursor-pointer">
+          <Link href="/dashboard" className="w-8 h-8 bg-white/5 rounded-xl flex items-center justify-center text-gray-300 hover:bg-white/10 transition-colors cursor-pointer">
             <ArrowLeft size={16} />
           </Link>
-          <h1 className="text-[#4c1d95] text-[15px] font-bold">Mining Contracts</h1>
+          <h1 className="text-white/90 text-[15px] font-bold">Mining Contracts</h1>
         </div>
         <Link href="/dashboard/investments" className="w-8 h-8 bg-[#8b5cf6] rounded-md flex items-center justify-center text-white hover:bg-purple-600 transition-colors shadow-sm cursor-pointer">
           <Wallet size={14} />
@@ -113,18 +113,18 @@ export default function MiningPlansPage() {
             <p className="text-sm font-medium">No plans available.</p>
           </div>
         ) : plans.map((plan) => (
-          <div key={plan.id} className="bg-white rounded-[12px] p-3 border border-gray-100 shadow-[0_2px_8px_rgba(0,0,0,0.04)] flex flex-col gap-3">
+          <div key={plan.id} className="bg-[#131F37] rounded-[12px] p-3 border border-white/5 shadow-[0_2px_8px_rgba(0,0,0,0.04)] flex flex-col gap-3">
             {/* Header */}
             <div className="flex justify-between items-center">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-[#f5f3ff] flex items-center justify-center shrink-0">
+                <div className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center shrink-0">
                   {plan.image ? (
                     <img src={plan.image} alt={plan.name} className="w-full h-full object-cover rounded-full" />
                   ) : (
                     <Layers className="text-[#8b5cf6]" size={18} strokeWidth={2.5} />
                   )}
                 </div>
-                <h2 className="text-[#1e293b] font-extrabold text-[14px] uppercase tracking-wide">{plan.name}</h2>
+                <h2 className="text-white/90 font-extrabold text-[14px] uppercase tracking-wide">{plan.name}</h2>
               </div>
               <div className="text-[#8b5cf6] font-extrabold text-[18px] leading-none">
                 {Number(plan.daily_income).toFixed(1)}%
@@ -134,16 +134,16 @@ export default function MiningPlansPage() {
             {/* Details */}
             <div className="flex flex-col gap-1.5 mt-0.5">
               <div className="flex justify-between items-center">
-                <span className="text-[#64748b] text-[11px] font-medium">Minimum Entry:</span>
-                <span className="text-[#1e293b] font-bold text-[11px]">{formatCurrency(Number(plan.min_investment))}</span>
+                <span className="text-gray-400 text-[11px] font-medium">Minimum Entry:</span>
+                <span className="text-white/90 font-bold text-[11px]">{formatCurrency(Number(plan.min_investment))}</span>
               </div>
               <div className="flex justify-between items-center">
-                <span className="text-[#64748b] text-[11px] font-medium">Maximum Entry:</span>
-                <span className="text-[#1e293b] font-bold text-[11px]">{formatCurrency(Number(plan.max_investment))}</span>
+                <span className="text-gray-400 text-[11px] font-medium">Maximum Entry:</span>
+                <span className="text-white/90 font-bold text-[11px]">{formatCurrency(Number(plan.max_investment))}</span>
               </div>
               <div className="flex justify-between items-center">
-                <span className="text-[#64748b] text-[11px] font-medium">Mining duration:</span>
-                <span className="text-[#1e293b] font-bold text-[11px]">{plan.duration} Days</span>
+                <span className="text-gray-400 text-[11px] font-medium">Mining duration:</span>
+                <span className="text-white/90 font-bold text-[11px]">{plan.duration} Days</span>
               </div>
             </div>
 
@@ -162,16 +162,16 @@ export default function MiningPlansPage() {
       {selectedPlan && (
         <div className="fixed inset-0 z-[100] flex items-end justify-center bg-black/40 backdrop-blur-sm">
           <div
-            className="bg-white w-full max-w-[800px] rounded-t-[24px] overflow-hidden flex flex-col animate-in slide-in-from-bottom-full duration-300 ease-out shadow-2xl"
+            className="bg-[#0B1426] border border-white/10 w-full max-w-[800px] rounded-t-[24px] overflow-hidden flex flex-col animate-in slide-in-from-bottom-full duration-300 ease-out shadow-2xl"
             style={{ maxHeight: '90vh' }}
           >
             {/* Drag Handle */}
             <div className="w-full flex justify-center pt-3 pb-1">
-              <div className="w-12 h-1 bg-gray-200 rounded-full"></div>
+              <div className="w-12 h-1 bg-white/20 rounded-full"></div>
             </div>
 
             {/* Modal Header */}
-            <div className="flex justify-between items-start px-4 pb-4 border-b border-gray-50">
+            <div className="flex justify-between items-start px-4 pb-4 border-b border-white/5">
               <div className="flex items-center gap-3">
                 <div className="w-[42px] h-[42px] bg-[#020617] rounded-full flex items-center justify-center shadow-inner relative overflow-hidden shrink-0">
                   <div className="absolute inset-0 bg-gradient-to-b from-purple-500/20 to-transparent"></div>
@@ -185,13 +185,13 @@ export default function MiningPlansPage() {
                   )}
                 </div>
                 <div>
-                  <h3 className="font-bold text-[#0f172a] text-[15px] leading-tight">{selectedPlan.name}</h3>
-                  <p className="text-gray-500 text-[11px] mt-0.5">{selectedPlan.duration} days • {Number(selectedPlan.daily_income).toFixed(1)}% daily</p>
+                  <h3 className="font-bold text-white/90 text-[15px] leading-tight">{selectedPlan.name}</h3>
+                  <p className="text-gray-400 text-[11px] mt-0.5">{selectedPlan.duration} days • {Number(selectedPlan.daily_income).toFixed(1)}% daily</p>
                 </div>
               </div>
               <button
                 onClick={closeModal}
-                className="w-7 h-7 bg-gray-100 hover:bg-gray-200 rounded-full flex items-center justify-center text-gray-500 transition-colors cursor-pointer"
+                className="w-7 h-7 bg-white/5 hover:bg-white/10 rounded-full flex items-center justify-center text-gray-400 transition-colors cursor-pointer"
               >
                 <X size={14} />
               </button>
@@ -199,12 +199,12 @@ export default function MiningPlansPage() {
 
             <div className="overflow-y-auto p-4 space-y-6 [&::-webkit-scrollbar]:hidden">
 
-              <div className="flex justify-between items-center py-4 border-y border-gray-100">
+              <div className="flex justify-between items-center py-4 border-y border-white/5">
                 <div className="text-center w-1/3">
                   <div className="text-[#22c55e] font-bold text-[14px]">{Number(selectedPlan.daily_income).toFixed(1)}%</div>
                   <div className="text-gray-400 text-[10px] mt-1">Daily Rate</div>
                 </div>
-                <div className="text-center w-1/3 border-x border-gray-50">
+                <div className="text-center w-1/3 border-x border-white/5">
                   <div className="text-[#8b5cf6] font-bold text-[14px]">{selectedPlan.duration} days</div>
                   <div className="text-gray-400 text-[10px] mt-1">Revenue Days</div>
                 </div>
@@ -216,27 +216,27 @@ export default function MiningPlansPage() {
 
               {/* Balance Source */}
               <div>
-                <label className="block text-gray-500 text-[12px] mb-3">Select Balance Source</label>
+                <label className="block text-gray-400 text-[12px] mb-3">Select Balance Source</label>
                 <div className="flex gap-4">
                   <button
                     onClick={() => setBalanceSource("main")}
                     className={`flex-1 py-4 rounded-[12px] border flex flex-col items-center justify-center gap-1.5 transition-all ${balanceSource === "main"
-                        ? "border-[#8b5cf6] bg-[#f8faff] text-[#8b5cf6]"
-                        : "border-gray-200 bg-white hover:bg-gray-50"
+                        ? "border-[#8b5cf6] bg-purple-900/20 text-[#8b5cf6]"
+                        : "border-white/10 bg-[#131F37] hover:bg-white/5"
                       }`}
                   >
-                    <span className="text-[10px] font-semibold uppercase tracking-wider">EARNING BALANCE</span>
-                    <span className="text-[15px] text-[#0f172a] font-bold">{formatCurrency(balances.main)}</span>
+                    <span className="text-[10px] font-semibold uppercase tracking-wider text-gray-400">EARNING BALANCE</span>
+                    <span className="text-[15px] text-white/90 font-bold">{formatCurrency(balances.main)}</span>
                   </button>
                   <button
                     onClick={() => setBalanceSource("gift")}
                     className={`flex-1 py-4 rounded-[12px] border flex flex-col items-center justify-center gap-1.5 transition-all ${balanceSource === "gift"
-                        ? "border-[#8b5cf6] bg-[#f8faff] text-[#8b5cf6]"
-                        : "border-gray-200 bg-white hover:bg-gray-50"
+                        ? "border-[#8b5cf6] bg-purple-900/20 text-[#8b5cf6]"
+                        : "border-white/10 bg-[#131F37] hover:bg-white/5"
                       }`}
                   >
-                    <span className="text-[10px] font-semibold uppercase tracking-wider">GIFT BALANCE</span>
-                    <span className="text-[15px] text-[#0f172a] font-bold">{formatCurrency(balances.gift)}</span>
+                    <span className="text-[10px] font-semibold uppercase tracking-wider text-gray-400">GIFT BALANCE</span>
+                    <span className="text-[15px] text-white/90 font-bold">{formatCurrency(balances.gift)}</span>
                   </button>
                 </div>
               </div>
@@ -244,7 +244,7 @@ export default function MiningPlansPage() {
               {/* Investment Amount */}
               <div>
                 <div className="flex justify-between items-end mb-3">
-                  <label className="text-gray-500 text-[12px]">Investment Amount</label>
+                  <label className="text-gray-400 text-[12px]">Investment Amount</label>
                   <span className="text-gray-400 text-[10px]">Min: {formatCurrency(Number(selectedPlan.min_investment))} | Max: {formatCurrency(Number(selectedPlan.max_investment))}</span>
                 </div>
                 <input
@@ -252,30 +252,30 @@ export default function MiningPlansPage() {
                   value={investmentAmount}
                   onChange={(e) => setInvestmentAmount(e.target.value)}
                   placeholder="Enter amount"
-                  className="w-full border border-gray-200 bg-gray-50/50 rounded-[12px] px-4 py-3.5 text-[14px] focus:outline-none focus:border-[#8b5cf6] focus:ring-1 focus:ring-[#8b5cf6] transition-all"
+                  className="w-full border border-white/10 bg-[#131F37] rounded-[12px] px-4 py-3.5 text-[14px] text-white/90 focus:outline-none focus:border-[#8b5cf6] focus:ring-1 focus:ring-[#8b5cf6] transition-all placeholder:text-gray-500"
                 />
               </div>
 
               {/* Earnings Breakdown */}
               <div className="space-y-4 pt-4">
-                <div className="flex justify-between items-center border-b border-gray-100 pb-4">
-                  <span className="text-gray-500 text-[12px]">Daily Income</span>
+                <div className="flex justify-between items-center border-b border-white/5 pb-4">
+                  <span className="text-gray-400 text-[12px]">Daily Income</span>
                   <span className="text-[#22c55e] text-[14px] font-bold">{formatCurrency(dailyIncome)}</span>
                 </div>
-                <div className="flex justify-between items-center border-b border-gray-100 pb-4">
-                  <span className="text-gray-500 text-[12px]">Total Return</span>
-                  <span className="text-[#0f172a] text-[14px] font-bold">{formatCurrency(totalReturn)}</span>
+                <div className="flex justify-between items-center border-b border-white/5 pb-4">
+                  <span className="text-gray-400 text-[12px]">Total Return</span>
+                  <span className="text-white/90 text-[14px] font-bold">{formatCurrency(totalReturn)}</span>
                 </div>
                 <div className="flex justify-between items-center pb-2">
-                  <span className="text-gray-500 text-[12px]">Capital Return</span>
+                  <span className="text-gray-400 text-[12px]">Capital Return</span>
                   <span className="text-red-500 text-[14px] font-bold">No</span>
                 </div>
               </div>
             </div>
 
             {/* Footer */}
-            <div className="p-5 border-t border-gray-100 bg-white flex flex-col items-center gap-3">
-              <div className="text-[12px] text-gray-500">
+            <div className="p-5 border-t border-white/5 bg-[#0B1426] flex flex-col items-center gap-3">
+              <div className="text-[12px] text-gray-400">
                  Balance: <span className="text-[#f59e0b] font-bold">{formatCurrency(balances[balanceSource])}</span>
               </div>
               <button 

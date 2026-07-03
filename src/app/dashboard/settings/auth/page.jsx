@@ -56,20 +56,20 @@ export default function AuthenticationSettingsPage() {
   };
 
   return (
-    <div className="flex flex-col h-full bg-[#f8f9fa] overflow-y-auto [&::-webkit-scrollbar]:hidden ">
+    <div className="flex flex-col h-full bg-[#0B1426] overflow-y-auto [&::-webkit-scrollbar]:hidden ">
       {/* Header */}
-      <div className="bg-white px-4 py-3 flex items-center gap-2.5 sticky top-0 z-20 shadow-sm border-b border-gray-100">
+      <div className="bg-[#131F37] px-4 py-3 flex items-center gap-2.5 sticky top-0 z-20 shadow-sm border-b border-white/5">
         <button
           onClick={() => router.back()}
-          className="w-7 h-7 bg-gray-50 hover:bg-gray-100 rounded-full flex items-center justify-center transition-colors text-gray-600 cursor-pointer"
+          className="w-7 h-7 bg-white/5 hover:bg-white/10 rounded-full flex items-center justify-center transition-colors text-gray-400 cursor-pointer"
         >
           <ArrowLeft size={16} />
         </button>
-        <h1 className="text-[#4c1d95] text-[15px] font-bold">Authentication</h1>
+        <h1 className="text-white/90 text-[15px] font-bold">Authentication</h1>
       </div>
 
       <div className="px-4 py-4 max-w-[480px] mx-auto w-full">
-        <div className="bg-white rounded-[16px] border border-gray-100 shadow-[0_2px_8px_-4px_rgba(0,0,0,0.05)] p-6">
+        <div className="bg-[#131F37] rounded-[16px] border border-white/5 shadow-sm p-6">
 
           {/* Top Status Area */}
           <div className="flex flex-col items-center text-center">
@@ -83,13 +83,13 @@ export default function AuthenticationSettingsPage() {
               </div>
             )}
 
-            <h2 className="text-[#0f172a] text-[20px] font-bold mb-1.5">
+            <h2 className="text-white/90 text-[20px] font-bold mb-1.5">
               {step < 3 ? "Verify Your Email" : "Email Verified"}
             </h2>
             {isProfileLoading ? (
-               <div className="h-4 bg-gray-200 rounded animate-pulse w-48 mb-4"></div>
+               <div className="h-4 bg-white/5 rounded animate-pulse w-48 mb-4"></div>
             ) : (
-               <p className="text-[#64748b] text-[14px] mb-4">
+               <p className="text-gray-400 text-[14px] mb-4">
                  {userProfile?.user?.email}
                </p>
             )}
@@ -124,13 +124,13 @@ export default function AuthenticationSettingsPage() {
           {step === 2 && (
             <form onSubmit={handleVerify} className="space-y-4">
               <div className="space-y-2">
-                <label className="block text-[#334155] text-[13px] font-medium">Enter Verification Code</label>
+                <label className="block text-white/80 text-[13px] font-medium">Enter Verification Code</label>
                 <input
                   type="text"
                   value={code}
                   onChange={(e) => setCode(e.target.value)}
                   placeholder="0 0 0 0 0 0"
-                  className="w-full bg-[#f8fafc] border border-gray-200 rounded-[12px] px-4 py-4 text-[16px] text-center tracking-[0.4em] font-medium text-gray-800 placeholder-gray-400 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all"
+                  className="w-full bg-[#0B1426] border border-white/10 rounded-[12px] px-4 py-4 text-[16px] text-center tracking-[0.4em] font-medium text-white/90 placeholder-gray-500 focus:outline-none focus:border-[#8b5cf6] transition-all"
                   maxLength={6}
                 />
               </div>

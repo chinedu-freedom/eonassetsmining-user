@@ -82,29 +82,29 @@ export default function HelpCenterPage() {
   );
 
   return (
-    <div className="flex flex-col h-full bg-[#f8f9fa] overflow-y-auto [&::-webkit-scrollbar]:hidden ">
+    <div className="flex flex-col h-full bg-transparent overflow-y-auto [&::-webkit-scrollbar]:hidden ">
       {/* Header */}
-      <div className="bg-white px-4 py-3 flex items-center gap-2.5 sticky top-0 z-20 shadow-sm border-b border-gray-100">
+      <div className="bg-[#131F37] px-4 py-3 flex items-center gap-2.5 sticky top-0 z-20 shadow-sm border-b border-white/5">
         <button
           onClick={() => router.back()}
-          className="w-7 h-7 bg-gray-50 hover:bg-gray-100 rounded-full flex items-center justify-center transition-colors text-gray-600 cursor-pointer"
+          className="w-7 h-7 bg-white/5 hover:bg-white/10 rounded-full flex items-center justify-center transition-colors text-white/90 cursor-pointer"
         >
           <ArrowLeft size={16} />
         </button>
-        <h1 className="text-[#4c1d95] text-[15px] font-bold">Help Center</h1>
+        <h1 className="text-white/90 text-[15px] font-bold">Help Center</h1>
       </div>
 
       <div className="px-4 py-6 max-w-[480px] mx-auto w-full space-y-6">
 
         {/* Top Hero */}
         <div className="flex flex-col items-center text-center">
-          <div className="w-[60px] h-[60px] bg-[#8b5cf6] rounded-[18px] flex items-center justify-center mb-4 shadow-[0_4px_12px_rgba(37,99,235,0.3)]">
+          <div className="w-[60px] h-[60px] bg-[#8b5cf6] rounded-[18px] flex items-center justify-center mb-4 shadow-[0_4px_12px_rgba(139,92,246,0.3)]">
             <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center text-white font-bold text-[18px]">
               ?
             </div>
           </div>
-          <h2 className="text-[#4c1d95] text-[20px] font-bold mb-1.5">How can we help?</h2>
-          <p className="text-[#64748b] text-[13px] leading-relaxed max-w-[260px]">
+          <h2 className="text-white/90 text-[20px] font-bold mb-1.5">How can we help?</h2>
+          <p className="text-gray-400 text-[13px] leading-relaxed max-w-[260px]">
             Find answers to common questions or reach out to our support team
           </p>
         </div>
@@ -117,7 +117,7 @@ export default function HelpCenterPage() {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search for help..."
-            className="w-full bg-white border border-gray-200 rounded-[14px] pl-10 pr-4 py-3.5 text-[14px] text-gray-800 placeholder-gray-400 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all shadow-sm"
+            className="w-full bg-[#131F37] border border-white/5 rounded-[14px] pl-10 pr-4 py-3.5 text-[14px] text-white/90 placeholder-gray-500 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all shadow-sm"
           />
         </div>
 
@@ -125,28 +125,28 @@ export default function HelpCenterPage() {
         <div>
           <div className="flex items-center gap-2 mb-3">
             <MessageCircle size={14} className="text-[#8b5cf6] fill-[#8b5cf6]/20" />
-            <h3 className="text-[#4c1d95] text-[13px] font-bold">Contact Support</h3>
+            <h3 className="text-white/90 text-[13px] font-bold">Contact Support</h3>
           </div>
           <div className="grid grid-cols-2 gap-3">
             <button 
               onClick={() => handleLink(settings.telegram_support)}
-              className="cursor-pointer bg-white rounded-[16px] border border-gray-100 shadow-[0_2px_8px_-4px_rgba(0,0,0,0.05)] p-4 flex flex-col items-center text-center hover:bg-gray-50 transition-colors"
+              className="cursor-pointer bg-[#131F37] rounded-[16px] border border-white/5 shadow-md p-4 flex flex-col items-center text-center hover:bg-white/5 transition-colors"
             >
-              <div className="w-[42px] h-[42px] bg-[#f5f3ff] rounded-full flex items-center justify-center text-[#8b5cf6] mb-2.5">
+              <div className="w-[42px] h-[42px] bg-purple-900/20 rounded-full flex items-center justify-center text-[#8b5cf6] mb-2.5">
                 <Send size={20} className="fill-[#8b5cf6] -ml-0.5" />
               </div>
-              <span className="text-[#0f172a] text-[13px] font-bold mb-0.5">Telegram</span>
-              <span className="text-gray-500 text-[11px]">Fast response</span>
+              <span className="text-white/90 text-[13px] font-bold mb-0.5">Telegram</span>
+              <span className="text-gray-400 text-[11px]">Fast response</span>
             </button>
             <button 
               onClick={() => handleLink(settings.whatsapp_support)}
-              className="cursor-pointer bg-white rounded-[16px] border border-gray-100 shadow-[0_2px_8px_-4px_rgba(0,0,0,0.05)] p-4 flex flex-col items-center text-center hover:bg-gray-50 transition-colors"
+              className="cursor-pointer bg-[#131F37] rounded-[16px] border border-white/5 shadow-md p-4 flex flex-col items-center text-center hover:bg-white/5 transition-colors"
             >
-              <div className="w-[42px] h-[42px] bg-[#dcfce7] rounded-full flex items-center justify-center text-[#16a34a] mb-2.5">
+              <div className="w-[42px] h-[42px] bg-green-900/20 rounded-full flex items-center justify-center text-[#16a34a] mb-2.5">
                 <Phone size={20} className="fill-[#16a34a]" />
               </div>
-              <span className="text-[#0f172a] text-[13px] font-bold mb-0.5">WhatsApp</span>
-              <span className="text-gray-500 text-[11px]">24/7 support</span>
+              <span className="text-white/90 text-[13px] font-bold mb-0.5">WhatsApp</span>
+              <span className="text-gray-400 text-[11px]">24/7 support</span>
             </button>
           </div>
         </div>
@@ -155,28 +155,28 @@ export default function HelpCenterPage() {
         <div>
           <div className="flex items-center gap-2 mb-3">
             <Users size={14} className="text-[#8b5cf6] fill-[#8b5cf6]/20" />
-            <h3 className="text-[#4c1d95] text-[13px] font-bold">Join Our Community</h3>
+            <h3 className="text-white/90 text-[13px] font-bold">Join Our Community</h3>
           </div>
           <div className="grid grid-cols-2 gap-3">
             <button 
               onClick={() => handleLink(settings.telegram_community)}
-              className="cursor-pointer bg-white rounded-[16px] border border-gray-100 shadow-[0_2px_8px_-4px_rgba(0,0,0,0.05)] p-4 flex flex-col items-center text-center hover:bg-gray-50 transition-colors"
+              className="cursor-pointer bg-[#131F37] rounded-[16px] border border-white/5 shadow-md p-4 flex flex-col items-center text-center hover:bg-white/5 transition-colors"
             >
-              <div className="w-[42px] h-[42px] bg-[#f5f3ff] rounded-[14px] flex items-center justify-center text-[#8b5cf6] mb-2.5">
+              <div className="w-[42px] h-[42px] bg-purple-900/20 rounded-[14px] flex items-center justify-center text-[#8b5cf6] mb-2.5">
                 <Send size={20} className="fill-[#8b5cf6] -ml-0.5" />
               </div>
-              <span className="text-[#0f172a] text-[13px] font-bold mb-0.5">Channel</span>
-              <span className="text-gray-500 text-[11px]">News & Updates</span>
+              <span className="text-white/90 text-[13px] font-bold mb-0.5">Channel</span>
+              <span className="text-gray-400 text-[11px]">News & Updates</span>
             </button>
             <button 
               onClick={() => handleLink(settings.telegram_group)}
-              className="cursor-pointer bg-white rounded-[16px] border border-gray-100 shadow-[0_2px_8px_-4px_rgba(0,0,0,0.05)] p-4 flex flex-col items-center text-center hover:bg-gray-50 transition-colors"
+              className="cursor-pointer bg-[#131F37] rounded-[16px] border border-white/5 shadow-md p-4 flex flex-col items-center text-center hover:bg-white/5 transition-colors"
             >
-              <div className="w-[42px] h-[42px] bg-[#f5f3ff] rounded-[14px] flex items-center justify-center text-[#8b5cf6] mb-2.5">
+              <div className="w-[42px] h-[42px] bg-purple-900/20 rounded-[14px] flex items-center justify-center text-[#8b5cf6] mb-2.5">
                 <Users size={20} className="fill-[#8b5cf6]" />
               </div>
-              <span className="text-[#0f172a] text-[13px] font-bold mb-0.5">Whatsapp Group</span>
-              <span className="text-gray-500 text-[11px]">Community</span>
+              <span className="text-white/90 text-[13px] font-bold mb-0.5">Whatsapp Group</span>
+              <span className="text-gray-400 text-[11px]">Community</span>
             </button>
           </div>
         </div>
@@ -185,7 +185,7 @@ export default function HelpCenterPage() {
         <div>
           <div className="flex items-center gap-2 mb-3">
             <Zap size={14} className="text-[#8b5cf6] fill-[#8b5cf6]" />
-            <h3 className="text-[#4c1d95] text-[13px] font-bold">Quick Actions</h3>
+            <h3 className="text-white/90 text-[13px] font-bold">Quick Actions</h3>
           </div>
           <div className="grid grid-cols-4 gap-2">
             {[
@@ -197,12 +197,12 @@ export default function HelpCenterPage() {
               <button 
                 key={idx} 
                 onClick={action.action}
-                className="cursor-pointer bg-white rounded-[12px] border border-gray-100 shadow-[0_2px_8px_-4px_rgba(0,0,0,0.05)] p-2.5 flex flex-col items-center justify-center gap-2 hover:bg-gray-50 transition-colors"
+                className="cursor-pointer bg-[#131F37] rounded-[12px] border border-white/5 shadow-md p-2.5 flex flex-col items-center justify-center gap-2 hover:bg-white/5 transition-colors"
               >
                 <div className="text-[#8b5cf6]">
                   <action.icon size={18} className="fill-[#8b5cf6]/20" />
                 </div>
-                <span className="text-gray-500 text-[10px] font-medium">{action.label}</span>
+                <span className="text-gray-400 text-[10px] font-medium">{action.label}</span>
               </button>
             ))}
           </div>
@@ -212,12 +212,12 @@ export default function HelpCenterPage() {
         <div>
           <div className="flex items-center gap-2 mb-3">
             <FileText size={14} className="text-[#8b5cf6] fill-[#8b5cf6]/20" />
-            <h3 className="text-[#4c1d95] text-[13px] font-bold">Frequently Asked Questions</h3>
+            <h3 className="text-white/90 text-[13px] font-bold">Frequently Asked Questions</h3>
           </div>
           <div className="space-y-2.5">
             {filteredFaqs.length === 0 ? (
-              <div className="bg-white rounded-[16px] border border-gray-100 p-6 text-center shadow-[0_2px_8px_-4px_rgba(0,0,0,0.05)]">
-                <p className="text-gray-500 text-[13px]">No FAQs found matching "{searchQuery}"</p>
+              <div className="bg-[#131F37] rounded-[16px] border border-white/5 p-6 text-center shadow-md">
+                <p className="text-gray-400 text-[13px]">No FAQs found matching "{searchQuery}"</p>
               </div>
             ) : (
               filteredFaqs.map(faq => {
@@ -225,27 +225,27 @@ export default function HelpCenterPage() {
               return (
                 <div 
                   key={faq.id} 
-                  className={`w-full bg-white rounded-[16px] border ${isOpen ? 'border-[#8b5cf6] shadow-[0_2px_12px_-4px_rgba(59,130,246,0.15)]' : 'border-gray-100 shadow-[0_2px_8px_-4px_rgba(0,0,0,0.05)]'} transition-all text-left overflow-hidden`}
+                  className={`w-full bg-[#131F37] rounded-[16px] border ${isOpen ? 'border-[#8b5cf6] shadow-[0_2px_12px_-4px_rgba(139,92,246,0.15)]' : 'border-white/5 shadow-md'} transition-all text-left overflow-hidden`}
                 >
                   <button 
                     onClick={() => setOpenFaq(isOpen ? null : faq.id)}
-                    className="cursor-pointer w-full p-3 flex items-center justify-between hover:bg-gray-50/50 transition-colors"
+                    className="cursor-pointer w-full p-3 flex items-center justify-between hover:bg-white/5 transition-colors"
                   >
                     <div className="flex items-center gap-3.5">
                       <div className={`w-10 h-10 rounded-[12px] flex items-center justify-center shrink-0 ${faq.iconBg} ${faq.iconColor}`}>
                         <faq.icon size={18} />
                       </div>
                       <div className="text-left">
-                        <h4 className="text-[#0f172a] text-[13px] font-bold mb-0.5">{faq.title}</h4>
+                        <h4 className="text-white/90 text-[13px] font-bold mb-0.5">{faq.title}</h4>
                         <p className="text-gray-400 text-[11px]">{faq.desc}</p>
                       </div>
                     </div>
-                    {isOpen ? <ChevronUp size={16} className="text-[#8b5cf6] shrink-0 ml-2" /> : <ChevronDown size={16} className="text-gray-300 shrink-0 ml-2" />}
+                    {isOpen ? <ChevronUp size={16} className="text-[#8b5cf6] shrink-0 ml-2" /> : <ChevronDown size={16} className="text-gray-500 shrink-0 ml-2" />}
                   </button>
                   
                   {isOpen && (
-                    <div className="px-4 pb-4">
-                      <p className="text-[#64748b] text-[13px] leading-relaxed pt-2">
+                     <div className="px-4 pb-4">
+                      <p className="text-gray-400 text-[13px] leading-relaxed pt-2">
                         {faq.answer}
                       </p>
                     </div>

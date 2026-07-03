@@ -160,35 +160,35 @@ export default function DashboardPage() {
   const currentBalanceTotal = getDisplayBalance();
 
   return (
-    <div className="flex flex-col h-full bg-[#f8f9fa] overflow-y-auto  [&::-webkit-scrollbar]:hidden">
+    <div className="flex flex-col h-full bg-transparent overflow-y-auto  [&::-webkit-scrollbar]:hidden">
       
       {/* Header */}
-      <div className="bg-white px-4 pt-4 pb-3 flex justify-between items-center rounded-b-[20px] shadow-sm z-10 relative">
+      <div className="bg-[#131F37] px-4 pt-4 pb-3 flex justify-between items-center rounded-b-[20px] shadow-sm z-10 relative">
         <div className="flex items-center gap-2">
           {siteLogo ? (
-            <div className="w-9 h-9 rounded-full overflow-hidden shadow-sm flex items-center justify-center bg-gray-50 border border-gray-100">
+            <div className="w-9 h-9 rounded-full overflow-hidden shadow-sm flex items-center justify-center bg-white/5 border border-white/5">
               <img src={siteLogo} alt="Logo" className="w-full h-full object-contain" />
             </div>
           ) : (
-            <div className="w-9 h-9 bg-gradient-to-br from-[#4c1d95] to-[#0f172a] rounded-full flex items-center justify-center shadow-sm">
+            <div className="w-9 h-9 bg-purple-900/30 rounded-full flex items-center justify-center shadow-sm">
               <div className="text-white text-[9px] font-bold tracking-wider">
                 {siteName.substring(0, 4).toUpperCase()}
               </div>
             </div>
           )}
-          <span className="text-[#4c1d95] font-bold text-[15px]">{siteName}</span>
+          <span className="text-white/90 font-bold text-[15px]">{siteName}</span>
         </div>
         <div className="flex items-center gap-2">
           <button 
             onClick={() => setShowLanguageModal(true)}
-            className="flex items-center gap-1 bg-white border border-gray-200 px-2.5 py-1 rounded-sm cursor-pointer text-[11px] font-bold text-[#4c1d95] shadow-sm hover:bg-gray-50 transition-colors"
+            className="flex items-center gap-1 bg-[#0b1426] border border-white/10 px-2.5 py-1 rounded-sm cursor-pointer text-[11px] font-bold text-white/90 shadow-sm hover:bg-white/5 transition-colors"
           >
             <Globe size={13} className="text-[#8b5cf6]" />
             {currentLang}
           </button>
           <button 
             onClick={() => router.push('/dashboard/help')}
-            className="bg-[#f5f3ff] p-1.5 rounded-full text-[#8b5cf6] hover:bg-[#ede9fe] transition-colors cursor-pointer"
+            className="bg-white/5 p-1.5 rounded-full text-[#8b5cf6] hover:bg-[#ede9fe] transition-colors cursor-pointer"
           >
             <MessageCircle size={16} />
           </button>
@@ -225,7 +225,7 @@ export default function DashboardPage() {
           </div>
 
           <div className="flex gap-2.5 relative z-10">
-            <Link href="?depositModal=true" className="flex-1 bg-white text-[#4c1d95] py-2 rounded-lg text-[13px] font-semibold flex items-center justify-center gap-1.5 hover:bg-gray-50 transition-colors shadow-md cursor-pointer">
+            <Link href="?depositModal=true" className="flex-1 bg-[#8b5cf6] text-white py-2 rounded-lg text-[13px] font-semibold flex items-center justify-center gap-1.5 hover:bg-purple-600 transition-colors shadow-md cursor-pointer">
               <Wallet size={16} />
               Deposit
             </Link>
@@ -237,57 +237,57 @@ export default function DashboardPage() {
         </div>
 
         {/* Marquee Banner */}
-        <div className="bg-white rounded-lg py-2 px-3 flex items-center gap-2 shadow-sm border border-gray-100">
+        <div className="bg-[#131F37] rounded-lg py-2 px-3 flex items-center gap-2 shadow-sm border border-white/5">
           <Volume2 className="text-[#8b5cf6] shrink-0" size={16} />
           <div className="overflow-hidden whitespace-nowrap w-full relative">
-            <p className="text-[12px] text-gray-600 animate-[marquee_15s_linear_infinite] inline-block">
+            <p className="text-[12px] text-gray-300 animate-[marquee_15s_linear_infinite] inline-block">
               Start mining today and grow your wealth with us. Welcome to {siteName}!
             </p>
           </div>
         </div>
 
         {/* Action Grid */}
-        <div className="bg-white rounded-[18px] p-4 shadow-sm border border-gray-100">
+        <div className="bg-[#131F37] rounded-[18px] p-4 shadow-sm border border-white/5">
           <div className="grid grid-cols-4 gap-y-5 gap-x-2">
             <div onClick={() => router.push('/dashboard/investments')} className="flex flex-col items-center gap-1.5 cursor-pointer group">
-              <div className="w-10 h-10 bg-[#f5f3ff] rounded-xl flex items-center justify-center group-hover:bg-[#ede9fe] transition-colors shadow-sm">
+              <div className="w-10 h-10 bg-white/5 rounded-xl flex items-center justify-center group-hover:bg-white/10 transition-colors shadow-sm">
                 <Wallet className="text-[#8b5cf6]" size={20} />
               </div>
-              <span className="text-[10px] text-[#1e293b] font-medium">My Assets</span>
+              <span className="text-[10px] text-white/90 font-medium">My Assets</span>
             </div>
 
             <div onClick={() => router.push('/dashboard/about')} className="flex flex-col items-center gap-1.5 cursor-pointer group">
-              <div className="w-10 h-10 bg-[#f5f3ff] rounded-xl flex items-center justify-center group-hover:bg-[#ede9fe] transition-colors shadow-sm">
+              <div className="w-10 h-10 bg-white/5 rounded-xl flex items-center justify-center group-hover:bg-white/10 transition-colors shadow-sm">
                 <HelpCircle className="text-[#8b5cf6]" size={20} />
               </div>
-              <span className="text-[10px] text-[#1e293b] font-medium">Info</span>
+              <span className="text-[10px] text-white/90 font-medium">Info</span>
             </div>
 
             <div onClick={() => router.push('/dashboard/task')} className="flex flex-col items-center gap-1.5 cursor-pointer group relative">
               <div className="absolute -top-1.5 right-1 bg-[#8b5cf6] text-white text-[7px] font-bold px-1 py-[1px] rounded z-10 shadow-sm">
                 NEW
               </div>
-              <div className="w-10 h-10 bg-[#f5f3ff] rounded-xl flex items-center justify-center group-hover:bg-[#ede9fe] transition-colors shadow-sm">
+              <div className="w-10 h-10 bg-white/5 rounded-xl flex items-center justify-center group-hover:bg-white/10 transition-colors shadow-sm">
                 <CheckSquare className="text-[#8b5cf6]" size={20} />
               </div>
-              <span className="text-[10px] text-[#1e293b] font-medium">Task</span>
+              <span className="text-[10px] text-white/90 font-medium">Task</span>
             </div>
 
             <div onClick={() => router.push('/dashboard/team')} className="flex flex-col items-center gap-1.5 cursor-pointer group">
-              <div className="w-10 h-10 bg-[#f5f3ff] rounded-xl flex items-center justify-center group-hover:bg-[#ede9fe] transition-colors shadow-sm">
+              <div className="w-10 h-10 bg-white/5 rounded-xl flex items-center justify-center group-hover:bg-white/10 transition-colors shadow-sm">
                 <Users className="text-[#8b5cf6]" size={20} />
               </div>
-              <span className="text-[10px] text-[#1e293b] font-medium">My Team</span>
+              <span className="text-[10px] text-white/90 font-medium">My Team</span>
             </div>
             
             <div onClick={() => router.push('/dashboard/spin')} className="flex flex-col items-center gap-1.5 cursor-pointer group relative mt-1">
               <div className="absolute -top-1.5 right-0.5 bg-gradient-to-r from-red-500 to-rose-500 text-white text-[7px] font-bold px-1 py-[1px] rounded z-10 shadow-sm animate-pulse">
                 HOT
               </div>
-              <div className="w-10 h-10 bg-[#f5f3ff] rounded-xl flex items-center justify-center group-hover:bg-[#ede9fe] transition-colors shadow-sm">
+              <div className="w-10 h-10 bg-white/5 rounded-xl flex items-center justify-center group-hover:bg-white/10 transition-colors shadow-sm">
                 <Loader className="text-[#8b5cf6]" size={20} />
               </div>
-              <span className="text-[10px] text-[#1e293b] font-medium">Spin Wheel</span>
+              <span className="text-[10px] text-white/90 font-medium">Spin Wheel</span>
             </div>
 
             <div 
@@ -300,24 +300,24 @@ export default function DashboardPage() {
               }} 
               className="flex flex-col items-center gap-1.5 cursor-pointer group mt-1"
             >
-              <div className="w-10 h-10 bg-[#f5f3ff] rounded-xl flex items-center justify-center group-hover:bg-[#ede9fe] transition-colors shadow-sm">
+              <div className="w-10 h-10 bg-white/5 rounded-xl flex items-center justify-center group-hover:bg-white/10 transition-colors shadow-sm">
                 <Download className="text-[#8b5cf6]" size={20} />
               </div>
-              <span className="text-[10px] text-[#1e293b] font-medium text-center leading-tight">Download App</span>
+              <span className="text-[10px] text-white/90 font-medium text-center leading-tight">Download App</span>
             </div>
 
             <div onClick={() => router.push('/dashboard/treasure')} className="flex flex-col items-center gap-1.5 cursor-pointer group mt-1">
-              <div className="w-10 h-10 bg-[#f5f3ff] rounded-xl flex items-center justify-center group-hover:bg-[#ede9fe] transition-colors shadow-sm">
+              <div className="w-10 h-10 bg-white/5 rounded-xl flex items-center justify-center group-hover:bg-white/10 transition-colors shadow-sm">
                 <Gift className="text-[#8b5cf6]" size={20} />
               </div>
-              <span className="text-[10px] text-[#1e293b] font-medium">Treasure</span>
+              <span className="text-[10px] text-white/90 font-medium">Treasure</span>
             </div>
 
             <div onClick={() => router.push('/dashboard/help')} className="flex flex-col items-center gap-1.5 cursor-pointer group mt-1">
-              <div className="w-10 h-10 bg-[#f5f3ff] rounded-xl flex items-center justify-center group-hover:bg-[#ede9fe] transition-colors shadow-sm">
+              <div className="w-10 h-10 bg-white/5 rounded-xl flex items-center justify-center group-hover:bg-white/10 transition-colors shadow-sm">
                 <HelpCircle className="text-[#8b5cf6]" size={20} />
               </div>
-              <span className="text-[10px] text-[#1e293b] font-medium">Help</span>
+              <span className="text-[10px] text-white/90 font-medium">Help</span>
             </div>
           </div>
         </div>
@@ -342,11 +342,11 @@ export default function DashboardPage() {
         </div>
 
         {/* Live Activity */}
-        <div className="bg-white rounded-[18px] p-3.5 shadow-sm border border-gray-100">
+        <div className="bg-[#131F37] rounded-[18px] p-3.5 shadow-sm border border-white/5">
           <div className="flex justify-between items-center mb-3">
             <div className="flex items-center gap-1.5">
               <Activity className="text-[#8b5cf6]" size={16} />
-              <h3 className="font-semibold text-[#4c1d95] text-[14px]">Live Activity</h3>
+              <h3 className="font-semibold text-white/90 text-[14px]">Live Activity</h3>
             </div>
             <div className="flex items-center gap-1.5 text-[11px] text-green-500 font-medium">
               <span className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></span>
@@ -357,13 +357,13 @@ export default function DashboardPage() {
           <div className="h-[180px] overflow-hidden relative -mx-1">
             <div className="space-y-3 animate-[scrollVertical_15s_linear_infinite]">
               {doubledActivities.map((activity, idx) => (
-                <div key={idx} className="flex items-center justify-between bg-gray-50/50 p-1.5 rounded-lg">
+                <div key={idx} className="flex items-center justify-between bg-white/5 p-1.5 rounded-lg">
                   <div className="flex items-center gap-2.5">
                     <div className={`w-8 h-8 ${activity.iconBg} rounded-lg flex items-center justify-center`}>
                       <activity.Icon className={activity.iconCol} size={16} />
                     </div>
                     <div>
-                      {activity.name && <p className="text-[13px] font-semibold text-[#1e293b] leading-tight mb-0.5">{activity.name}</p>}
+                      {activity.name && <p className="text-[13px] font-semibold text-white/90 leading-tight mb-0.5">{activity.name}</p>}
                       <p className={`text-[${activity.name ? '11px' : '12px'}] text-gray-500 leading-tight ${activity.name ? '' : 'mb-0.5'}`}>{activity.text}</p>
                     </div>
                   </div>
@@ -378,10 +378,10 @@ export default function DashboardPage() {
         <div className="mt-5 mb-2">
           <div className="flex items-center gap-1.5 mb-3 px-1">
             <BadgeCheck className="text-[#8b5cf6]" size={16} />
-            <h3 className="font-semibold text-[#4c1d95] text-[14px]">Our Partners & Exchanges</h3>
+            <h3 className="font-semibold text-white/90 text-[14px]">Our Partners & Exchanges</h3>
           </div>
           
-          <div className="bg-white rounded-[18px] p-3.5 shadow-sm border border-gray-100 min-h-[80px]">
+          <div className="bg-[#131F37] rounded-[18px] p-3.5 shadow-sm border border-white/5 min-h-[80px]">
             {isLoadingPartners ? (
               <div className="flex items-center justify-center h-full py-4">
                 <Loader2 className="w-6 h-6 animate-spin text-purple-500" />
@@ -394,7 +394,7 @@ export default function DashboardPage() {
               <div className="grid grid-cols-4 gap-y-5 gap-x-2">
                 {partnersData.map((partner) => (
                   <div key={partner.id} className="flex flex-col items-center gap-1.5 mt-1">
-                    <div className="w-12 h-12 bg-gray-50 border border-gray-100 rounded-[14px] flex items-center justify-center shadow-sm overflow-hidden p-2">
+                    <div className="w-12 h-12 bg-white/5 border border-white/5 rounded-[14px] flex items-center justify-center shadow-sm overflow-hidden p-2">
                       {partner.logo ? (
                         <img src={partner.logo} alt={partner.partner_name} className="w-full h-full object-contain" />
                       ) : (
@@ -413,11 +413,11 @@ export default function DashboardPage() {
 
         {/* Live Market */}
         {isMarketVisible && (
-          <div className="bg-white rounded-[18px] p-3.5 shadow-sm border border-gray-100">
+          <div className="bg-[#131F37] rounded-[18px] p-3.5 shadow-sm border border-white/5">
             <div className="flex justify-between items-center mb-4">
               <div className="flex items-center gap-1.5">
                 <BarChart2 className="text-[#8b5cf6]" size={16} />
-                <h3 className="font-semibold text-[#4c1d95] text-[14px]">Live Market</h3>
+                <h3 className="font-semibold text-white/90 text-[14px]">Live Market</h3>
               </div>
               <div className="flex items-center gap-1.5 text-[11px] text-green-500 font-medium">
                 <span className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></span>
@@ -438,22 +438,22 @@ export default function DashboardPage() {
                 liveMarketData.map((asset, index) => {
                   const isPositive = parseFloat(asset.price_change_24h) >= 0;
                   return (
-                    <div key={asset.id} className={`flex items-center justify-between py-1 ${index !== liveMarketData.length - 1 ? 'border-b border-gray-50 pb-2.5' : 'pb-1'}`}>
+                    <div key={asset.id} className={`flex items-center justify-between py-1 ${index !== liveMarketData.length - 1 ? 'border-b border-white/5 pb-2.5' : 'pb-1'}`}>
                       <div className="flex items-center gap-2.5">
                         <div className="w-8 h-8 rounded-full flex items-center justify-center overflow-hidden">
                           {asset.logo_url ? (
                             <img src={asset.logo_url} alt={asset.symbol} className="w-full h-full object-contain" />
                           ) : (
-                            <span className="text-gray-600 font-bold text-sm bg-gray-50 w-full h-full flex items-center justify-center">{asset.symbol.charAt(0)}</span>
+                            <span className="text-gray-400 font-bold text-sm bg-white/5 w-full h-full flex items-center justify-center">{asset.symbol.charAt(0)}</span>
                           )}
                         </div>
                         <div>
-                          <p className="text-[13px] font-semibold text-[#1e293b] leading-tight mb-0.5">{asset.symbol}</p>
+                          <p className="text-[13px] font-semibold text-white/90 leading-tight mb-0.5">{asset.symbol}</p>
                           <p className="text-[11px] text-gray-400 leading-tight">{asset.name}</p>
                         </div>
                       </div>
                       <div className="text-right">
-                        <div className="font-semibold text-[#1e293b] text-[13px] mb-0.5">${parseFloat(asset.current_price || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 4 })}</div>
+                        <div className="font-semibold text-white/90 text-[13px] mb-0.5">${parseFloat(asset.current_price || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 4 })}</div>
                         <div className={`text-[9px] font-bold px-1 py-0.5 rounded ml-auto w-fit ${isPositive ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-600'}`}>
                           {isPositive ? '+' : ''}{parseFloat(asset.price_change_24h || 0).toFixed(2)}%
                         </div>
@@ -479,33 +479,33 @@ export default function DashboardPage() {
           ></div>
 
           {/* Modal Content */}
-          <div className="relative bg-white w-full max-w-[480px] mx-auto rounded-t-[24px] overflow-hidden flex flex-col h-[75vh] animate-in slide-in-from-bottom-full duration-300">
+          <div className="relative bg-[#0B1426] border border-white/10 w-full max-w-[480px] mx-auto rounded-t-[24px] overflow-hidden flex flex-col h-[75vh] animate-in slide-in-from-bottom-full duration-300 shadow-2xl">
             
             {/* Header */}
-            <div className="bg-[#8b5cf6] p-5 flex justify-between items-center text-white">
-              <h2 className="text-[16px] font-bold">Select Language</h2>
+            <div className="bg-[#131F37] border-b border-white/5 p-5 flex justify-between items-center text-white">
+              <h2 className="text-[16px] font-bold text-white/90">Select Language</h2>
               <button 
                 onClick={() => setShowLanguageModal(false)}
-                className="w-7 h-7 bg-white/20 rounded-full flex items-center justify-center hover:bg-white/30 transition-colors"
+                className="w-7 h-7 bg-white/5 rounded-full flex items-center justify-center hover:bg-white/10 transition-colors text-gray-400"
               >
                 <X size={14} />
               </button>
             </div>
 
             {/* Search */}
-            <div className="p-3 border-b border-gray-100 flex items-center gap-2">
+            <div className="p-3 border-b border-white/5 flex items-center gap-2 bg-[#131F37]">
               <Search size={16} className="text-gray-400 ml-2" />
               <input 
                 type="text"
                 placeholder="Search language..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full py-2 px-2 text-[13px] outline-none placeholder:text-gray-400"
+                className="w-full py-2 px-2 text-[13px] outline-none bg-transparent text-white/90 placeholder:text-gray-500"
               />
             </div>
 
             {/* Language List */}
-            <div className="p-4 space-y-3 overflow-y-auto flex-1">
+            <div className="p-4 space-y-3 overflow-y-auto flex-1 bg-transparent">
               {dynamicLanguages
                 .filter(l => l.native_name.toLowerCase().includes(searchQuery.toLowerCase()) || l.language_name.toLowerCase().includes(searchQuery.toLowerCase()))
                 .map((lang) => {
@@ -547,25 +547,25 @@ export default function DashboardPage() {
                     }}
                     className={`w-full flex items-center justify-between p-3 rounded-[12px] border transition-colors ${
                       isSelected 
-                        ? 'border-[#8b5cf6] bg-[#f5f3ff]' 
-                        : 'border-gray-200 hover:border-[#8b5cf6] bg-white'
+                        ? 'border-[#8b5cf6] bg-purple-900/20' 
+                        : 'border-white/5 hover:border-[#8b5cf6] bg-[#131F37]'
                     }`}
                   >
                     <div className="flex items-center gap-3">
-                      <div className="relative w-10 h-10 bg-white border border-gray-100 rounded-xl flex items-center justify-center text-[12px] font-bold text-gray-400 shadow-sm">
+                      <div className="relative w-10 h-10 bg-[#0B1426] border border-white/5 rounded-xl flex items-center justify-center text-[12px] font-bold text-gray-400 shadow-sm">
                         {lang.language_code.substring(0, 2).toUpperCase()}
                         {isSelected && (
-                          <div className="absolute -top-1 -right-1 bg-white rounded-full">
-                            <CheckCircle2 size={14} className="text-[#10b981]" fill="#fff" />
+                          <div className="absolute -top-1 -right-1 bg-[#0B1426] rounded-full">
+                            <CheckCircle2 size={14} className="text-[#8b5cf6] fill-[#8b5cf6]/20" />
                           </div>
                         )}
                       </div>
                       <div className="text-left">
-                        <div className="text-[13px] font-bold text-[#0f172a]">{lang.native_name}</div>
-                        <div className="text-[11px] text-gray-500">{lang.language_name}</div>
+                        <div className="text-[13px] font-bold text-white/90">{lang.native_name}</div>
+                        <div className="text-[11px] text-gray-400">{lang.language_name}</div>
                       </div>
                     </div>
-                    <ChevronRight size={16} className={isSelected ? 'text-[#8b5cf6]' : 'text-gray-300'} />
+                    <ChevronRight size={16} className={isSelected ? 'text-[#8b5cf6]' : 'text-gray-500'} />
                   </button>
                 );
               })}

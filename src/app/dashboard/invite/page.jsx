@@ -58,7 +58,7 @@ export default function InvitePage() {
   };
 
   return (
-    <div className="flex flex-col h-full bg-[#172641] overflow-y-auto [&::-webkit-scrollbar]:hidden relative pb-20">
+    <div className="flex flex-col h-full bg-transparent overflow-y-auto [&::-webkit-scrollbar]:hidden relative pb-20">
       
       {/* Decorative Background Elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
@@ -122,10 +122,10 @@ export default function InvitePage() {
         {/* Info Cards */}
         <div className="w-full space-y-2 mb-4">
           {/* Invitation Code */}
-          <div className="bg-[#243757] border border-white/5 rounded-[12px] p-3 flex items-center justify-between shadow-md">
+          <div className="bg-[#131F37] border border-white/5 rounded-[12px] p-3 flex items-center justify-between shadow-md">
             <div>
               <div className="text-white/50 text-[10px] mb-1 font-medium">Invitation code</div>
-              <div className="text-white font-bold text-[13px]">{invitationCode}</div>
+              <div className="text-white/90 font-bold text-[13px]">{invitationCode}</div>
             </div>
             <button 
               onClick={() => handleCopy(invitationCode, "code")}
@@ -136,10 +136,10 @@ export default function InvitePage() {
           </div>
 
           {/* Invitation Link */}
-          <div className="bg-[#243757] border border-white/5 rounded-[12px] p-3 flex items-center justify-between shadow-md">
+          <div className="bg-[#131F37] border border-white/5 rounded-[12px] p-3 flex items-center justify-between shadow-md">
             <div className="overflow-hidden pr-3">
               <div className="text-white/50 text-[10px] mb-1 font-medium">Invitation link</div>
-              <div className="text-white font-bold text-[11px] truncate">{invitationLink}</div>
+              <div className="text-white/90 font-bold text-[11px] truncate">{invitationLink}</div>
             </div>
             <button 
               onClick={() => handleCopy(invitationLink, "link")}
@@ -157,23 +157,23 @@ export default function InvitePage() {
           </button>
           <button 
             onClick={() => router.push('/dashboard/team')}
-            className="cursor-pointer flex-1 bg-[#2b3e5d] border border-white/5 text-white flex items-center justify-center gap-1.5 py-2.5 rounded-[10px] text-[12px] font-bold hover:bg-[#364b6e] active:scale-[0.98] transition-all shadow-md"
+            className="cursor-pointer flex-1 bg-white/5 border border-white/5 text-white/90 flex items-center justify-center gap-1.5 py-2.5 rounded-[10px] text-[12px] font-bold hover:bg-white/10 active:scale-[0.98] transition-all shadow-md"
           >
             <Users size={14} /> My Team
           </button>
         </div>
 
         {/* Referral Rewards Banner */}
-        <div className="w-full bg-[#1e2d4e] border border-white/5 rounded-[16px] p-4 text-center shadow-md relative overflow-hidden">
+        <div className="w-full bg-purple-900/20 border border-white/5 rounded-[16px] p-4 text-center shadow-md relative overflow-hidden">
           {/* Subtle gradient overlay */}
-          <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/5 to-transparent"></div>
+          <div className="absolute inset-0 bg-gradient-to-br from-[#8b5cf6]/5 to-transparent"></div>
           
           <div className="relative z-10 flex flex-col items-center">
             <div className="flex items-center gap-1.5 mb-1.5">
               <div className="flex items-center justify-center">
                 <Gift size={14} className="text-[#fbbf24]" fill="#fbbf24" fillOpacity={0.2} />
               </div>
-              <h3 className="text-white font-bold text-[13px]">Referral Rewards</h3>
+              <h3 className="text-white/90 font-bold text-[13px]">Referral Rewards</h3>
             </div>
             
             <p className="text-white/70 text-[10px] leading-relaxed max-w-[260px]">

@@ -299,19 +299,19 @@ export default function SpinPage() {
   };
 
   return (
-    <div className="flex flex-col h-full bg-[#f8f9fa] overflow-y-auto [&::-webkit-scrollbar]:hidden pb-20">
+    <div className="flex flex-col h-full bg-transparent overflow-y-auto [&::-webkit-scrollbar]:hidden pb-20">
       {/* Header */}
-      <div className="px-4 py-4 flex justify-between items-center bg-[#f8f9fa] sticky top-0 z-20">
+      <div className="px-4 py-4 flex justify-between items-center bg-[#131F37] sticky top-0 z-20 border-b border-white/5">
         <button 
           onClick={() => router.back()}
-          className="w-10 h-10 bg-white border border-gray-100 rounded-[12px] flex items-center justify-center text-gray-500 shadow-sm cursor-pointer"
+          className="w-10 h-10 bg-white/5 border border-white/5 rounded-[12px] flex items-center justify-center text-gray-300 shadow-sm cursor-pointer hover:bg-white/10 transition-colors"
         >
           <ArrowLeft size={18} />
         </button>
-        <h1 className="text-[#4c1d95] text-[18px] font-bold">Lucky Spin</h1>
+        <h1 className="text-white/90 text-[18px] font-bold">Lucky Spin</h1>
         <button 
           onClick={() => setIsMuted(!isMuted)}
-          className="cursor-pointer w-10 h-10 bg-white border border-gray-100 rounded-[12px] flex items-center justify-center text-gray-500 shadow-sm hover:bg-gray-50 transition-colors"
+          className="cursor-pointer w-10 h-10 bg-white/5 border border-white/5 rounded-[12px] flex items-center justify-center text-gray-300 shadow-sm hover:bg-white/10 transition-colors"
         >
           {isMuted ? <VolumeX size={18} /> : <Volume2 size={18} />}
         </button>
@@ -321,9 +321,9 @@ export default function SpinPage() {
         
         {/* Stats Row */}
         <div className="grid grid-cols-2 gap-3 mb-4">
-          <div className="bg-white p-4 rounded-[16px] border border-gray-100 shadow-sm">
+          <div className="bg-[#131F37] p-4 rounded-[16px] border border-white/5 shadow-sm">
             <div className="flex items-center gap-1.5 mb-2">
-              <div className="w-4 h-4 rounded-[4px] bg-gray-200 flex items-center justify-center">
+              <div className="w-4 h-4 rounded-[4px] bg-white/10 flex items-center justify-center">
                 <div className="w-2 h-1.5 bg-gray-400 rounded-[1px]"></div>
               </div>
               <span className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">Total Balance</span>
@@ -333,7 +333,7 @@ export default function SpinPage() {
             </div>
           </div>
 
-          <div className="bg-[#eaf2ff] p-4 rounded-[16px] border border-[#ede9fe] shadow-sm">
+          <div className="bg-[#131F37] p-4 rounded-[16px] border border-white/5 shadow-sm">
             <div className="flex items-center gap-1.5 mb-2">
               <Ticket className="text-gray-400 w-4 h-4" />
               <span className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">Free Spins</span>
@@ -346,9 +346,9 @@ export default function SpinPage() {
 
         {/* Cost Indicator */}
         <div className="flex justify-center mt-2 mb-6">
-          <div className="bg-white px-5 py-2 rounded-full border border-gray-100 shadow-sm flex items-center gap-2">
+          <div className="bg-[#131F37] px-5 py-2 rounded-full border border-white/5 shadow-sm flex items-center gap-2">
             <div className="w-4 h-4 bg-gray-400 rounded-[4px]"></div>
-            <span className="text-[13px] font-bold text-[#475569]">Cost: {settings.currency_symbol || "$"}{cost.toFixed(2)}</span>
+            <span className="text-[13px] font-bold text-white/90">Cost: {settings.currency_symbol || "$"}{cost.toFixed(2)}</span>
           </div>
         </div>
 
@@ -435,19 +435,19 @@ export default function SpinPage() {
         <div className="mt-8">
           <div className="flex items-center gap-2 mb-4 px-1">
             <History className="text-[#8b5cf6]" size={18} />
-            <h3 className="font-bold text-[#4c1d95] text-[16px]">Recent Wins</h3>
+            <h3 className="font-bold text-white/90 text-[16px]">Recent Wins</h3>
           </div>
 
           <div className="space-y-3">
             {spinData?.recentWins?.length > 0 ? (
               spinData.recentWins.map((win) => (
-                <div key={win.id} className="bg-white rounded-[16px] p-4 border border-gray-100 shadow-sm flex items-center justify-between">
+                <div key={win.id} className="bg-[#131F37] rounded-[16px] p-4 border border-white/5 shadow-sm flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <div className={`w-12 h-12 rounded-[12px] flex items-center justify-center ${Number(win.reward_earned) > 0 ? 'bg-[#dcfce7]' : 'bg-gray-100'}`}>
+                    <div className={`w-12 h-12 rounded-[12px] flex items-center justify-center ${Number(win.reward_earned) > 0 ? 'bg-green-900/20' : 'bg-white/5'}`}>
                       <Gift className={Number(win.reward_earned) > 0 ? 'text-[#16a34a]' : 'text-gray-400'} size={20} />
                     </div>
                     <div>
-                      <h4 className="text-[15px] font-bold text-[#1e293b]">{win.prize.name}</h4>
+                      <h4 className="text-[15px] font-bold text-white/90">{win.prize.name}</h4>
                       <p className="text-[12px] text-gray-500 mt-0.5">{dayjs(win.created_at).format('MMM DD, HH:mm')}</p>
                     </div>
                   </div>
@@ -462,7 +462,7 @@ export default function SpinPage() {
                 </div>
               ))
             ) : (
-              <div className="text-center py-6 text-gray-400 bg-white rounded-[16px] border border-gray-100 text-sm">
+              <div className="text-center py-6 text-gray-400 bg-[#131F37] rounded-[16px] border border-white/5 text-sm">
                 No recent wins yet
               </div>
             )}
@@ -486,16 +486,16 @@ export default function SpinPage() {
       {/* Spin Result Modal */}
       {showResultModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
-          <div className="bg-white rounded-[24px] p-8 w-full max-w-[320px] flex flex-col items-center text-center shadow-[0_25px_50px_rgba(0,0,0,0.25)] animate-in zoom-in-95 duration-200">
+          <div className="bg-[#131F37] border border-white/5 rounded-[24px] p-8 w-full max-w-[320px] flex flex-col items-center text-center shadow-[0_25px_50px_rgba(0,0,0,0.25)] animate-in zoom-in-95 duration-200">
             
             <div 
               className={`w-20 h-20 rounded-full flex items-center justify-center mb-5 text-[40px]`}
-              style={{ background: resultData.isWin ? 'linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%)' : 'linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%)' }}
+              style={{ background: resultData.isWin ? 'linear-gradient(135deg, rgba(22,163,74,0.2) 0%, rgba(34,197,94,0.1) 100%)' : 'linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%)' }}
             >
               {resultData.isWin ? "🎉" : "😔"}
             </div>
             
-            <h2 className="text-[#1e293b] text-[24px] font-bold mb-2">
+            <h2 className="text-white/90 text-[24px] font-bold mb-2">
               {resultData.isWin ? "You Won!" : "Try Again"}
             </h2>
             

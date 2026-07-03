@@ -85,17 +85,17 @@ export default function DepositModal() {
       onClick={handleClose}
     >
       <div 
-        className="bg-white rounded-t-[20px] sm:rounded-[16px] w-full max-w-[400px] overflow-hidden shadow-2xl animate-slide-up flex flex-col max-h-[70vh] md:max-h-[80vh] mt-auto sm:mt-0 cursor-pointer"
+        className="bg-[#131F37] border border-white/5 rounded-t-[20px] sm:rounded-[16px] w-full max-w-[400px] overflow-hidden shadow-2xl animate-slide-up flex flex-col max-h-[70vh] md:max-h-[80vh] mt-auto sm:mt-0 cursor-pointer"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="px-4 py-3 border-b border-gray-100 flex items-center justify-between sticky top-0 bg-white z-10 shrink-0">
+        <div className="px-4 py-3 border-b border-white/5 flex items-center justify-between sticky top-0 bg-[#131F37] z-10 shrink-0">
           <div>
-            <h3 className="font-bold text-[16px] text-gray-800">Deposit Method</h3>
-            <p className="text-[12px] text-gray-500">Select cryptocurrency</p>
+            <h3 className="font-bold text-[16px] text-white/90">Deposit Method</h3>
+            <p className="text-[12px] text-gray-400">Select cryptocurrency</p>
           </div>
           <button 
             onClick={handleClose}
-            className="w-7 h-7 bg-gray-50 hover:bg-gray-100 rounded-full flex items-center justify-center transition-colors text-gray-500 cursor-pointer"
+            className="w-7 h-7 bg-white/5 hover:bg-white/10 rounded-full flex items-center justify-center transition-colors text-gray-400 cursor-pointer"
           >
             <X size={16} />
           </button>
@@ -105,10 +105,10 @@ export default function DepositModal() {
           {isLoadingCryptos || isLoadingSettings ? (
             <div className="flex flex-col items-center justify-center py-8 space-y-2">
               <Loader2 className="w-6 h-6 text-purple-500 animate-spin" />
-              <p className="text-xs text-gray-500">Loading methods...</p>
+              <p className="text-xs text-gray-400">Loading methods...</p>
             </div>
           ) : cryptos.length === 0 ? (
-            <div className="text-center py-8 text-gray-500 text-sm">
+            <div className="text-center py-8 text-gray-400 text-sm">
               No deposit methods available.
             </div>
           ) : (
@@ -117,10 +117,10 @@ export default function DepositModal() {
                 <div 
                   key={crypto.id}
                   onClick={() => handleSelectCrypto(crypto)}
-                  className="p-3 rounded-[12px] border border-gray-100 bg-white hover:bg-gray-50 hover:border-purple-200 shadow-sm cursor-pointer transition-all flex flex-col items-center justify-center text-center group aspect-square select-none"
+                  className="p-3 rounded-[12px] border border-white/5 bg-white/5 hover:bg-white/10 hover:border-[#8b5cf6] shadow-sm cursor-pointer transition-all flex flex-col items-center justify-center text-center group aspect-square select-none"
                 >
                   {/* Square shape for icon */}
-                  <div className="w-11 h-11 bg-gray-50 group-hover:bg-white rounded-[10px] flex items-center justify-center border border-gray-100 shrink-0 overflow-hidden shadow-inner p-1.5 mb-2">
+                  <div className="w-11 h-11 bg-[#0B1426] group-hover:bg-[#131F37] rounded-[10px] flex items-center justify-center border border-white/5 shrink-0 overflow-hidden shadow-inner p-1.5 mb-2">
                     {crypto.icon ? (
                       <img src={crypto.icon} alt={crypto.name} className="w-full h-full object-contain" />
                     ) : (
@@ -128,7 +128,7 @@ export default function DepositModal() {
                     )}
                   </div>
                   
-                  <h4 className="font-bold text-[13px] text-gray-800 uppercase flex flex-col items-center gap-1">
+                  <h4 className="font-bold text-[13px] text-white/90 uppercase flex flex-col items-center gap-1">
                     <span>{crypto.name}</span>
                     <span className="text-[8.5px] px-1.5 py-0.5 bg-purple-50 text-purple-600 rounded-full font-medium tracking-wide">
                       {crypto.symbol}-{crypto.network}

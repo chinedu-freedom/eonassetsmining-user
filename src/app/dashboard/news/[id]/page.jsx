@@ -15,16 +15,16 @@ export default function NewsArticlePage() {
   const siteName = settingsRes?.settings?.site_name || "Polychainapp";
 
   return (
-    <div className="flex flex-col h-full bg-[#f8f9fa] overflow-y-auto  [&::-webkit-scrollbar]:hidden">
+    <div className="flex flex-col h-full bg-[#0B1426] overflow-y-auto  [&::-webkit-scrollbar]:hidden">
       {/* Header */}
-      <div className="bg-white px-4 pt-4 pb-3 flex justify-between items-center shadow-sm z-10 sticky top-0 border-b border-gray-100">
+      <div className="bg-[#131F37] px-4 pt-4 pb-3 flex justify-between items-center shadow-sm z-10 sticky top-0 border-b border-white/5">
         <div className="flex items-center gap-3">
-          <Link href="/dashboard/news" className="w-8 h-8 bg-gray-50 rounded-xl flex items-center justify-center text-gray-500 hover:bg-gray-100 transition-colors cursor-pointer">
+          <Link href="/dashboard/news" className="w-8 h-8 bg-white/5 rounded-xl flex items-center justify-center text-gray-400 hover:bg-white/10 transition-colors cursor-pointer">
             <ArrowLeft size={16} />
           </Link>
-          <h1 className="text-[#4c1d95] text-[15px] font-bold">Article</h1>
+          <h1 className="text-white/90 text-[15px] font-bold">Article</h1>
         </div>
-        <button className="w-8 h-8 bg-gray-50 rounded-xl flex items-center justify-center text-[#4c1d95] hover:bg-gray-100 transition-colors shadow-sm cursor-pointer">
+        <button className="w-8 h-8 bg-white/5 rounded-xl flex items-center justify-center text-white/90 hover:bg-white/10 transition-colors shadow-sm cursor-pointer">
           <Share2 size={14} />
         </button>
       </div>
@@ -32,43 +32,43 @@ export default function NewsArticlePage() {
       <div className="px-4 pt-4 pb-4 max-w-[480px] mx-auto w-full flex-1">
         {isLoading ? (
           <div className="flex flex-col items-center justify-center py-20 text-gray-400">
-            <Loader2 className="w-8 h-8 animate-spin mb-3 text-purple-500" />
+            <Loader2 className="w-8 h-8 animate-spin mb-3 text-[#8b5cf6]" />
             <p className="text-sm font-medium">Loading article...</p>
           </div>
         ) : error || !article ? (
-          <div className="flex flex-col items-center justify-center py-20 text-red-400 bg-white rounded-[16px] border border-gray-100 shadow-sm">
+          <div className="flex flex-col items-center justify-center py-20 text-red-400 bg-[#131F37] rounded-[16px] border border-white/5 shadow-sm">
             <p className="text-sm font-medium">Article not found</p>
-            <Link href="/dashboard/news" className="mt-4 text-purple-500 text-xs font-bold underline cursor-pointer">
+            <Link href="/dashboard/news" className="mt-4 text-[#8b5cf6] text-xs font-bold underline cursor-pointer">
               Return to News
             </Link>
           </div>
         ) : (
-          <div className="bg-white rounded-[16px] p-[20px] border border-gray-100 shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)]">
+          <div className="bg-[#131F37] rounded-[16px] p-[20px] border border-white/5 shadow-sm">
             {/* Meta */}
             <div className="flex flex-wrap gap-2 mb-4">
-              <span className="text-[9px] font-bold px-2 py-0.5 rounded bg-purple-100 text-purple-600 flex items-center gap-1">
+              <span className="text-[9px] font-bold px-2 py-0.5 rounded bg-purple-900/20 text-purple-400 flex items-center gap-1">
                 <Tag size={8} /> {article.category || "General"}
               </span>
-              <span className="text-[9px] font-medium px-2 py-0.5 rounded bg-gray-100 text-gray-500 flex items-center gap-1">
+              <span className="text-[9px] font-medium px-2 py-0.5 rounded bg-white/5 text-gray-400 flex items-center gap-1">
                 <Calendar size={8} /> {new Date(article.published_at).toLocaleDateString()}
               </span>
-              <span className="text-[9px] font-medium px-2 py-0.5 rounded bg-gray-100 text-gray-500 flex items-center gap-1 ml-auto">
+              <span className="text-[9px] font-medium px-2 py-0.5 rounded bg-white/5 text-gray-400 flex items-center gap-1 ml-auto">
                 {article.views} views
               </span>
             </div>
 
             {/* Title */}
-            <h1 className="text-[#0f172a] font-extrabold text-[18px] leading-snug mb-5">
+            <h1 className="text-white/90 font-extrabold text-[18px] leading-snug mb-5">
               {article.title}
             </h1>
 
             {/* Featured Image Placeholder */}
             {article.image ? (
-              <div className="w-full h-[180px] rounded-xl mb-6 shadow-sm overflow-hidden flex items-center justify-center bg-gray-100">
+              <div className="w-full h-[180px] rounded-xl mb-6 shadow-sm overflow-hidden flex items-center justify-center bg-white/5">
                 <img src={article.image} alt={article.title} className="w-full h-full object-cover" />
               </div>
             ) : (
-              <div className="w-full h-[140px] bg-gradient-to-r from-purple-500 to-[#0f172a] rounded-xl mb-6 shadow-inner relative overflow-hidden flex items-center justify-center">
+              <div className="w-full h-[140px] bg-gradient-to-r from-[#4c1d95] to-[#0f172a] rounded-xl mb-6 shadow-inner relative overflow-hidden flex items-center justify-center border border-white/5">
                 <div className="absolute inset-0 bg-black/20"></div>
                 <span className="text-white/50 text-[10px] font-bold tracking-widest uppercase z-10 flex items-center gap-2">
                   <ImageIcon size={14} /> {siteName} News
@@ -77,7 +77,7 @@ export default function NewsArticlePage() {
             )}
 
             {/* Content */}
-            <div className="text-gray-600 text-[13px] leading-relaxed whitespace-pre-wrap">
+            <div className="text-gray-400 text-[13px] leading-relaxed whitespace-pre-wrap">
               {article.content}
             </div>
           </div>

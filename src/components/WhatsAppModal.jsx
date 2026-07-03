@@ -43,13 +43,7 @@ export default function WhatsAppModal() {
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogContent className="sm:max-w-[360px] p-0 overflow-hidden bg-white rounded-[24px] border-0 shadow-2xl">
-        <button 
-          onClick={() => setIsOpen(false)}
-          className="absolute cursor-pointer top-4 right-4 w-7 h-7 bg-gray-100 rounded-full flex items-center justify-center cursor-pointer text-gray-500 hover:bg-gray-200 transition-colors z-10"
-        >
-          <X size={14} />
-        </button>
+      <DialogContent className="sm:max-w-[360px] p-0 overflow-hidden bg-[#131F37] rounded-[24px] border border-white/5 shadow-2xl">
 
         <div className="p-8 flex flex-col items-center text-center">
           <div className="w-[60px] h-[60px] bg-[#25D366] rounded-full flex items-center justify-center mb-6 shadow-[0_4px_14px_rgba(37,211,102,0.4)]">
@@ -58,9 +52,9 @@ export default function WhatsAppModal() {
              </svg>
           </div>
 
-          <h2 className="text-[18px] font-bold text-[#0f172a] mb-3">Official Information Release</h2>
+          <h2 className="text-[18px] font-bold text-white/90 mb-3">Official Information Release</h2>
           
-          <p className="text-[13px] text-gray-500 mb-8 leading-relaxed">
+          <p className="text-[13px] text-gray-400 mb-8 leading-relaxed">
             Join our official WhatsApp group to get the latest news and welfare information about {settingsRes?.settings?.site_name || "Polychainapp"} Platform.
           </p>
           

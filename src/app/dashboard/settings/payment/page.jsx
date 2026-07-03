@@ -38,23 +38,23 @@ export default function PaymentSettingsPage() {
   };
 
   return (
-    <div className="flex flex-col h-full bg-[#f8f9fa] overflow-y-auto [&::-webkit-scrollbar]:hidden ">
+    <div className="flex flex-col h-full bg-[#0B1426] overflow-y-auto [&::-webkit-scrollbar]:hidden ">
       {/* Header */}
-      <div className="bg-white px-4 py-3 flex items-center gap-2.5 sticky top-0 z-20 shadow-sm border-b border-gray-100">
+      <div className="bg-[#131F37] px-4 py-3 flex items-center gap-2.5 sticky top-0 z-20 shadow-sm border-b border-white/5">
         <button
           onClick={() => router.back()}
-          className="w-7 h-7 bg-gray-50 hover:bg-gray-100 rounded-full flex items-center justify-center transition-colors text-gray-600 cursor-pointer"
+          className="w-7 h-7 bg-white/5 hover:bg-white/10 rounded-full flex items-center justify-center transition-colors text-gray-400 cursor-pointer"
         >
           <ArrowLeft size={16} />
         </button>
-        <h1 className="text-[#4c1d95] text-[15px] font-bold">Payment Settings</h1>
+        <h1 className="text-white/90 text-[15px] font-bold">Payment Settings</h1>
       </div>
 
       <div className="px-4 py-4 max-w-[480px] mx-auto w-full">
-        <div className="bg-white rounded-[16px] border border-gray-100 shadow-[0_2px_8px_-4px_rgba(0,0,0,0.05)] p-5">
+        <div className="bg-[#131F37] rounded-[16px] border border-white/5 shadow-sm p-5">
 
-          <h2 className="text-[#0f172a] text-[15px] font-bold mb-1.5">Withdrawal Password</h2>
-          <p className="text-[#64748b] text-[12.5px] leading-relaxed mb-4">
+          <h2 className="text-white/90 text-[15px] font-bold mb-1.5">Withdrawal Password</h2>
+          <p className="text-gray-400 text-[12.5px] leading-relaxed mb-4">
             Set a separate password for withdrawals to add an extra layer of security to your account.
           </p>
 
@@ -72,19 +72,19 @@ export default function PaymentSettingsPage() {
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-1.5">
-              <label className="block text-[#334155] text-[12.5px] font-medium">New Password</label>
+              <label className="block text-white/80 text-[12.5px] font-medium">New Password</label>
               <div className="relative">
                 <input
                   type={showNew ? "text" : "password"}
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="w-full bg-white border border-gray-200 rounded-[10px] pl-3.5 pr-10 py-2.5 text-[14px] text-gray-800 placeholder-gray-400 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all"
+                  className="w-full bg-[#0B1426] border border-white/10 rounded-[10px] pl-3.5 pr-10 py-2.5 text-[14px] text-white/90 placeholder-gray-500 focus:outline-none focus:border-[#8b5cf6] transition-all"
                 />
                 <button
                   type="button"
                   onClick={() => setShowNew(!showNew)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white"
                 >
                   {showNew ? <EyeOff size={16} /> : <Eye size={16} />}
                 </button>
@@ -92,19 +92,19 @@ export default function PaymentSettingsPage() {
             </div>
 
             <div className="space-y-1.5 pb-2">
-              <label className="block text-[#334155] text-[12.5px] font-medium">Confirm Password</label>
+              <label className="block text-white/80 text-[12.5px] font-medium">Confirm Password</label>
               <div className="relative">
                 <input
                   type={showConfirm ? "text" : "password"}
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="w-full bg-white border border-gray-200 rounded-[10px] pl-3.5 pr-10 py-2.5 text-[14px] text-gray-800 placeholder-gray-400 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all"
+                  className="w-full bg-[#0B1426] border border-white/10 rounded-[10px] pl-3.5 pr-10 py-2.5 text-[14px] text-white/90 placeholder-gray-500 focus:outline-none focus:border-[#8b5cf6] transition-all"
                 />
                 <button
                   type="button"
                   onClick={() => setShowConfirm(!showConfirm)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white"
                 >
                   {showConfirm ? <EyeOff size={16} /> : <Eye size={16} />}
                 </button>

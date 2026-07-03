@@ -85,17 +85,17 @@ export default function WalletPage() {
   };
 
   return (
-    <div className="flex flex-col h-full bg-[#f8f9fa] overflow-y-auto  [&::-webkit-scrollbar]:hidden">
+    <div className="flex flex-col h-full bg-transparent overflow-y-auto  [&::-webkit-scrollbar]:hidden">
       {/* Header */}
-      <div className="bg-white px-4 pt-4 pb-3 flex justify-between items-center shadow-sm z-10 sticky top-0 border-b border-gray-100">
+      <div className="bg-[#131F37] px-4 pt-4 pb-3 flex justify-between items-center shadow-sm z-10 sticky top-0 border-b border-white/5">
         <div className="flex items-center gap-2.5">
           <button
             onClick={() => router.back()}
-            className="w-7 h-7 bg-gray-50 hover:bg-gray-100 rounded-full flex items-center justify-center transition-colors text-gray-600 cursor-pointer"
+            className="w-7 h-7 bg-white/5 hover:bg-white/10 rounded-full flex items-center justify-center transition-colors text-gray-300 cursor-pointer"
           >
             <ArrowLeft size={16} />
           </button>
-          <h1 className="text-[#4c1d95] text-[15px] font-bold">Wallet</h1>
+          <h1 className="text-white/90 text-[15px] font-bold">Wallet</h1>
         </div>
         <Link href="/dashboard/wallet" className="w-8 h-8 bg-[#8b5cf6] rounded-xl flex items-center justify-center text-white hover:bg-purple-600 transition-colors shadow-sm cursor-pointer">
           <Wallet size={14} />
@@ -148,7 +148,7 @@ export default function WalletPage() {
           <div className="flex gap-2.5 relative z-10">
             <button 
               onClick={() => handleAction("?depositModal=true")}
-              className="cursor-pointer flex-1 bg-white text-[#4c1d95] flex items-center justify-center gap-1.5 py-2 rounded-[8px] text-[11px] font-bold hover:bg-gray-50 transition-colors shadow-sm"
+              className="cursor-pointer flex-1 bg-[#8b5cf6] text-white flex items-center justify-center gap-1.5 py-2 rounded-[8px] text-[11px] font-bold hover:bg-purple-600 transition-colors shadow-sm"
             >
               <Download size={12} /> Deposit
             </button>
@@ -162,30 +162,30 @@ export default function WalletPage() {
         </div>
 
         {/* Recent Transactions */}
-        <div className="bg-white rounded-[16px] p-[16px] border border-gray-100 shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] min-h-[180px] flex flex-col">
+        <div className="bg-[#131F37] rounded-[16px] p-[16px] border border-white/5 shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] min-h-[180px] flex flex-col">
           <div className="flex justify-between items-center mb-6">
             <div className="flex items-center gap-1.5">
               <Clock size={14} className="text-[#8b5cf6]" />
-              <h2 className="text-[#0f172a] font-bold text-[13px]">Recent Transactions</h2>
+              <h2 className="text-white/90 font-bold text-[13px]">Recent Transactions</h2>
             </div>
-            <Link href="/dashboard/transactions" className="flex items-center gap-1 text-[#8b5cf6] text-[10px] font-medium hover:text-purple-700 transition-colors cursor-pointer">
+            <Link href="/dashboard/transactions" className="flex items-center gap-1 text-[#8b5cf6] text-[10px] font-medium hover:text-purple-400 transition-colors cursor-pointer">
               View All <ArrowRight size={10} />
             </Link>
           </div>
 
           <div className="flex-1 flex flex-col items-center justify-center gap-2 min-h-[100px]">
             {loadingTx ? (
-               <Loader2 className="w-5 h-5 animate-spin text-[#cbd5e1]" />
+               <Loader2 className="w-5 h-5 animate-spin text-gray-500" />
             ) : transactions.length > 0 ? (
                <div className="w-full space-y-3">
                  {transactions.slice(0, 10).map((tx) => (
-                   <div key={tx.id} className="flex justify-between items-center bg-[#f8f9fa] rounded-xl p-3 border border-gray-100">
+                   <div key={tx.id} className="flex justify-between items-center bg-white/5 rounded-xl p-3 border border-white/5">
                      <div className="flex items-center gap-3">
-                        <div className={`w-8 h-8 rounded-full flex items-center justify-center ${tx.type === 'DEPOSIT' ? 'bg-green-100 text-green-600' : tx.type === 'WITHDRAWAL' ? 'bg-red-100 text-red-600' : 'bg-purple-100 text-purple-600'}`}>
+                        <div className={`w-8 h-8 rounded-full flex items-center justify-center ${tx.type === 'DEPOSIT' ? 'bg-green-900/20 text-green-400' : tx.type === 'WITHDRAWAL' ? 'bg-red-900/20 text-red-400' : 'bg-purple-900/20 text-purple-400'}`}>
                           {tx.type === 'DEPOSIT' ? <ArrowDownLeft size={14} /> : tx.type === 'WITHDRAWAL' ? <ArrowUpRight size={14} /> : <Receipt size={14} />}
                         </div>
                         <div>
-                          <div className="text-[12px] font-bold text-gray-800 capitalize">{tx.type.replace('_', ' ').toLowerCase()}</div>
+                          <div className="text-[12px] font-bold text-white/90 capitalize">{tx.type.replace('_', ' ').toLowerCase()}</div>
                           <div className="text-[9px] text-gray-400">{format(new Date(tx.created_at), 'MMM dd, yyyy HH:mm')}</div>
                         </div>
                      </div>
@@ -199,10 +199,10 @@ export default function WalletPage() {
                </div>
             ) : (
                <>
-                 <div className="w-10 h-10 bg-[#f1f5f9] rounded-xl flex items-center justify-center border border-gray-100 shadow-sm">
-                   <Receipt size={18} className="text-[#cbd5e1]" />
+                 <div className="w-10 h-10 bg-[#131F37] rounded-xl flex items-center justify-center border border-white/5 shadow-sm">
+                   <Receipt size={18} className="text-gray-500" />
                  </div>
-                 <span className="text-[11px] text-[#94a3b8] font-medium">No transactions yet</span>
+                 <span className="text-[11px] text-gray-400 font-medium">No transactions yet</span>
                </>
             )}
           </div>

@@ -25,7 +25,7 @@ export default function SettingsPage() {
       id: "profile",
       label: "My Profile",
       icon: User,
-      iconBg: "bg-[#f5f3ff]",
+      iconBg: "bg-white/5",
       iconColor: "text-[#8b5cf6]",
       badge: null,
       href: "/dashboard/settings/profile"
@@ -34,18 +34,18 @@ export default function SettingsPage() {
       id: "payment",
       label: "Payment Settings",
       icon: Lock,
-      iconBg: "bg-[#f5f3ff]",
+      iconBg: "bg-white/5",
       iconColor: "text-[#8b5cf6]",
       badge: hasPin 
-        ? { text: "Set", bg: "bg-green-100", color: "text-green-700" }
-        : { text: "Not Set", bg: "bg-[#fef3c7]", color: "text-[#d97706]" },
+        ? { text: "Set", bg: "bg-green-900/20", color: "text-green-400" }
+        : { text: "Not Set", bg: "bg-amber-900/20", color: "text-amber-400" },
       href: "/dashboard/settings/payment"
     },
     {
       id: "login",
       label: "Login Settings",
       icon: Key,
-      iconBg: "bg-[#f5f3ff]",
+      iconBg: "bg-white/5",
       iconColor: "text-[#8b5cf6]",
       badge: null,
       href: "/dashboard/settings/login"
@@ -54,44 +54,44 @@ export default function SettingsPage() {
       id: "auth",
       label: "Authentication",
       icon: ShieldCheck,
-      iconBg: "bg-[#f5f3ff]",
+      iconBg: "bg-white/5",
       iconColor: "text-[#8b5cf6]",
       badge: isEmailVerified
-        ? { text: "Verified", bg: "bg-[#d1fae5]", color: "text-[#059669]" }
-        : { text: "Unverified", bg: "bg-[#fef3c7]", color: "text-[#d97706]" },
+        ? { text: "Verified", bg: "bg-emerald-900/20", color: "text-emerald-400" }
+        : { text: "Unverified", bg: "bg-amber-900/20", color: "text-amber-400" },
       href: "/dashboard/settings/auth"
     }
   ];
 
   return (
-    <div className="flex flex-col h-full bg-[#f8f9fa] overflow-y-auto [&::-webkit-scrollbar]:hidden ">
+    <div className="flex flex-col h-full bg-transparent overflow-y-auto [&::-webkit-scrollbar]:hidden ">
       {/* Header */}
-      <div className="bg-white px-4 py-3 flex items-center gap-2.5 sticky top-0 z-20 shadow-sm border-b border-gray-100">
+      <div className="bg-[#131F37] px-4 py-3 flex items-center gap-2.5 sticky top-0 z-20 shadow-sm border-b border-white/5">
         <button
           onClick={() => router.back()}
-          className="w-7 h-7 bg-gray-50 hover:bg-gray-100 rounded-full flex items-center justify-center transition-colors text-gray-600 cursor-pointer"
+          className="w-7 h-7 bg-white/5 hover:bg-white/10 rounded-full flex items-center justify-center transition-colors text-gray-300 cursor-pointer"
         >
           <ArrowLeft size={16} />
         </button>
-        <h1 className="text-[#4c1d95] text-[15px] font-bold">Settings</h1>
+        <h1 className="text-white/90 text-[15px] font-bold">Settings</h1>
       </div>
 
       <div className="px-4 py-4 max-w-[480px] mx-auto w-full space-y-3">
 
         {/* Main Settings Group */}
-        <div className="bg-white rounded-[16px] border border-gray-100 shadow-[0_2px_8px_-4px_rgba(0,0,0,0.05)] overflow-hidden">
+        <div className="bg-[#131F37] rounded-[16px] border border-white/5 shadow-[0_2px_8px_-4px_rgba(0,0,0,0.05)] overflow-hidden">
           {menuItems.map((item, index) => (
             <button
               key={item.id}
               onClick={() => item.href && router.push(item.href)}
-              className={`w-full flex items-center justify-between px-3.5 py-3 hover:bg-gray-50 transition-colors ${index !== menuItems.length - 1 ? 'border-b border-gray-50' : ''
+              className={`w-full flex items-center justify-between px-3.5 py-3 hover:bg-white/5 transition-colors ${index !== menuItems.length - 1 ? 'border-b border-white/5' : ''
                 }`}
             >
               <div className="flex items-center gap-3.5">
                 <div className={`w-9 h-9 rounded-[10px] flex items-center justify-center ${item.iconBg} ${item.iconColor}`}>
                   <item.icon size={16} />
                 </div>
-                <span className="text-[#334155] text-[13px] font-medium">{item.label}</span>
+                <span className="text-white/90 text-[13px] font-medium">{item.label}</span>
               </div>
 
               <div className="flex items-center gap-2.5">
@@ -107,16 +107,16 @@ export default function SettingsPage() {
         </div>
 
         {/* Delete Account */}
-        <div className="bg-white rounded-[16px] border border-gray-100 shadow-[0_2px_8px_-4px_rgba(0,0,0,0.05)] overflow-hidden">
+        <div className="bg-[#131F37] rounded-[16px] border border-white/5 shadow-[0_2px_8px_-4px_rgba(0,0,0,0.05)] overflow-hidden">
           <button
             onClick={() => setShowDeleteModal(true)}
-            className="w-full flex items-center justify-between px-3.5 py-3 hover:bg-red-50/50 transition-colors"
+            className="w-full flex items-center justify-between px-3.5 py-3 hover:bg-red-900/20 transition-colors"
           >
             <div className="flex items-center gap-3.5">
-              <div className="w-9 h-9 rounded-[10px] flex items-center justify-center bg-[#fee2e2] text-[#ef4444]">
+              <div className="w-9 h-9 rounded-[10px] flex items-center justify-center bg-red-900/20 text-red-400">
                 <Trash2 size={16} />
               </div>
-              <span className="text-[#ef4444] text-[13px] font-medium">Delete Account</span>
+              <span className="text-red-400 text-[13px] font-medium">Delete Account</span>
             </div>
             <ChevronRight size={16} className="text-gray-300" />
           </button>
@@ -132,20 +132,20 @@ export default function SettingsPage() {
         >
           <div 
             onClick={(e) => e.stopPropagation()}
-            className="bg-white rounded-[20px] w-full max-w-[320px] p-5 shadow-xl animate-in fade-in zoom-in-95 duration-200"
+            className="bg-[#0B1426] border border-white/10 rounded-[20px] w-full max-w-[320px] p-5 shadow-xl animate-in fade-in zoom-in-95 duration-200"
           >
             <div className="flex flex-col items-center text-center">
-              <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center text-red-500 mb-4">
+              <div className="w-12 h-12 bg-red-900/20 rounded-full flex items-center justify-center text-red-500 mb-4">
                 <Trash2 size={24} />
               </div>
-              <h3 className="text-[#0f172a] text-[16px] font-bold mb-2">Delete Account</h3>
-              <p className="text-gray-500 text-[13px] leading-relaxed mb-6">
+              <h3 className="text-white/90 text-[16px] font-bold mb-2">Delete Account</h3>
+              <p className="text-gray-400 text-[13px] leading-relaxed mb-6">
                 Are you sure you want to delete your account? This action is permanent and cannot be undone.
               </p>
               <div className="flex gap-3 w-full">
                 <button
                   onClick={() => setShowDeleteModal(false)}
-                  className="flex-1 py-2.5 rounded-[12px] bg-gray-100 text-gray-700 font-bold text-[13px] hover:bg-gray-200 transition-colors"
+                  className="flex-1 py-2.5 rounded-[12px] bg-white/10 text-gray-200 font-bold text-[13px] hover:bg-white/20 transition-colors cursor-pointer"
                 >
                   Cancel
                 </button>

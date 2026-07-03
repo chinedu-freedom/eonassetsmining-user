@@ -13,29 +13,29 @@ export default function TeamListPage() {
   const teamList = teamListRes?.data || [];
 
   return (
-    <div className="flex flex-col h-full bg-[#f8f9fa] overflow-y-auto [&::-webkit-scrollbar]:hidden ">
+    <div className="flex flex-col h-full bg-transparent overflow-y-auto [&::-webkit-scrollbar]:hidden ">
       {/* Header */}
-      <div className="bg-[#f8f9fa] px-4 py-4 flex items-center gap-3 sticky top-0 z-20">
+      <div className="bg-[#131F37] px-4 py-4 flex items-center gap-3 sticky top-0 z-20 border-b border-white/5">
         <button
           onClick={() => router.back()}
-          className="w-9 h-9 bg-white border border-gray-200 rounded-[10px] flex items-center justify-center transition-colors text-gray-700 shadow-sm hover:bg-gray-50 shrink-0 cursor-pointer"
+          className="w-9 h-9 bg-white/5 border border-white/5 rounded-[10px] flex items-center justify-center transition-colors text-white/90 shadow-sm hover:bg-white/10 shrink-0 cursor-pointer"
         >
           <ArrowLeft size={16} />
         </button>
-        <h1 className="text-[#4c1d95] text-[18px] font-bold">Team List</h1>
+        <h1 className="text-white/90 text-[18px] font-bold">Team List</h1>
       </div>
 
       <div className="px-4 max-w-[480px] mx-auto w-full flex-1 flex flex-col pb-10">
 
         {/* Tabs */}
-        <div className="bg-[#f1f5f9] p-1.5 rounded-[12px] flex mt-2 mb-6">
+        <div className="bg-[#131F37] border border-white/5 p-1.5 rounded-[12px] flex mt-2 mb-6">
           {[1, 2, 3, 4].map((level) => (
             <button
               key={level}
               onClick={() => setActiveTab(level)}
               className={`cursor-pointer flex-1 py-2.5 text-[13px] font-medium rounded-[8px] transition-all ${activeTab === level
-                  ? 'bg-white text-[#4c1d95] shadow-sm'
-                  : 'text-[#64748b] hover:text-[#334155]'
+                  ? 'bg-white/10 text-white shadow-sm'
+                  : 'text-gray-400 hover:text-white/90'
                 }`}
             >
               Level {level}
@@ -53,17 +53,17 @@ export default function TeamListPage() {
           <div className="flex flex-col items-center justify-center flex-1 min-h-[300px]">
             <div className="relative mb-4">
               {/* Simple overlapping users icon effect */}
-              <Users size={64} className="text-[#cbd5e1] opacity-60 ml-4" />
-              <Users size={48} className="text-[#e2e8f0] opacity-40 absolute top-2 right-8" />
+              <Users size={64} className="text-white/10 opacity-60 ml-4" />
+              <Users size={48} className="text-white/5 opacity-40 absolute top-2 right-8" />
             </div>
-            <p className="text-[#64748b] text-[14px]">
+            <p className="text-gray-400 text-[14px]">
               No members in Level {activeTab} yet
             </p>
           </div>
         ) : (
           <div className="space-y-3">
             {teamList.map((user) => (
-              <div key={user.id} className="bg-white rounded-[16px] px-4 py-3 flex items-center justify-between shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] border border-gray-100">
+              <div key={user.id} className="bg-[#131F37] rounded-[16px] px-4 py-3 flex items-center justify-between shadow-md border border-white/5">
                 <div className="flex items-center gap-4">
                   {/* Avatar */}
                   <div className="w-[48px] h-[48px] rounded-full bg-gradient-to-br from-[#0d9488] to-[#2563eb] flex items-center justify-center text-white font-bold text-[20px] shrink-0">
@@ -72,11 +72,11 @@ export default function TeamListPage() {
                   
                   {/* User Info */}
                   <div>
-                    <h3 className="text-[#0f172a] font-bold text-[15px] -mb-0.5">{user.username}</h3>
-                    <p className="text-[#64748b] text-[12px] ">
+                    <h3 className="text-white/90 font-bold text-[15px] -mb-0.5">{user.username}</h3>
+                    <p className="text-gray-400 text-[12px] ">
                       Joined {new Date(user.joined_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
                     </p>
-                    <p className={`text-[12px] font-bold ${user.status === 'Active' ? 'text-[#059669]' : 'text-gray-400'}`}>
+                    <p className={`text-[12px] font-bold ${user.status === 'Active' ? 'text-[#34d399]' : 'text-gray-400'}`}>
                       {user.status}
                     </p>
                   </div>
@@ -86,21 +86,21 @@ export default function TeamListPage() {
                 <div className="text-right flex flex-col items-end justify-center">
                   <div className="flex items-baseline gap-2 -mb-0.5">
                     <span className="text-gray-400 text-[11px]">Balance:</span>
-                    <span className="text-[#4c1d95] font-bold text-[14px]">
+                    <span className="text-white/90 font-bold text-[14px]">
                       ${Number(user.balance).toFixed(2)}
                     </span>
                   </div>
                   
                   <div className="flex items-baseline gap-2 -mb-0.5">
                     <span className="text-gray-400 text-[11px]">Deposited:</span>
-                    <span className="text-[#f59e0b] font-bold text-[13px]">
+                    <span className="text-[#fbbf24] font-bold text-[13px]">
                       ${Number(user.deposited_amount || 0).toFixed(2)}
                     </span>
                   </div>
 
                   <div className="flex items-baseline gap-2 -mb-0.5">
                     <span className="text-gray-400 text-[11px]">Invested:</span>
-                    <span className="text-[#059669] font-bold text-[13px]">
+                    <span className="text-[#34d399] font-bold text-[13px]">
                       ${Number(user.invested_amount || 0).toFixed(2)}
                     </span>
                   </div>
