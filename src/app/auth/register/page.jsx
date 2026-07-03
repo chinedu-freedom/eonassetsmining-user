@@ -164,6 +164,15 @@ function SignupForm() {
                       menu: (base) => ({
                         ...base,
                         zIndex: 9999
+                      }),
+                      option: (base, state) => ({
+                        ...base,
+                        color: 'black',
+                        backgroundColor: state.isFocused ? '#eff6ff' : 'white',
+                      }),
+                      singleValue: (base) => ({
+                        ...base,
+                        color: 'black'
                       })
                     }}
                   />
