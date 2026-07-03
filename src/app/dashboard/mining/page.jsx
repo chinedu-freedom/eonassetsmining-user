@@ -134,15 +134,15 @@ export default function MiningPlansPage() {
             {/* Details */}
             <div className="flex flex-col gap-1.5 mt-0.5">
               <div className="flex justify-between items-center">
-                <span className="text-gray-400 text-[11px] font-medium">Minimum Entry:</span>
+                <span className="text-gray-400 text-[11px] font-medium">Minimum Deposit:</span>
                 <span className="text-white/90 font-bold text-[11px]">{formatCurrency(Number(plan.min_investment))}</span>
               </div>
               <div className="flex justify-between items-center">
-                <span className="text-gray-400 text-[11px] font-medium">Maximum Entry:</span>
+                <span className="text-gray-400 text-[11px] font-medium">Maximum Deposit:</span>
                 <span className="text-white/90 font-bold text-[11px]">{formatCurrency(Number(plan.max_investment))}</span>
               </div>
               <div className="flex justify-between items-center">
-                <span className="text-gray-400 text-[11px] font-medium">Mining duration:</span>
+                <span className="text-gray-400 text-[11px] font-medium">Mining Duration:</span>
                 <span className="text-white/90 font-bold text-[11px]">{plan.duration} Days</span>
               </div>
             </div>
@@ -152,7 +152,8 @@ export default function MiningPlansPage() {
               onClick={() => handleMineClick(plan)}
               className="cursor-pointer w-full mt-0.5 bg-[#8b5cf6] text-white font-bold py-2 rounded-lg hover:bg-purple-600 transition-colors text-[12px] shadow-sm flex items-center justify-center gap-2"
             >
-             <Cpu size={14} /> Mine
+             {/* <Cpu size={14} /> */}
+              Activate Plan
             </button>
           </div>
         ))}
@@ -283,7 +284,7 @@ export default function MiningPlansPage() {
                 disabled={isInvesting}
                 className="w-full bg-[#8b5cf6] text-white font-bold py-4 rounded-[12px] hover:bg-purple-600 transition-colors text-[15px] shadow-md disabled:opacity-50 flex items-center justify-center cursor-pointer"
               >
-                {isInvesting ? <Loader2 className="w-5 h-5 animate-spin" /> : "Invest Now"}
+                {isInvesting ? <Loader2 className="w-5 h-5 animate-spin" /> : "Start Mining"}
               </button>
             </div>
 
