@@ -123,13 +123,13 @@ const Input = React.forwardRef(
           onBlur={handleBlur}
           placeholder=" "
           className={cn(
-            "peer block w-full rounded-md border border-gray-300 bg-white px-3 py-3 text-sm text-foreground",
+            "peer block w-full rounded-md border border-gray-300 bg-white px-3 py-3 text-sm text-black",
             "focus:border-purple-600 focus:outline-none focus:ring-1 focus:ring-purple-600 transition-all duration-150",
             "disabled:cursor-not-allowed disabled:opacity-50",
             
             // 🔥 CRITICAL: Override autofill styles
             "autofill:bg-white autofill:shadow-[inset_0_0_0px_1000px_white]",
-            "[-webkit-text-fill-color:theme(colors.foreground)]",
+            "[-webkit-text-fill-color:black]",
             "[&:-webkit-autofill]:bg-white",
             "[&:-webkit-autofill]:shadow-[inset_0_0_0px_1000px_white]",
             "[&:-internal-autofill-selected]:bg-white",
