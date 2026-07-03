@@ -23,9 +23,10 @@ export default function WalletPage() {
   const user = userRes?.user || {};
   const transactions = txRes?.transactions || [];
 
-  const mainBalance = Number(user.balance || 0);
+  const depositBalance = Number(user.balance || 0);
+  const mainBalance = Number(user.withdrawable_balance || 0);
   const giftBalance = Number(user.gift_balance || 0);
-  const totalBalance = mainBalance + giftBalance;
+  const totalBalance = depositBalance + mainBalance + giftBalance;
 
   useEffect(() => {
     const fetchLiveRate = async () => {
@@ -71,6 +72,7 @@ export default function WalletPage() {
 
   const currentBalance = {
     total: formatMoney(totalBalance),
+    deposit: formatMoney(depositBalance),
     main: formatMoney(mainBalance),
     gift: formatMoney(giftBalance)
   };
@@ -133,14 +135,18 @@ export default function WalletPage() {
           </div>
 
           {/* Sub Balances */}
-          <div className="flex gap-2.5 mb-3.5 relative z-10">
+          <div className="flex gap-2 mb-3.5 relative z-10">
             <div className="bg-white/10 rounded-lg p-2 flex-1 border border-white/10 backdrop-blur-sm">
-              <div className="text-[7px] font-bold text-white/80 uppercase tracking-wide mb-1">Earning Balance</div>
-              <div className="text-[12px] font-bold">{loadingUser ? "..." : showBalance ? currentBalance.main : "****"}</div>
+              <div className="text-[7px] font-bold text-white/80 uppercase tracking-wide mb-1">Deposit</div>
+              <div className="text-[10px] font-bold">{loadingUser ? "..." : showBalance ? currentBalance.deposit : "****"}</div>
             </div>
             <div className="bg-white/10 rounded-lg p-2 flex-1 border border-white/10 backdrop-blur-sm">
-              <div className="text-[7px] font-bold text-white/80 uppercase tracking-wide mb-1">Gift Balance</div>
-              <div className="text-[12px] font-bold">{loadingUser ? "..." : showBalance ? currentBalance.gift : "****"}</div>
+              <div className="text-[7px] font-bold text-white/80 uppercase tracking-wide mb-1">Earning</div>
+              <div className="text-[10px] font-bold">{loadingUser ? "..." : showBalance ? currentBalance.main : "****"}</div>
+            </div>
+            <div className="bg-white/10 rounded-lg p-2 flex-1 border border-white/10 backdrop-blur-sm">
+              <div className="text-[7px] font-bold text-white/80 uppercase tracking-wide mb-1">Gift</div>
+              <div className="text-[10px] font-bold">{loadingUser ? "..." : showBalance ? currentBalance.gift : "****"}</div>
             </div>
           </div>
 

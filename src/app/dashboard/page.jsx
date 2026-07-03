@@ -143,7 +143,7 @@ export default function DashboardPage() {
     const baseSymbol = settings.currency_symbol || "$";
     if (!userProfile) return `${baseSymbol}0.00`;
     
-    const balanceUSD = parseFloat(userProfile.balance || 0) + parseFloat(userProfile.gift_balance || 0);
+    const balanceUSD = parseFloat(userProfile.balance || 0) + parseFloat(userProfile.withdrawable_balance || 0) + parseFloat(userProfile.gift_balance || 0);
     const baseCurrency = settings.currency_name || "USDT";
     
     if (currency === "USDT" || currency === baseCurrency) {
