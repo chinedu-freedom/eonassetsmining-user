@@ -64,7 +64,7 @@ export default function TransactionsPage() {
       title: tx.description || tx.type,
       date: new Date(tx.created_at).toLocaleString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric' }),
       amount: amountStr,
-      status: "SUCCESS",
+      status: tx.status || "SUCCESS",
       type: meta.category,
       iconBg: meta.iconBg,
       iconColor: meta.iconColor,
@@ -90,7 +90,7 @@ export default function TransactionsPage() {
         >
           <ArrowLeft size={16} />
         </button>
-        <h1 className="text-white/90 text-[15px] font-bold">Transactions</h1>
+        <h1 className="text-white/90 text-[15px] font-bold">All Transactions</h1>
       </div>
 
       <div className="px-4 py-4 max-w-[480px] mx-auto w-full space-y-4">
@@ -104,7 +104,7 @@ export default function TransactionsPage() {
             <div className="text-white/90 font-bold text-[18px] mb-0.5">
               {settings.currency_symbol || "$"}{totalVolume.toFixed(2)}
             </div>
-            <div className="text-gray-400 text-[11px]">Total Volume</div>
+            <div className="text-gray-400 text-[11px]">Total Inflow</div>
           </div>
 
           <div className="bg-[#131F37] rounded-[16px] p-4 border border-white/5 shadow-[0_2px_8px_-4px_rgba(0,0,0,0.05)] flex flex-col">
@@ -112,7 +112,7 @@ export default function TransactionsPage() {
               <FileText size={16} />
             </div>
             <div className="text-white/90 font-bold text-[18px] mb-0.5">{totalCount}</div>
-            <div className="text-gray-400 text-[11px]">Transactions</div>
+            <div className="text-gray-400 text-[11px]">Transaction Count</div>
           </div>
         </div>
 
@@ -175,8 +175,12 @@ export default function TransactionsPage() {
                     <div className={`font-bold text-[13px] ${tx.amount.startsWith('+') ? 'text-green-500' : (tx.amount.startsWith('-') ? 'text-red-500' : 'text-gray-400')}`}>
                       {tx.amount}
                     </div>
-                    <div className="bg-emerald-900/20 text-emerald-400 px-2 py-0.5 rounded text-[8px] font-bold tracking-widest">
-                      {tx.status}
+                    <div className={`px-2 py-0.5 rounded text-[8px] font-bold tracking-widest ${
+                      tx.status?.toUpperCase() === 'PENDING' ? 'bg-orange-900/20 text-orange-400' :
+                      (tx.status?.toUpperCase() === 'REJECTED' || tx.status?.toUpperCase() === 'FAILED') ? 'bg-red-900/20 text-red-400' :
+                      'bg-emerald-900/20 text-emerald-400'
+                    }`}>
+                      {tx.status?.toUpperCase() || 'SUCCESS'}
                     </div>
                   </div>
                 </div>
