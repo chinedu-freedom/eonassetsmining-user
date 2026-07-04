@@ -9,8 +9,8 @@ import {
   Key,
   ShieldCheck,
   Trash2,
-  ChevronRight
-} from "lucide-react";
+import { ChevronRight, ShieldCheck, Key, Lock, User, ArrowLeft, Trash2 } from "lucide-react";
+import axiosInstance, { clearAuthToken } from "@/config/axiosInstance";
 import { useFetchData } from "@/hooks/useApi";
 
 export default function SettingsPage() {
@@ -152,15 +152,9 @@ export default function SettingsPage() {
                 <button
                   onClick={async () => {
                     try {
-                      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/me`, {
-                        method: 'DELETE',
-                        headers: {
-                          'Authorization': `Bearer ${localStorage.getItem('token')}`
-                        }
-                      });
-                      if (res.ok) {
-                        localStorage.removeItem('token');
-                        localStorage.removeItem('user');
+                      const res = await axiosInstance.delete('/users/me');
+                      if (res.data?.success) {
+                        clearAuthToken();
                         window.location.href = '/login';
                       }
                     } catch (error) {
