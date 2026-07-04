@@ -253,7 +253,7 @@ export default function DashboardPage() {
               <div className="w-10 h-10 bg-white/5 rounded-xl flex items-center justify-center group-hover:bg-white/10 transition-colors shadow-sm">
                 <Wallet className="text-[#8b5cf6]" size={20} />
               </div>
-              <span className="text-[10px] text-white/90 font-medium">My Assets</span>
+              <span className="text-[10px] text-white/90 font-medium">Active Mining</span>
             </div>
 
             <div onClick={() => router.push('/dashboard/about')} className="flex flex-col items-center gap-1.5 cursor-pointer group">
@@ -310,7 +310,7 @@ export default function DashboardPage() {
               <div className="w-10 h-10 bg-white/5 rounded-xl flex items-center justify-center group-hover:bg-white/10 transition-colors shadow-sm">
                 <Gift className="text-[#8b5cf6]" size={20} />
               </div>
-              <span className="text-[10px] text-white/90 font-medium">Treasure</span>
+              <span className="text-[10px] text-white/90 font-medium">Bonus Code</span>
             </div>
 
             <div onClick={() => router.push('/dashboard/help')} className="flex flex-col items-center gap-1.5 cursor-pointer group mt-1">

@@ -177,7 +177,9 @@ export default function InvitePage() {
             </div>
             
             <p className="text-white/70 text-[10px] leading-relaxed max-w-[260px]">
-              Earn up to 10% commission on your referrals' investments. The more friends you invite, the more you earn!
+              {/* Earn up to 10% commission on your referrals' investments. The more friends you invite, the more you earn! */}
+              Earn up to 16% in referral bonuses across 4 levels. The more friends you invite, the more you earn
+
             </p>
           </div>
         </div>

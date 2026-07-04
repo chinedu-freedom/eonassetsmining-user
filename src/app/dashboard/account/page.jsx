@@ -270,7 +270,7 @@ export default function AccountPage() {
                 <div className="w-7 h-7 bg-purple-900/20 rounded-[8px] flex items-center justify-center text-purple-400">
                   <BarChart2 size={12} />
                 </div>
-                <span className="text-[8px] font-bold text-gray-400 uppercase tracking-wider">Total Income</span>
+                <span className="text-[8px] font-bold text-gray-400 uppercase tracking-wider">Total Assets</span>
               </div>
               <div className="text-[13px] font-bold text-white/90 ml-1">{showBalance ? balanceValues.income : "****"}</div>
             </div>

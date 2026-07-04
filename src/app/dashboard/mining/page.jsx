@@ -6,7 +6,7 @@ import { ArrowLeft, Wallet, X, Loader2, Zap, Clock, ShieldCheck, Cpu, TrendingUp
 import Link from "next/link";
 import { useFetchData } from "@/hooks/useApi";
 import { postData } from "@/config/apiHelpers";
-import { toast } from "react-hot-toast";
+import { toast } from "sonner";
 
 export default function MiningPlansPage() {
   const [selectedPlan, setSelectedPlan] = useState(null);
@@ -44,12 +44,12 @@ export default function MiningPlansPage() {
       });
       
       if (data?.success) {
-        toast.success(data.message || "Investment successful!");
+        toast.success(data.message || "Plan activated successfully! Your investment is now running.");
         setSelectedPlan(null);
         setInvestmentAmount("");
         setTimeout(() => {
-          window.location.reload();
-        }, 1000);
+          router.push("/dashboard/investments");
+        }, 1500);
       } else {
         toast.error(data.error || "Investment failed");
       }

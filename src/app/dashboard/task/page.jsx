@@ -160,7 +160,7 @@ export default function TaskPage() {
                         <h3 className="text-[14px] font-bold text-white/90 leading-tight mb-0.5">{task.task_name}</h3>
                         <div className="flex items-center gap-2 text-[12px]">
                           <span className="text-[#f59e0b] font-bold">{settings.currency_symbol || "$"}{Number(task.reward_amount).toFixed(2)}</span>
-                          <span className="text-gray-400">{task.required_referrals} invites today</span>
+                          <span className="text-gray-400">{task.required_referrals} invites required</span>
                         </div>
                       </div>
                       
