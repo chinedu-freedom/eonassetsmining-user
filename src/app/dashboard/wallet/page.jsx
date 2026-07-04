@@ -12,6 +12,8 @@ import { useSharedSettings } from "@/hooks/useSharedSettings";
 export default function WalletPage() {
   const router = useRouter();
   const { currency, setCurrency, showBalance, setShowBalance } = useSharedSettings();
+  const [liveExchangeRate, setLiveExchangeRate] = useState(null);
+
   const { data: userRes, isLoading: loadingUser } = useFetchData("/users/me", ["user"]);
   const { data: txRes, isLoading: loadingTx } = useFetchData("/users/transactions", ["transactions"]);
 
@@ -26,6 +28,26 @@ export default function WalletPage() {
   const giftBalance = Number(user.gift_balance || 0);
   const totalBalance = depositBalance + mainBalance + giftBalance;
 
+  useEffect(() => {
+    const fetchLiveRate = async () => {
+      if (user?.country) {
+        const targetCurrency = user.country.currency_code?.trim() ? user.country.currency_code : "NGN";
+        const baseCurrency = settings.currency_name || "USDT";
+        if (targetCurrency !== baseCurrency && targetCurrency !== 'USD') {
+          try {
+            const res = await fetch(`https://api.exchangerate-api.com/v4/latest/USD`);
+            const data = await res.json();
+            if (data && data.rates && data.rates[targetCurrency]) {
+              setLiveExchangeRate(data.rates[targetCurrency]);
+            }
+          } catch (error) {
+            console.error("Failed to fetch live exchange rate:", error);
+          }
+        }
+      }
+    };
+    fetchLiveRate();
+  }, [user?.country, settings.currency_name]);
 
   const toggleCurrency = () => {
     if (!user?.country) return;
@@ -41,7 +63,7 @@ export default function WalletPage() {
     if (currency === "USDT" || currency === baseCurrency) {
       return `${baseSymbol}${usd.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
     } else {
-      const exchangeRate = parseFloat(user?.country?.exchange_rate || 1);
+      const exchangeRate = liveExchangeRate !== null ? liveExchangeRate : parseFloat(user?.country?.exchange_rate || 1);
       const localBalance = usd * exchangeRate;
       const symbol = user?.country?.currency_symbol || "";
       return `${symbol}${localBalance.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;

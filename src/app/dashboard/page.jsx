@@ -49,7 +49,7 @@ export default function DashboardPage() {
   const siteName = settings.site_name || "Polychainapp";
   const siteLogo = settings.platform_logo || null;
 
-
+  const [liveExchangeRate, setLiveExchangeRate] = useState(null);
   const [liveMarketData, setLiveMarketData] = useState([]);
 
   useEffect(() => {
@@ -116,6 +116,27 @@ export default function DashboardPage() {
     }
   }, [userProfile?.language]);
 
+  // Fetch live exchange rate when user profile loads
+  useEffect(() => {
+    const fetchLiveRate = async () => {
+      if (userProfile?.country) {
+        const targetCurrency = userProfile.country.currency_code?.trim() ? userProfile.country.currency_code : "NGN";
+        const baseCurrency = settings.currency_name || "USDT";
+        if (targetCurrency !== baseCurrency && targetCurrency !== 'USD') {
+          try {
+            const res = await fetch(`https://api.exchangerate-api.com/v4/latest/USD`);
+            const data = await res.json();
+            if (data && data.rates && data.rates[targetCurrency]) {
+              setLiveExchangeRate(data.rates[targetCurrency]);
+            }
+          } catch (error) {
+            console.error("Failed to fetch live exchange rate:", error);
+          }
+        }
+      }
+    };
+    fetchLiveRate();
+  }, [userProfile?.country, settings.currency_name]);
 
   // Convert balance based on selected currency
   const getDisplayBalance = () => {
@@ -129,7 +150,7 @@ export default function DashboardPage() {
       return `${baseSymbol}${balanceUSD.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
     } else {
       // Use live exchange rate if available, fallback to database static rate, then fallback to 1
-      const exchangeRate = parseFloat(userProfile.country?.exchange_rate || 1);
+      const exchangeRate = liveExchangeRate !== null ? liveExchangeRate : parseFloat(userProfile.country?.exchange_rate || 1);
       const localBalance = balanceUSD * exchangeRate;
       const symbol = userProfile.country?.currency_symbol || "";
       return `${symbol}${localBalance.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
