@@ -20,12 +20,12 @@ if (typeof window !== "undefined") {
 axiosInstance.interceptors.response.use(
   (response) => response,
   async (error) => {
-    if (error?.response?.status === 401 && typeof window !== "undefined") {
+    if ((error?.response?.status === 401 || error?.response?.status === 403) && typeof window !== "undefined") {
       CookieManager.remove("sec-prd-token");
       delete axiosInstance.defaults.headers.common.Authorization;
 
       // Don't redirect if we're already on the login page
-      if (!window.location.pathname.includes("/")) {
+      if (window.location.pathname !== "/" && window.location.pathname !== "/auth/login") {
         window.location.href = "/";
       }
     }
