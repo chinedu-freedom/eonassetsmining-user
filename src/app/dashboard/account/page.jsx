@@ -55,7 +55,6 @@ export default function AccountPage() {
   const { data: languagesResponse } = useFetchData("/auth/languages", ["languages"]);
   const dynamicLanguages = languagesResponse?.data || [];
 
-  const [liveExchangeRate, setLiveExchangeRate] = useState(null);
 
   useEffect(() => {
     if (userProfile?.language?.language_code) {
@@ -66,25 +65,6 @@ export default function AccountPage() {
     }
   }, [userProfile?.language, userProfile?.profile_image]);
 
-  useEffect(() => {
-    const fetchLiveRate = async () => {
-      if (userProfile?.country) {
-        const targetCurrency = userProfile.country.currency_code?.trim() ? userProfile.country.currency_code : "NGN";
-        if (targetCurrency !== 'USDT' && targetCurrency !== 'USD') {
-          try {
-            const res = await fetch(`https://api.exchangerate-api.com/v4/latest/USD`);
-            const data = await res.json();
-            if (data && data.rates && data.rates[targetCurrency]) {
-              setLiveExchangeRate(data.rates[targetCurrency]);
-            }
-          } catch (error) {
-            console.error("Failed to fetch live exchange rate:", error);
-          }
-        }
-      }
-    };
-    fetchLiveRate();
-  }, [userProfile?.country]);
 
   const handleProfilePicChange = async (e) => {
     const file = e.target.files[0];
@@ -126,7 +106,7 @@ export default function AccountPage() {
     if (currency === "USDT" || currency === baseCurrency) {
       return `${baseSymbol}${usd.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
     } else {
-      const exchangeRate = liveExchangeRate !== null ? liveExchangeRate : parseFloat(userProfile?.country?.exchange_rate || 1);
+      const exchangeRate = parseFloat(userProfile?.country?.exchange_rate || 1);
       const localBalance = usd * exchangeRate;
       const symbol = userProfile?.country?.currency_symbol || "";
       return `${symbol}${localBalance.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
