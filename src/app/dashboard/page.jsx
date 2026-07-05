@@ -49,7 +49,6 @@ export default function DashboardPage() {
   const siteName = settings.site_name || "Polychainapp";
   const siteLogo = settings.platform_logo || null;
 
-  const [liveExchangeRate, setLiveExchangeRate] = useState(null);
   const [liveMarketData, setLiveMarketData] = useState([]);
 
   useEffect(() => {
@@ -59,11 +58,9 @@ export default function DashboardPage() {
       const fetchLivePrices = async () => {
         try {
           const promises = marketData.map(async (asset) => {
-            // Only try to fetch if we have a valid symbol
             if (!asset.symbol) return null;
             
             try {
-              // Use backend proxy to bypass browser CORS and network blocks
               const data = await fetchData(`/live-market/proxy?symbol=${asset.symbol.toUpperCase()}`);
               if (!data || data.error || !data.lastPrice) return null;
               
@@ -73,32 +70,35 @@ export default function DashboardPage() {
                 price_change_24h: parseFloat(data.priceChangePercent) * 100 // MEXC returns decimal, so multiply by 100
               };
             } catch (err) {
-              return null; // Ignore failed requests for individual coins
+              return null;
             }
           });
-
-          const results = await Promise.all(promises);
           
-          setLiveMarketData(prev => prev.map(asset => {
-            const liveInfo = results.find(r => r && r.symbol === asset.symbol);
-            if (liveInfo) {
-              return {
-                ...asset,
-                current_price: liveInfo.current_price,
-                price_change_24h: liveInfo.price_change_24h
-              };
-            }
-            return asset; // Fallback to DB data if API fails
-          }));
+          const results = await Promise.all(promises);
+          const validResults = results.filter(Boolean);
+          
+          if (validResults.length > 0) {
+            setLiveMarketData(prev => {
+              return prev.map(asset => {
+                const live = validResults.find(r => r.symbol === asset.symbol);
+                if (live) {
+                  return {
+                    ...asset,
+                    current_price: live.current_price,
+                    price_change_24h: live.price_change_24h
+                  };
+                }
+                return asset;
+              });
+            });
+          }
         } catch (error) {
-          console.error("Live price fetch failed:", error);
+          console.error("Error fetching live prices:", error);
         }
       };
-
-      // Fetch immediately, then every 10 seconds
+      
       fetchLivePrices();
-      const interval = setInterval(fetchLivePrices, 10000); 
-
+      const interval = setInterval(fetchLivePrices, 30000);
       return () => clearInterval(interval);
     }
   }, [marketData]);
@@ -116,28 +116,6 @@ export default function DashboardPage() {
     }
   }, [userProfile?.language]);
 
-  // Fetch live exchange rate when user profile loads
-  useEffect(() => {
-    const fetchLiveRate = async () => {
-      if (userProfile?.country) {
-        const targetCurrency = userProfile.country.currency_code?.trim() ? userProfile.country.currency_code : "NGN";
-        const baseCurrency = settings.currency_name || "USDT";
-        if (targetCurrency !== baseCurrency && targetCurrency !== 'USD') {
-          try {
-            const res = await fetch(`https://api.exchangerate-api.com/v4/latest/USD`);
-            const data = await res.json();
-            if (data && data.rates && data.rates[targetCurrency]) {
-              setLiveExchangeRate(data.rates[targetCurrency]);
-            }
-          } catch (error) {
-            console.error("Failed to fetch live exchange rate:", error);
-          }
-        }
-      }
-    };
-    fetchLiveRate();
-  }, [userProfile?.country, settings.currency_name]);
-
   // Convert balance based on selected currency
   const getDisplayBalance = () => {
     const baseSymbol = settings.currency_symbol || "$";
@@ -149,8 +127,7 @@ export default function DashboardPage() {
     if (currency === "USDT" || currency === baseCurrency) {
       return `${baseSymbol}${balanceUSD.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
     } else {
-      // Use live exchange rate if available, fallback to database static rate, then fallback to 1
-      const exchangeRate = liveExchangeRate !== null ? liveExchangeRate : parseFloat(userProfile.country?.exchange_rate || 1);
+      const exchangeRate = parseFloat(userProfile.country?.exchange_rate || 1);
       const localBalance = balanceUSD * exchangeRate;
       const symbol = userProfile.country?.currency_symbol || "";
       return `${symbol}${localBalance.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
