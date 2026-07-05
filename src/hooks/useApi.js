@@ -90,9 +90,49 @@ export const useFetchExternalData = (
   });
 };
 
+/* ================= SUCCESS MESSAGE MAPPER ================= */
+const getSuccessMessage = (method, endpoint, res) => {
+  if (res?.message && !["Request successful", "Updated successfully", "Deleted successfully", "Success", "Request completed successfully"].includes(res.message)) {
+    return res.message;
+  }
+  
+  const path = typeof endpoint === "function" ? endpoint("") : endpoint;
+  
+  if (method === "POST") {
+    if (path.includes("/auth/login")) return "Logged in successfully!";
+    if (path.includes("/auth/register")) return "Registration successful! Welcome.";
+    if (path.includes("/auth/verify-otp")) return "OTP verified successfully!";
+    if (path.includes("/auth/forgot-password")) return "OTP sent successfully to your email!";
+    if (path.includes("/auth/reset-password")) return "Password reset successfully!";
+    if (path.includes("/users/checkin")) return "Daily check-in claimed successfully!";
+    if (path.includes("/users/withdraw")) return "Withdrawal request submitted successfully!";
+    if (path.includes("/users/deposit")) return "Deposit request submitted successfully!";
+    if (path.includes("/users/treasure/claim")) return "Treasure code claimed successfully!";
+    if (path.includes("/users/tasks/claim")) return "Task reward claimed successfully!";
+    if (path.includes("/users/spin")) return "Lucky Spin completed successfully!";
+    if (path.includes("/users/me/send-verification")) return "Verification code sent to your email!";
+    if (path.includes("/users/me/verify-email")) return "Email verified successfully!";
+    if (path.includes("/auth/resend-verification")) return "Verification code resent successfully!";
+    return "Request successful!";
+  }
+  
+  if (method === "PUT" || method === "PATCH") {
+    if (path.includes("/users/me/payment")) return "Payment settings updated successfully!";
+    if (path.includes("/users/me/password")) return "Login password updated successfully!";
+    return "Changes saved successfully!";
+  }
+  
+  if (method === "DELETE") {
+    return "Deleted successfully!";
+  }
+  
+  return "Request successful!";
+};
+
 // POST - Create or login
-export const usePost = (endpoint, queryKey, isFormData = false) => {
+export const usePost = (endpoint, queryKey, isFormData = false, options = {}) => {
   const queryClient = useQueryClient();
+  const showToast = options?.showToast ?? true;
 
   return useMutation({
     mutationFn: async (data) => {
@@ -108,25 +148,35 @@ export const usePost = (endpoint, queryKey, isFormData = false) => {
       return res;
     },
 
-    onSuccess: (res) => {
+    onSuccess: (res, variables, context) => {
       if (queryKey) {
         queryClient.invalidateQueries({
           queryKey: handleQueryKey(queryKey),
         });
       }
 
-      toast.success(res?.message || "Request successful");
+      if (showToast) {
+        toast.success(getSuccessMessage("POST", endpoint, res));
+      }
+
+      if (options?.onSuccess) {
+        options.onSuccess(res, variables, context);
+      }
     },
 
-    onError: (error) => {
-      toast.error(getErrorMessage(error));
+    onError: (error, variables, context) => {
+      if (showToast) toast.error(getErrorMessage(error));
+      if (options?.onError) {
+        options.onError(error, variables, context);
+      }
     },
   });
 };
 
 // PUT - Full update
-export const usePut = (endpoint, queryKey) => {
+export const usePut = (endpoint, queryKey, options = {}) => {
   const queryClient = useQueryClient();
+  const showToast = options?.showToast ?? true;
 
   return useMutation({
     mutationFn: async (data) => {
@@ -134,23 +184,32 @@ export const usePut = (endpoint, queryKey) => {
       if (!res?.success) throw new Error(res.message || res.error || "Update failed");
       return res;
     },
-    onSuccess: (res) => {
+    onSuccess: (res, variables, context) => {
       if (queryKey) {
         queryClient.invalidateQueries({ 
           queryKey: handleQueryKey(queryKey) 
         });
       }
-      toast.success(res?.message || "Updated successfully");
+      if (showToast) {
+        toast.success(getSuccessMessage("PUT", endpoint, res));
+      }
+      if (options?.onSuccess) {
+        options.onSuccess(res, variables, context);
+      }
     },
-    onError: (error) => {
-      toast.error(getErrorMessage(error));
+    onError: (error, variables, context) => {
+      if (showToast) toast.error(getErrorMessage(error));
+      if (options?.onError) {
+        options.onError(error, variables, context);
+      }
     },
   });
 };
 
 // PATCH - Partial update
-export const usePatch = (endpoint, queryKey, isFormData = false) => {
+export const usePatch = (endpoint, queryKey, isFormData = false, options = {}) => {
   const queryClient = useQueryClient();
+  const showToast = options?.showToast ?? true;
 
   return useMutation({
     mutationFn: async (payload) => {
@@ -184,24 +243,33 @@ export const usePatch = (endpoint, queryKey, isFormData = false) => {
       }
     },
 
-    onSuccess: (res) => {
+    onSuccess: (res, variables, context) => {
       if (queryKey) {
         queryClient.invalidateQueries({
           queryKey: handleQueryKey(queryKey),
         });
       }
-      toast.success(res?.message || "Updated successfully");
+      if (showToast) {
+        toast.success(getSuccessMessage("PATCH", endpoint, res));
+      }
+      if (options?.onSuccess) {
+        options.onSuccess(res, variables, context);
+      }
     },
 
-    onError: (error) => {
-      toast.error(getErrorMessage(error));
+    onError: (error, variables, context) => {
+      if (showToast) toast.error(getErrorMessage(error));
+      if (options?.onError) {
+        options.onError(error, variables, context);
+      }
     },
   });
 };
 
 // DELETE - Remove data
-export const useDelete = (endpoint, queryKey) => {
+export const useDelete = (endpoint, queryKey, options = {}) => {
   const queryClient = useQueryClient();
+  const showToast = options?.showToast ?? true;
 
   return useMutation({
     mutationFn: async (id) => {
@@ -218,16 +286,24 @@ export const useDelete = (endpoint, queryKey) => {
 
       return res;
     },
-    onSuccess: (res) => {
+    onSuccess: (res, variables, context) => {
       if (queryKey) {
         queryClient.invalidateQueries({
           queryKey: handleQueryKey(queryKey),
         });
       }
-      toast.success(res?.message || "Deleted successfully");
+      if (showToast) {
+        toast.success(getSuccessMessage("DELETE", endpoint, res));
+      }
+      if (options?.onSuccess) {
+        options.onSuccess(res, variables, context);
+      }
     },
-    onError: (error) => {
-      toast.error(getErrorMessage(error));
+    onError: (error, variables, context) => {
+      if (showToast) toast.error(getErrorMessage(error));
+      if (options?.onError) {
+        options.onError(error, variables, context);
+      }
     },
   });
 };

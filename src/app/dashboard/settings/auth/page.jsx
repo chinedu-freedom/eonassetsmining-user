@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useFetchData, usePost } from "@/hooks/useApi";
-import { toast } from "react-hot-toast";
+import { toast } from "sonner";
 import {
   ArrowLeft,
   ShieldAlert,
@@ -34,7 +34,6 @@ export default function AuthenticationSettingsPage() {
   const handleSendCode = () => {
     sendCode({}, {
       onSuccess: (res) => {
-        toast.success(res.message || "Verification code sent to your email!");
         setStep(2);
       }
     });
@@ -48,7 +47,6 @@ export default function AuthenticationSettingsPage() {
     }
     verifyCode({ code }, {
       onSuccess: (res) => {
-        toast.success(res.message || "Email verified successfully!");
         setStep(3);
         refetch();
       }

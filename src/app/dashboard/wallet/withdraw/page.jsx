@@ -313,7 +313,6 @@ export default function WithdrawPage() {
                       setCryptoNetwork("");
                       setWithdrawalPassword("");
                       setShowPassword(false);
-                      toast.success("Withdrawal request submitted successfully!");
                     }
                   });
                 }}

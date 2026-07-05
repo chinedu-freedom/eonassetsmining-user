@@ -92,7 +92,7 @@ export default function AccountPage() {
     if (!userProfile?.country) return;
     const localCurrency = userProfile.country.currency_code?.trim() ? userProfile.country.currency_code : "NGN";
     const baseCurrency = settings.currency_name || "USDT";
-    setCurrency(prev => prev === baseCurrency ? localCurrency : baseCurrency);
+    setCurrency(prev => (prev === "USDT" || prev === baseCurrency) ? localCurrency : baseCurrency);
   };
 
   // Convert balance based on selected currency

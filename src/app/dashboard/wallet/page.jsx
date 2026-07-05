@@ -6,7 +6,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useFetchData } from "@/hooks/useApi";
 import { format } from "date-fns";
-import { toast } from "react-hot-toast";
+import { toast } from "sonner";
 import { useSharedSettings } from "@/hooks/useSharedSettings";
 
 export default function WalletPage() {
@@ -31,7 +31,7 @@ export default function WalletPage() {
     if (!user?.country) return;
     const localCurrency = user.country.currency_code?.trim() ? user.country.currency_code : "NGN";
     const baseCurrency = settings.currency_name || "USDT";
-    setCurrency(prev => prev === baseCurrency ? localCurrency : baseCurrency);
+    setCurrency(prev => (prev === "USDT" || prev === baseCurrency) ? localCurrency : baseCurrency);
   };
 
   const formatMoney = (amountUSD) => {

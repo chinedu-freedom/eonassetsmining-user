@@ -5,7 +5,7 @@ import { ArrowLeft, Volume2, VolumeX, History, Gift, Ticket, HelpCircle } from "
 import { useRouter } from "next/navigation";
 import { useFetchData, usePost } from "@/hooks/useApi";
 import HowToPlayModal from "@/components/HowToPlayModal";
-import toast from "react-hot-toast";
+import { toast } from "sonner";
 import dayjs from "dayjs";
 
 export default function SpinPage() {
@@ -140,7 +140,7 @@ export default function SpinPage() {
   
   // Fetch spin data
   const { data: spinRes, isLoading, refetch } = useFetchData('/users/spin');
-  const postSpin = usePost('/users/spin');
+  const postSpin = usePost('/users/spin', null, false, { showToast: false });
   const { data: settingsRes } = useFetchData('/settings', ['platform-settings']);
   const settings = settingsRes?.settings || {};
 

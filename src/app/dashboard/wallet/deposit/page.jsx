@@ -89,17 +89,9 @@ function DepositContent() {
       { amount: Number(amount), cryptoId: selectedCrypto.id },
       {
         onSuccess: (res) => {
-          if (res.success) {
-            setPaymentAddress(res.address);
-            setTrackId(res.trackId || null);
-            setStep(2);
-            // toast.success("Payment details generated!");
-          } else {
-            toast.error(res.message || "Failed to generate payment details");
-          }
-        },
-        onError: (err) => {
-          toast.error(err.message || "Failed to initiate deposit");
+          setPaymentAddress(res.address);
+          setTrackId(res.trackId || null);
+          setStep(2);
         }
       }
     );
