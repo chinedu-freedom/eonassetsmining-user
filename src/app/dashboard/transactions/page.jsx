@@ -76,7 +76,37 @@ export default function TransactionsPage() {
     ? transactions
     : transactions.filter(t => t.type === activeTab);
 
-  const totalVolume = rawTransactions.reduce((acc, tx) => acc + Math.abs(parseFloat(tx.balance_after) - parseFloat(tx.balance_before) || parseFloat(tx.amount)), 0);
+  const totalInflow = rawTransactions.reduce((acc, tx) => {
+    const status = (tx.status || "SUCCESS").toUpperCase();
+    if (status !== "SUCCESS" && status !== "APPROVED" && status !== "COMPLETED") {
+      return acc;
+    }
+
+    const type = (tx.type || "").toLowerCase();
+    const isIncomingType = 
+      type.includes('deposit') || 
+      type.includes('reward') || 
+      type.includes('gift') || 
+      type.includes('bonus') || 
+      type.includes('spin') || 
+      type.includes('task') || 
+      type.includes('checkin') || 
+      type.includes('admin_credit') || 
+      type.includes('commission') || 
+      type.includes('referral') || 
+      type.includes('profit');
+
+    if (!isIncomingType) {
+      return acc;
+    }
+
+    const diff = parseFloat(tx.balance_after) - parseFloat(tx.balance_before);
+    const amountVal = parseFloat(tx.amount) || 0;
+    const addedAmount = diff > 0 ? diff : amountVal;
+
+    return acc + addedAmount;
+  }, 0);
+
   const totalCount = rawTransactions.length;
 
   return (
@@ -102,7 +132,7 @@ export default function TransactionsPage() {
               <BarChart2 size={16} />
             </div>
             <div className="text-white/90 font-bold text-[18px] mb-0.5">
-              {settings.currency_symbol || "$"}{totalVolume.toFixed(2)}
+              {settings.currency_symbol || "$"}{totalInflow.toFixed(2)}
             </div>
             <div className="text-gray-400 text-[11px]">Total Inflow</div>
           </div>
