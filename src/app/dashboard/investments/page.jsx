@@ -71,7 +71,7 @@ export default function MyInvestmentsPage() {
           </div>
           <div className="text-center flex-1">
             <div className="text-[18px] font-bold tracking-tight">{settings.currency_symbol || "$"}{Number(investments.stats.est_monthly).toFixed(2)}</div>
-            <div className="text-[10px] text-white/80">Est. Monthly</div>
+            <div className="text-[10px] text-white/80">Expected Return</div>
           </div>
         </div>
 
