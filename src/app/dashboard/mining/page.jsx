@@ -23,7 +23,7 @@ export default function MiningPlansPage() {
   const router = useRouter();
 
   const balances = {
-    main: Number(userRes?.user?.balance || 0),
+    main: Number(userRes?.user?.balance || 0) + Number(userRes?.user?.withdrawable_balance || 0),
     gift: Number(userRes?.user?.gift_balance || 0)
   };
 
