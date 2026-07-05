@@ -8,8 +8,8 @@ export function middleware(req) {
   // List of public paths that don't require authentication
   const isPublicPath = pathname === "/" || pathname.startsWith("/auth");
 
-  // Prevent logged-in users from visiting login/auth pages
-  if (isPublicPath && userToken) {
+  // Prevent logged-in users from visiting the login page (root path)
+  if (pathname === "/" && userToken) {
     return NextResponse.redirect(new URL("/dashboard", req.url));
   }
 
