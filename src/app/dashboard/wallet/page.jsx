@@ -204,7 +204,7 @@ export default function WalletPage() {
                           {tx.type === 'DEPOSIT' ? <ArrowDownLeft size={14} /> : tx.type === 'WITHDRAWAL' ? <ArrowUpRight size={14} /> : <Receipt size={14} />}
                         </div>
                         <div>
-                          <div className="text-[12px] font-bold text-white/90 capitalize">{tx.type.replace('_', ' ').toLowerCase()}</div>
+                          <div className="text-[12px] font-bold text-white/90 capitalize">{tx.type.replace(/_/g, ' ').toLowerCase()}</div>
                           <div className="text-[9px] text-gray-400">{format(new Date(tx.created_at), 'MMM dd, yyyy HH:mm')}</div>
                         </div>
                      </div>
