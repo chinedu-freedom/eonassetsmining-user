@@ -134,40 +134,6 @@ export default function DashboardPage() {
     }
   };
 
-  const getDisplayDeposit = () => {
-    const baseSymbol = settings.currency_symbol || "$";
-    if (!userProfile) return `${baseSymbol}0.00`;
-    
-    const balanceUSD = parseFloat(userProfile.balance || 0);
-    const baseCurrency = settings.currency_name || "USDT";
-    
-    if (currency === "USDT" || currency === baseCurrency) {
-      return `${baseSymbol}${balanceUSD.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-    } else {
-      const exchangeRate = parseFloat(userProfile.country?.exchange_rate || 1);
-      const localBalance = balanceUSD * exchangeRate;
-      const symbol = userProfile.country?.currency_symbol || "";
-      return `${symbol}${localBalance.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-    }
-  };
-
-  const getDisplayEarned = () => {
-    const baseSymbol = settings.currency_symbol || "$";
-    if (!userProfile) return `${baseSymbol}0.00`;
-    
-    const balanceUSD = parseFloat(userProfile.withdrawable_balance || 0);
-    const baseCurrency = settings.currency_name || "USDT";
-    
-    if (currency === "USDT" || currency === baseCurrency) {
-      return `${baseSymbol}${balanceUSD.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-    } else {
-      const exchangeRate = parseFloat(userProfile.country?.exchange_rate || 1);
-      const localBalance = balanceUSD * exchangeRate;
-      const symbol = userProfile.country?.currency_symbol || "";
-      return `${symbol}${localBalance.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-    }
-  };
-
   const currentBalanceTotal = getDisplayBalance();
 
   return (
@@ -223,7 +189,7 @@ export default function DashboardPage() {
             </button>
           </div>
           
-          <div className="flex items-center gap-2 mb-4 relative z-10">
+          <div className="flex items-center gap-2 mb-5 relative z-10">
             <h2 className="text-[28px] font-bold tracking-wider leading-none">
               {showBalance ? currentBalanceTotal : "****"}
             </h2>
@@ -233,22 +199,6 @@ export default function DashboardPage() {
             >
               {showBalance ? <Eye size={18} /> : <EyeOff size={18} />}
             </button>
-          </div>
-
-          {/* Breakdown */}
-          <div className="grid grid-cols-2 gap-4 mb-[18px] relative z-10 border-t border-white/10 pt-3">
-            <div>
-              <p className="text-[10px] text-white/50">Deposit Balance</p>
-              <p className="text-[14px] font-semibold text-white/95 mt-0.5">
-                {showBalance ? getDisplayDeposit() : "****"}
-              </p>
-            </div>
-            <div>
-              <p className="text-[10px] text-white/50">Earned Balance</p>
-              <p className="text-[14px] font-semibold text-white/95 mt-0.5">
-                {showBalance ? getDisplayEarned() : "****"}
-              </p>
-            </div>
           </div>
 
           <div className="flex gap-2.5 relative z-10">
