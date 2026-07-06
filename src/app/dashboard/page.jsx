@@ -112,7 +112,25 @@ export default function DashboardPage() {
 
   useEffect(() => {
     if (userProfile?.language?.language_code) {
-      setCurrentLang(userProfile.language.language_code);
+      const code = userProfile.language.language_code;
+      setCurrentLang(code);
+      const targetCode = code.toLowerCase();
+      
+      // Auto-synchronize translation cookie on load
+      const match = document.cookie.match(/(^|;)\s*googtrans\s*=\s*([^;]+)/);
+      const currentCookie = match ? match[2] : null;
+      const expectedCookie = targetCode === 'en' ? null : `/en/${targetCode}`;
+      
+      if (currentCookie !== expectedCookie) {
+        if (targetCode === 'en') {
+          document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
+          document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=${window.location.hostname}`;
+        } else {
+          document.cookie = `googtrans=/en/${targetCode}; path=/`;
+          document.cookie = `googtrans=/en/${targetCode}; path=/; domain=${window.location.hostname}`;
+        }
+        window.location.reload();
+      }
     }
   }, [userProfile?.language]);
 
