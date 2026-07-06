@@ -11,6 +11,7 @@ import { usePWA } from "@/components/PWAProvider";
 import { toast } from "sonner";
 import WhatsAppModal from "@/components/WhatsAppModal";
 import { useSharedSettings } from "@/hooks/useSharedSettings";
+import axiosInstance from "@/config/axiosInstance";
 const activities = [
   { type: "deposit", name: "", text: "deposited", amount: "+$1,910", iconBg: "bg-green-100", iconCol: "text-green-600", Icon: ArrowDown },
   { type: "profit", name: "henry***", text: "earned profit", amount: "+$138", iconBg: "bg-emerald-100", iconCol: "text-emerald-600", Icon: DollarSign },
@@ -523,14 +524,7 @@ export default function DashboardPage() {
 
                       // Save to backend
                       try {
-                        await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/me/language`, {
-                          method: 'PUT',
-                          headers: {
-                            'Content-Type': 'application/json',
-                            'Authorization': `Bearer ${localStorage.getItem('token')}`
-                          },
-                          body: JSON.stringify({ language_code: lang.language_code })
-                        });
+                        await axiosInstance.put("/users/me/language", { language_code: lang.language_code });
                       } catch (error) {
                         console.error('Failed to update language preference', error);
                       }

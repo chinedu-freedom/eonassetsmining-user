@@ -388,14 +388,7 @@ export default function AccountPage() {
 
                       // Save to backend
                       try {
-                        await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/me/language`, {
-                          method: 'PUT',
-                          headers: {
-                            'Content-Type': 'application/json',
-                            'Authorization': `Bearer ${localStorage.getItem('token')}`
-                          },
-                          body: JSON.stringify({ language_code: lang.language_code })
-                        });
+                        await axiosInstance.put("/users/me/language", { language_code: lang.language_code });
                       } catch (error) {
                         console.error('Failed to update language preference', error);
                       }
