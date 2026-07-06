@@ -23,6 +23,7 @@ function ReceiptContent() {
   const amount = searchParams.get("amount") || `${symbol}0.00`;
   const status = searchParams.get("status") || "SUCCESS";
   const type = searchParams.get("type") || "Transaction";
+  const walletAddress = searchParams.get("wallet_address") || "";
   
   // Format transaction number
   const txnNo = `TXN${id.padStart(10, '0')}`;
@@ -130,10 +131,18 @@ function ReceiptContent() {
               <span className="text-gray-400 text-[12px]">Date & Time</span>
               <span className="text-white/90 text-[12px] font-bold max-w-[160px] text-right">{date}</span>
             </div>
-            <div className="flex justify-between items-center pb-4">
+            <div className="flex justify-between items-center border-b border-dashed border-white/5 pb-4">
               <span className="text-gray-400 text-[12px]">Description</span>
               <span className="text-white/90 text-[12px] font-bold truncate max-w-[160px] text-right">{title}</span>
             </div>
+            {walletAddress && (
+              <div className="flex justify-between items-center pb-4">
+                <span className="text-gray-400 text-[12px]">Wallet Address</span>
+                <span className="text-white/90 text-[12px] font-bold truncate max-w-[160px] text-right select-all" title={walletAddress}>
+                  {walletAddress.length > 16 ? `${walletAddress.substring(0, 8)}...${walletAddress.substring(walletAddress.length - 8)}` : walletAddress}
+                </span>
+              </div>
+            )}
           </div>
 
           <div className="w-full bg-[#0B1426] border-l-[3px] border-[#8b5cf6] rounded-r-[8px] p-3 mt-2 relative z-10">

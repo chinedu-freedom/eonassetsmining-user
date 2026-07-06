@@ -103,7 +103,8 @@ export default function TransactionsPage() {
       type: meta.category,
       iconBg: meta.iconBg,
       iconColor: meta.iconColor,
-      icon: meta.icon
+      icon: meta.icon,
+      wallet_address: tx.wallet_address || ""
     };
   });
 
@@ -247,6 +248,9 @@ export default function TransactionsPage() {
                       status: tx.status,
                       type: tx.type
                     });
+                    if (tx.wallet_address) {
+                      params.set("wallet_address", tx.wallet_address);
+                    }
                     router.push(`/dashboard/transactions/receipt?${params.toString()}`);
                   }}
                   className="bg-[#131F37] rounded-[14px] p-3 border border-white/5 shadow-[0_2px_8px_-4px_rgba(0,0,0,0.05)] flex items-center justify-between cursor-pointer hover:bg-white/5 active:scale-[0.99] transition-all"
