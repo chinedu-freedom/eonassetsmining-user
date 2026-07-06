@@ -384,33 +384,47 @@ export default function SpinPage() {
               {segments.map((seg, i) => {
                 const angle = (i * segmentDegree) + (segmentDegree / 2);
                 const lineAngle = i * segmentDegree;
+                const isTryAgain = seg.label.toLowerCase().includes("try again") || seg.label.toLowerCase().includes("oops");
                 return (
                   <div key={i}>
                     {/* Separator Line */}
                     <div 
-                      className="absolute top-0 left-1/2 w-[1px] h-1/2 bg-[#e2e8f0] origin-bottom z-10"
+                      className="absolute top-0 left-1/2 w-[1px] h-1/2 bg-[#e2e8f0]/40 origin-bottom z-10"
                       style={{ transform: `translateX(-50%) rotate(${lineAngle}deg)` }}
                     />
                     
                     {/* Segment Content */}
                     <div 
-                      className="absolute inset-0 flex items-start justify-center pt-[20px] z-20"
-                      style={{ transform: `rotate(${angle}deg)` }}
-                    >
-                    <span 
-                      className="text-[15px] font-bold text-[#1e293b] w-[20px] text-center"
+                      className="absolute top-0 bottom-1/2 left-1/2 w-[60px] origin-bottom z-20 flex flex-col items-center justify-start"
                       style={{ 
-                        transform: 'rotate(180deg)',
-                        writingMode: 'vertical-rl',
-                        textOrientation: 'mixed'
+                        transform: `translateX(-50%) rotate(${angle}deg)`,
                       }}
                     >
-                      {seg.label === "Try again" ? (
-                         <span className="text-[12px] inline-block mt-4">{seg.label}</span>
+                      {isTryAgain ? (
+                        <div 
+                          className="pt-[32px] flex items-center justify-center select-none"
+                          style={{
+                            transform: 'rotate(90deg)',
+                            transformOrigin: 'center center',
+                          }}
+                        >
+                          <span className="text-[10px] font-black text-red-500 tracking-tight whitespace-nowrap">
+                            Oops! Try Again 🥲
+                          </span>
+                        </div>
                       ) : (
-                         <span className="inline-block mt-4">{seg.label}</span>
+                        <div 
+                          className="pt-[32px] flex items-center justify-center select-none"
+                          style={{
+                            transform: 'rotate(90deg)',
+                            transformOrigin: 'center center',
+                          }}
+                        >
+                          <span className="text-[13px] font-black text-slate-800 tracking-tight whitespace-nowrap">
+                            {seg.label}
+                          </span>
+                        </div>
                       )}
-                    </span>
                     </div>
                   </div>
                 );
