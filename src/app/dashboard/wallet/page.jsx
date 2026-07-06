@@ -93,7 +93,7 @@ export default function WalletPage() {
               onClick={toggleCurrency}
               className="flex items-center gap-1 bg-white/10 px-2 py-1 rounded text-[9px] font-bold hover:bg-white/20 transition-colors cursor-pointer border border-white/10 backdrop-blur-sm"
             >
-              {currency === (settings.currency_name || "USDT") ? (settings.currency_name || "USDT") : (user?.country?.currency_code || "NGN")} {currency === (settings.currency_name || "USDT") ? <ChevronDown size={10} /> : <ChevronUp size={10} />}
+              {(currency === "USDT" || currency === (settings.currency_name || "USDT")) ? (settings.currency_name || "USDT") : (user?.country?.currency_code || "NGN")} {(currency === "USDT" || currency === (settings.currency_name || "USDT")) ? <ChevronDown size={10} /> : <ChevronUp size={10} />}
             </button>
           </div>
 
