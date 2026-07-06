@@ -57,8 +57,7 @@ export default function WithdrawPage() {
   const withdrawalCharge = Number(settings.withdrawal_charge) || 2;
   
   const mainBalance = Number(user.withdrawable_balance || 0);
-  const giftBalance = Number(user.gift_balance || 0);
-  const totalBalance = mainBalance + giftBalance;
+  const totalBalance = mainBalance;
   const feeAmount = amount ? (Number(amount) * (withdrawalCharge / 100)) : 0;
 
   const handleCloseModal = () => {

@@ -112,7 +112,7 @@ export default function AccountPage() {
   };
 
   const balanceValues = {
-    total: getDisplayValue(Number(userProfile?.balance || 0) + Number(userProfile?.gift_balance || 0)),
+    total: getDisplayValue(Number(userProfile?.balance || 0)),
     deposit: getDisplayValue(userProfile?.statistics?.total_deposit),
     withdraw: getDisplayValue(userProfile?.statistics?.total_withdrawal),
     income: getDisplayValue(userProfile?.statistics?.total_income)
@@ -179,7 +179,7 @@ export default function AccountPage() {
           <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/3 blur-2xl pointer-events-none"></div>
           
           <div className="flex justify-between items-start mb-2 relative z-10">
-            <p className="text-white/80 text-[13px] font-medium">Total Balance</p>
+            <p className="text-white/80 text-[13px] font-medium">Deposit Balance</p>
             <button 
               onClick={toggleCurrency}
               className="bg-white/10 px-2 cursor-pointer py-1 rounded-md text-[11px] font-bold flex items-center gap-1 hover:bg-white/20 transition-colors backdrop-blur-sm border border-white/10"

@@ -10,9 +10,7 @@ import { toast } from "sonner";
 
 export default function MiningPlansPage() {
   const [selectedPlan, setSelectedPlan] = useState(null);
-  const [balanceSource, setBalanceSource] = useState("main"); // "main" or "gift"
   const [investmentAmount, setInvestmentAmount] = useState("");
-
   const { data: plansRes, isLoading } = useFetchData("/plans", ["plans"]);
   const { data: userRes } = useFetchData("/users/me", ["user"]);
   const { data: settingsRes } = useFetchData("/settings", ["platform-settings"]);
@@ -23,8 +21,7 @@ export default function MiningPlansPage() {
   const router = useRouter();
 
   const balances = {
-    main: Number(userRes?.user?.balance || 0) + Number(userRes?.user?.withdrawable_balance || 0),
-    gift: Number(userRes?.user?.gift_balance || 0)
+    main: Number(userRes?.user?.balance || 0) + Number(userRes?.user?.withdrawable_balance || 0)
   };
 
   const [isInvesting, setIsInvesting] = useState(false);
@@ -40,7 +37,7 @@ export default function MiningPlansPage() {
       const data = await postData('/plans/invest', {
         planId: selectedPlan.id,
         amount: parseFloat(investmentAmount),
-        source: balanceSource
+        source: "main"
       });
       
       if (data?.success) {
@@ -215,30 +212,12 @@ export default function MiningPlansPage() {
                 </div>
               </div>
 
-              {/* Balance Source */}
+              {/* Available Balance */}
               <div>
-                <label className="block text-gray-400 text-[12px] mb-3">Select Balance Source</label>
-                <div className="flex gap-4">
-                  <button
-                    onClick={() => setBalanceSource("main")}
-                    className={`flex-1 py-4 rounded-[12px] border flex flex-col items-center justify-center gap-1.5 transition-all ${balanceSource === "main"
-                        ? "border-[#8b5cf6] bg-purple-900/20 text-[#8b5cf6]"
-                        : "border-white/10 bg-[#131F37] hover:bg-white/5"
-                      }`}
-                  >
-                    <span className="text-[10px] font-semibold uppercase tracking-wider text-gray-400">EARNING BALANCE</span>
-                    <span className="text-[15px] text-white/90 font-bold">{formatCurrency(balances.main)}</span>
-                  </button>
-                  <button
-                    onClick={() => setBalanceSource("gift")}
-                    className={`flex-1 py-4 rounded-[12px] border flex flex-col items-center justify-center gap-1.5 transition-all ${balanceSource === "gift"
-                        ? "border-[#8b5cf6] bg-purple-900/20 text-[#8b5cf6]"
-                        : "border-white/10 bg-[#131F37] hover:bg-white/5"
-                      }`}
-                  >
-                    <span className="text-[10px] font-semibold uppercase tracking-wider text-gray-400">GIFT BALANCE</span>
-                    <span className="text-[15px] text-white/90 font-bold">{formatCurrency(balances.gift)}</span>
-                  </button>
+                <label className="block text-gray-400 text-[12px] mb-2">Available Balance</label>
+                <div className="w-full py-4 rounded-[12px] border border-[#8b5cf6] bg-purple-900/10 flex flex-col items-center justify-center gap-1">
+                  <span className="text-[10px] font-semibold uppercase tracking-wider text-[#8b5cf6]">Earning & Deposit Balance</span>
+                  <span className="text-[18px] text-white font-bold">{formatCurrency(balances.main)}</span>
                 </div>
               </div>
 
@@ -277,7 +256,7 @@ export default function MiningPlansPage() {
             {/* Footer */}
             <div className="p-5 border-t border-white/5 bg-[#0B1426] flex flex-col items-center gap-3">
               <div className="text-[12px] text-gray-400">
-                 Balance: <span className="text-[#f59e0b] font-bold">{formatCurrency(balances[balanceSource])}</span>
+                 Balance: <span className="text-[#f59e0b] font-bold">{formatCurrency(balances.main)}</span>
               </div>
               <button 
                 onClick={handleInvest}

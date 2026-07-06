@@ -326,7 +326,7 @@ export default function SpinPage() {
               <div className="w-4 h-4 rounded-[4px] bg-white/10 flex items-center justify-center">
                 <div className="w-2 h-1.5 bg-gray-400 rounded-[1px]"></div>
               </div>
-              <span className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">Total Balance</span>
+              <span className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">Withdrawable Balance</span>
             </div>
             <div className="text-[20px] font-bold text-[#8b5cf6]">
               {settings.currency_symbol || "$"}{Number(currentBalance).toFixed(2)}
@@ -509,7 +509,7 @@ export default function SpinPage() {
                 </p>
                 <p className="text-[#8b5cf6] text-[13px] mt-2 mb-4 flex items-center gap-1.5 font-medium">
                   <span className="w-4 h-4 rounded-full bg-[#8b5cf6] text-white flex items-center justify-center text-[10px]">✓</span>
-                  Added to your balance
+                  Added to withdrawable balance
                 </p>
               </div>
             ) : (
