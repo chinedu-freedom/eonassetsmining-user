@@ -62,6 +62,47 @@ export default function WalletPage() {
     router.push(actionPath);
   };
 
+  const getIsCredit = (tx) => {
+    const typeLower = (tx.type || "").toLowerCase();
+    const descLower = (tx.description || "").toLowerCase();
+    if (
+      typeLower.includes('debit') || 
+      typeLower.includes('cost') || 
+      typeLower.includes('withdraw') || 
+      typeLower.includes('invest') || 
+      typeLower.includes('plan')
+    ) {
+      return false;
+    }
+    if (
+      typeLower.includes('deposit') || 
+      typeLower.includes('reward') || 
+      typeLower.includes('bonus') || 
+      typeLower.includes('gift') || 
+      typeLower.includes('checkin') || 
+      typeLower.includes('check-in') || 
+      typeLower.includes('credit') || 
+      typeLower.includes('commission') || 
+      typeLower.includes('referral') || 
+      typeLower.includes('migration') ||
+      typeLower.includes('profit') ||
+      typeLower.includes('payout') ||
+      typeLower.includes('refund') ||
+      descLower.includes('refund') ||
+      descLower.includes('payout') ||
+      descLower.includes('profit')
+    ) {
+      return true;
+    }
+    if (tx.balance_before !== undefined && tx.balance_after !== undefined && tx.balance_before !== null && tx.balance_after !== null) {
+      const diff = parseFloat(tx.balance_after) - parseFloat(tx.balance_before);
+      if (diff !== 0) {
+        return diff > 0;
+      }
+    }
+    return false;
+  };
+
   return (
     <div className="flex flex-col h-full bg-transparent overflow-y-auto  [&::-webkit-scrollbar]:hidden">
       {/* Header */}
@@ -169,35 +210,9 @@ export default function WalletPage() {
                      </div>
                       <div className="text-right">
                          <div className={`text-[13px] font-bold ${
-                           (tx.type.toLowerCase().includes('deposit') || 
-                            tx.type.toLowerCase().includes('reward') || 
-                            tx.type.toLowerCase().includes('bonus') || 
-                            tx.type.toLowerCase().includes('gift') || 
-                            tx.type.toLowerCase().includes('checkin') || 
-                            tx.type.toLowerCase().includes('check-in') || 
-                            tx.type.toLowerCase().includes('credit') || 
-                            tx.type.toLowerCase().includes('commission') || 
-                            tx.type.toLowerCase().includes('referral') || 
-                            tx.type.toLowerCase().includes('migration')) && 
-                           !tx.type.toLowerCase().includes('debit') && 
-                           !tx.type.toLowerCase().includes('cost')
-                           ? 'text-green-500' : 'text-red-500'
+                           getIsCredit(tx) ? 'text-green-500' : 'text-red-500'
                          }`}>
-                           {
-                             (tx.type.toLowerCase().includes('deposit') || 
-                              tx.type.toLowerCase().includes('reward') || 
-                              tx.type.toLowerCase().includes('bonus') || 
-                              tx.type.toLowerCase().includes('gift') || 
-                              tx.type.toLowerCase().includes('checkin') || 
-                              tx.type.toLowerCase().includes('check-in') || 
-                              tx.type.toLowerCase().includes('credit') || 
-                              tx.type.toLowerCase().includes('commission') || 
-                              tx.type.toLowerCase().includes('referral') || 
-                              tx.type.toLowerCase().includes('migration')) && 
-                             !tx.type.toLowerCase().includes('debit') && 
-                             !tx.type.toLowerCase().includes('cost')
-                             ? '+' : '-'
-                           }{settings.currency_symbol || "$"}{Number(tx.amount).toFixed(2)}
+                           {getIsCredit(tx) ? '+' : '-'}{settings.currency_symbol || "$"}{Number(tx.amount).toFixed(2)}
                          </div>
                       </div>
                    </div>

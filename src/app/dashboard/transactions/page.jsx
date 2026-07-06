@@ -47,7 +47,18 @@ export default function TransactionsPage() {
     const meta = getTransactionMeta(tx.type);
     
     const typeLower = (tx.type || "").toLowerCase();
-    const isCredit = (
+    const descLower = (tx.description || "").toLowerCase();
+    
+    let isCredit = false;
+    if (
+      typeLower.includes('debit') || 
+      typeLower.includes('cost') || 
+      typeLower.includes('withdraw') || 
+      typeLower.includes('invest') || 
+      typeLower.includes('plan')
+    ) {
+      isCredit = false;
+    } else if (
       typeLower.includes('deposit') || 
       typeLower.includes('reward') || 
       typeLower.includes('bonus') || 
@@ -57,8 +68,21 @@ export default function TransactionsPage() {
       typeLower.includes('credit') || 
       typeLower.includes('commission') || 
       typeLower.includes('referral') || 
-      typeLower.includes('migration')
-    ) && !typeLower.includes('debit') && !typeLower.includes('cost');
+      typeLower.includes('migration') ||
+      typeLower.includes('profit') ||
+      typeLower.includes('payout') ||
+      typeLower.includes('refund') ||
+      descLower.includes('refund') ||
+      descLower.includes('payout') ||
+      descLower.includes('profit')
+    ) {
+      isCredit = true;
+    } else if (tx.balance_before !== undefined && tx.balance_after !== undefined && tx.balance_before !== null && tx.balance_after !== null) {
+      const diff = parseFloat(tx.balance_after) - parseFloat(tx.balance_before);
+      if (diff !== 0) {
+        isCredit = diff > 0;
+      }
+    }
 
     const baseSymbol = settings.currency_symbol || "$";
     const amountVal = parseFloat(tx.amount) || 0;
@@ -93,21 +117,45 @@ export default function TransactionsPage() {
       return acc;
     }
 
-    const type = (tx.type || "").toLowerCase();
-    const isIncomingType = 
-      type.includes('deposit') || 
-      type.includes('reward') || 
-      type.includes('gift') || 
-      type.includes('bonus') || 
-      type.includes('spin') || 
-      type.includes('task') || 
-      type.includes('checkin') || 
-      type.includes('admin_credit') || 
-      type.includes('commission') || 
-      type.includes('referral') || 
-      type.includes('profit');
+    const typeLower = (tx.type || "").toLowerCase();
+    const descLower = (tx.description || "").toLowerCase();
+    
+    let isCredit = false;
+    if (
+      typeLower.includes('debit') || 
+      typeLower.includes('cost') || 
+      typeLower.includes('withdraw') || 
+      typeLower.includes('invest') || 
+      typeLower.includes('plan')
+    ) {
+      isCredit = false;
+    } else if (
+      typeLower.includes('deposit') || 
+      typeLower.includes('reward') || 
+      typeLower.includes('bonus') || 
+      typeLower.includes('gift') || 
+      typeLower.includes('checkin') || 
+      typeLower.includes('check-in') || 
+      typeLower.includes('credit') || 
+      typeLower.includes('commission') || 
+      typeLower.includes('referral') || 
+      typeLower.includes('migration') ||
+      typeLower.includes('profit') ||
+      typeLower.includes('payout') ||
+      typeLower.includes('refund') ||
+      descLower.includes('refund') ||
+      descLower.includes('payout') ||
+      descLower.includes('profit')
+    ) {
+      isCredit = true;
+    } else if (tx.balance_before !== undefined && tx.balance_after !== undefined && tx.balance_before !== null && tx.balance_after !== null) {
+      const diff = parseFloat(tx.balance_after) - parseFloat(tx.balance_before);
+      if (diff !== 0) {
+        isCredit = diff > 0;
+      }
+    }
 
-    if (!isIncomingType) {
+    if (!isCredit) {
       return acc;
     }
 
