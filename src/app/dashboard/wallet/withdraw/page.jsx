@@ -121,7 +121,7 @@ export default function WithdrawPage() {
                   <Hexagon size={24} className="fill-white" />
                 </div>
                 <div className="text-left">
-                  <h3 className="text-white/90 font-bold text-[14px] mb-0.5 group-hover:text-[#8b5cf6] transition-colors">Withdraw to Crypto</h3>
+                  <h3 className="text-white/90 font-bold text-[14px] mb-0.5 group-hover:text-[#8b5cf6] transition-colors">Withdraw to your Crypto Wallet</h3>
                   <p className="text-gray-400 text-[11px] leading-relaxed">Transfer to your crypto wallet directly</p>
                 </div>
               </div>
@@ -195,7 +195,7 @@ export default function WithdrawPage() {
             
             {/* Modal Header */}
             <div className="flex justify-between items-center px-4 py-3 sm:py-4 border-b border-white/5 shrink-0">
-              <h3 className="text-white/90 text-[15px] font-bold">Withdraw to Crypto</h3>
+              <h3 className="text-white/90 text-[15px] font-bold">Withdraw to your Crypto Wallet</h3>
               <button 
                 onClick={handleCloseModal}
                 className="cursor-pointer w-7 h-7 bg-white/5 hover:bg-white/10 rounded-full flex items-center justify-center text-gray-400 transition-colors"
