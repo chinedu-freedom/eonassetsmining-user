@@ -241,7 +241,7 @@ export default function DashboardPage() {
             </div>
 
             <div onClick={() => router.push('/dashboard/task')} className="flex flex-col items-center gap-1.5 cursor-pointer group relative">
-              <div className="absolute -top-1.5 right-1 bg-[#8b5cf6] text-white text-[7px] font-bold px-1 py-[1px] rounded z-10 shadow-sm">
+              <div className="absolute -top-0.5 right-3 bg-[#8b5cf6] text-white text-[7px] font-bold px-1 py-[1px] rounded z-10 shadow-sm">
                 NEW
               </div>
               <div className="w-10 h-10 bg-white/5 rounded-xl flex items-center justify-center group-hover:bg-white/10 transition-colors shadow-sm">
