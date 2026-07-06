@@ -167,11 +167,39 @@ export default function WalletPage() {
                           <div className="text-[9px] text-gray-400">{format(new Date(tx.created_at), 'MMM dd, yyyy HH:mm')}</div>
                         </div>
                      </div>
-                     <div className="text-right">
-                        <div className={`text-[13px] font-bold ${tx.type === 'DEPOSIT' || tx.type.includes('reward') ? 'text-green-500' : 'text-red-500'}`}>
-                          {tx.type === 'DEPOSIT' || tx.type.includes('reward') ? '+' : '-'}{settings.currency_symbol || "$"}{Number(tx.amount).toFixed(2)}
-                        </div>
-                     </div>
+                      <div className="text-right">
+                         <div className={`text-[13px] font-bold ${
+                           (tx.type.toLowerCase().includes('deposit') || 
+                            tx.type.toLowerCase().includes('reward') || 
+                            tx.type.toLowerCase().includes('bonus') || 
+                            tx.type.toLowerCase().includes('gift') || 
+                            tx.type.toLowerCase().includes('checkin') || 
+                            tx.type.toLowerCase().includes('check-in') || 
+                            tx.type.toLowerCase().includes('credit') || 
+                            tx.type.toLowerCase().includes('commission') || 
+                            tx.type.toLowerCase().includes('referral') || 
+                            tx.type.toLowerCase().includes('migration')) && 
+                           !tx.type.toLowerCase().includes('debit') && 
+                           !tx.type.toLowerCase().includes('cost')
+                           ? 'text-green-500' : 'text-red-500'
+                         }`}>
+                           {
+                             (tx.type.toLowerCase().includes('deposit') || 
+                              tx.type.toLowerCase().includes('reward') || 
+                              tx.type.toLowerCase().includes('bonus') || 
+                              tx.type.toLowerCase().includes('gift') || 
+                              tx.type.toLowerCase().includes('checkin') || 
+                              tx.type.toLowerCase().includes('check-in') || 
+                              tx.type.toLowerCase().includes('credit') || 
+                              tx.type.toLowerCase().includes('commission') || 
+                              tx.type.toLowerCase().includes('referral') || 
+                              tx.type.toLowerCase().includes('migration')) && 
+                             !tx.type.toLowerCase().includes('debit') && 
+                             !tx.type.toLowerCase().includes('cost')
+                             ? '+' : '-'
+                           }{settings.currency_symbol || "$"}{Number(tx.amount).toFixed(2)}
+                         </div>
+                      </div>
                    </div>
                  ))}
                </div>

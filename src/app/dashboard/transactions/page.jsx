@@ -46,17 +46,28 @@ export default function TransactionsPage() {
   const transactions = rawTransactions.map(tx => {
     const meta = getTransactionMeta(tx.type);
     
-    // Determine sign: if it's an investment or withdrawal, it's typically a debit (-)
-    // Actually balance_after - balance_before is more reliable
-    const diff = parseFloat(tx.balance_after) - parseFloat(tx.balance_before);
+    const typeLower = (tx.type || "").toLowerCase();
+    const isCredit = (
+      typeLower.includes('deposit') || 
+      typeLower.includes('reward') || 
+      typeLower.includes('bonus') || 
+      typeLower.includes('gift') || 
+      typeLower.includes('checkin') || 
+      typeLower.includes('check-in') || 
+      typeLower.includes('credit') || 
+      typeLower.includes('commission') || 
+      typeLower.includes('referral') || 
+      typeLower.includes('migration')
+    ) && !typeLower.includes('debit') && !typeLower.includes('cost');
+
     const baseSymbol = settings.currency_symbol || "$";
+    const amountVal = parseFloat(tx.amount) || 0;
     let amountStr = "";
-    if (diff > 0) {
-      amountStr = `+${baseSymbol}${Math.abs(diff).toFixed(2)}`;
-    } else if (diff < 0) {
-      amountStr = `-${baseSymbol}${Math.abs(diff).toFixed(2)}`;
+    
+    if (isCredit) {
+      amountStr = `+${baseSymbol}${Math.abs(amountVal).toFixed(2)}`;
     } else {
-      amountStr = `${baseSymbol}${parseFloat(tx.amount).toFixed(2)}`;
+      amountStr = `-${baseSymbol}${Math.abs(amountVal).toFixed(2)}`;
     }
 
     return {
