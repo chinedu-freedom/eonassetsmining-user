@@ -395,36 +395,25 @@ export default function SpinPage() {
                     
                     {/* Segment Content */}
                     <div 
-                      className="absolute top-0 bottom-1/2 left-1/2 w-[60px] origin-bottom z-20 flex flex-col items-center justify-start"
-                      style={{ 
-                        transform: `translateX(-50%) rotate(${angle}deg)`,
-                      }}
+                      className="absolute inset-0 flex items-start justify-center pt-[20px] z-20"
+                      style={{ transform: `rotate(${angle}deg)` }}
                     >
-                      {isTryAgain ? (
-                        <div 
-                          className="pt-[32px] flex items-center justify-center select-none"
-                          style={{
-                            transform: 'rotate(90deg)',
-                            transformOrigin: 'center center',
-                          }}
-                        >
-                          <span className="text-[10px] font-black text-red-500 tracking-tight whitespace-nowrap">
-                            Oops! Try Again 🥲
-                          </span>
-                        </div>
-                      ) : (
-                        <div 
-                          className="pt-[32px] flex items-center justify-center select-none"
-                          style={{
-                            transform: 'rotate(90deg)',
-                            transformOrigin: 'center center',
-                          }}
-                        >
-                          <span className="text-[13px] font-black text-slate-800 tracking-tight whitespace-nowrap">
-                            {seg.label}
-                          </span>
-                        </div>
-                      )}
+                      <span 
+                        className="text-[15px] font-bold text-slate-800 w-[20px] text-center select-none"
+                        style={{ 
+                          transform: 'rotate(180deg)',
+                          writingMode: 'vertical-rl',
+                          textOrientation: 'mixed'
+                        }}
+                      >
+                        {isTryAgain ? (
+                           <span className="text-[11px] font-extrabold text-red-500 inline-block mt-2 tracking-tight">
+                             Oops! Try Again 🥲
+                           </span>
+                        ) : (
+                           <span className="inline-block mt-4">{seg.label}</span>
+                        )}
+                      </span>
                     </div>
                   </div>
                 );
