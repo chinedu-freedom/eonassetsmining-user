@@ -454,15 +454,6 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        {/* Events & Rewards */}
-        <div className="mt-5">
-          <h3 className="font-semibold text-white/95 text-[15px] mb-3 px-1">Events & Rewards</h3>
-          <div className="bg-[#111827] rounded-[18px] p-5 shadow-sm border border-amber-500/10">
-            <p className="text-gray-400 text-[12px] leading-relaxed">
-              Nothing on the calendar yet — we're cooking up something special. Stay tuned for exclusive events, bonus campaigns, and surprises. We'll notify you here as soon as the next one drops.
-            </p>
-          </div>
-        </div>
 
         {/* Live Performance */}
         {isMarketVisible && (
