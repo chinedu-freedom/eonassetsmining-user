@@ -1,11 +1,11 @@
 {
-  "name": "Polychainapp",
-  "short_name": "Polychainapp",
-  "description": "Polychainapp - The Ultimate Crypto Asset Mining Platform",
+  "name": "mykryptexapp.com",
+  "short_name": "mykryptexapp.com",
+  "description": "mykryptexapp.com - The Ultimate Crypto Asset Mining Platform",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#3b82f6",
+  "background_color": "#0b0f19",
+  "theme_color": "#f59e0b",
   "icons": [
     {
       "src": "/icon-192x192.png",

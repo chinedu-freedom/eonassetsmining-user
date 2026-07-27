@@ -384,11 +384,13 @@ export default function DashboardPage() {
         </div>
 
         {/* Events & Rewards */}
-        <div className="bg-[#111827] rounded-[18px] p-4 shadow-sm border border-white/5">
-          <h3 className="font-semibold text-white/95 text-[15px] mb-2 px-1">Events & Rewards</h3>
-          <p className="text-gray-400 text-[12px] leading-relaxed px-1">
-            Nothing on the calendar yet — we're cooking up something special. Stay tuned for exclusive events, bonus campaigns, and surprises. We'll notify you here as soon as the next one drops.
-          </p>
+        <div className="mt-5">
+          <h3 className="font-semibold text-white/95 text-[15px] mb-3 px-1">Events & Rewards</h3>
+          <div className="bg-[#111827] rounded-[18px] p-5 shadow-sm border border-amber-500/10">
+            <p className="text-gray-400 text-[12px] leading-relaxed">
+              Nothing on the calendar yet — we're cooking up something special. Stay tuned for exclusive events, bonus campaigns, and surprises. We'll notify you here as soon as the next one drops.
+            </p>
+          </div>
         </div>
 
         {/* Live Performance */}
@@ -468,89 +470,95 @@ export default function DashboardPage() {
         )}
 
         {/* Active Trades */}
-        <div className="bg-[#111827] rounded-[18px] p-4 shadow-sm border border-white/5">
-          <h3 className="font-semibold text-white/95 text-[15px] mb-4 px-1">Active Trades</h3>
-          <div className="flex flex-col items-center justify-center py-6 text-center">
-            <svg className="w-12 h-12 text-white/10 mb-4 mx-auto" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M4 4v16h16" />
-              <path d="M8 15l4-4 4 4 4-8" />
-            </svg>
-            <p className="text-[12px] text-gray-500 max-w-[240px] leading-relaxed">
-              No active trades yet. Start investing to see your trades here.
-            </p>
+        <div className="mt-5">
+          <h3 className="font-semibold text-white/95 text-[15px] mb-3 px-1">Active Trades</h3>
+          <div className="bg-[#111827] rounded-[18px] p-6 shadow-sm border border-amber-500/10">
+            <div className="flex flex-col items-center justify-center py-6 text-center">
+              <svg className="w-20 h-20 text-white/10 mb-4 mx-auto" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round">
+                {/* L-shaped axis */}
+                <path d="M5 4v15h15" />
+                {/* Jagged trend line */}
+                <path d="M8 14l4-4 3 3 5-5" />
+              </svg>
+              <p className="text-[12px] text-gray-500 max-w-[240px] leading-relaxed">
+                No active trades yet. Start investing to see your trades here.
+              </p>
+            </div>
           </div>
         </div>
 
         {/* Referral / Mentor Network */}
-        <div className="bg-[#111827] rounded-[18px] p-4 shadow-sm border border-white/5">
-          <h3 className="font-semibold text-white/95 text-[15px] mb-4 px-1">Referral / Mentor Network</h3>
-          
-          {/* Network Graph Graphic */}
-          <div className="relative mb-5 flex justify-center items-center bg-[#0e1320] rounded-[14px] py-4 border border-white/5">
-            <svg className="w-full max-w-[280px] h-[110px]" viewBox="0 0 280 110" fill="none">
-              <defs>
-                <filter id="glow-gold" x="-50%" y="-50%" width="200%" height="200%">
-                  <feGaussianBlur stdDeviation="3" result="blur" />
-                  <feComposite in="SourceGraphic" in2="blur" operator="over" />
-                </filter>
-              </defs>
+        <div className="mt-5">
+          <h3 className="font-semibold text-white/95 text-[15px] mb-3 px-1">Referral / Mentor Network</h3>
+          <div className="bg-[#111827] rounded-[18px] p-5 shadow-sm border border-amber-500/10">
+            {/* Network Graph Graphic */}
+            <div className="relative mb-5 flex justify-center items-center bg-[#0e1320] rounded-[14px] py-4 border border-white/5">
+              <svg className="w-full max-w-[280px] h-[110px]" viewBox="0 0 280 110" fill="none">
+                <defs>
+                  <filter id="glow-gold" x="-50%" y="-50%" width="200%" height="200%">
+                    <feGaussianBlur stdDeviation="3" result="blur" />
+                    <feComposite in="SourceGraphic" in2="blur" operator="over" />
+                  </filter>
+                </defs>
 
-              {/* Lines radiating from the central bright node (140, 60) */}
-              <line x1="140" y1="60" x2="140" y2="30" stroke="#f59e0b" strokeWidth="1" opacity="0.3" />
-              <line x1="140" y1="60" x2="60" y2="35" stroke="#f59e0b" strokeWidth="1" opacity="0.15" />
-              <line x1="140" y1="60" x2="45" y2="65" stroke="#f59e0b" strokeWidth="1" opacity="0.15" />
-              <line x1="140" y1="60" x2="75" y2="85" stroke="#f59e0b" strokeWidth="1" opacity="0.15" />
-              <line x1="140" y1="60" x2="220" y2="35" stroke="#f59e0b" strokeWidth="1" opacity="0.15" />
-              <line x1="140" y1="60" x2="240" y2="70" stroke="#f59e0b" strokeWidth="1" opacity="0.15" />
-              <line x1="140" y1="60" x2="225" y2="90" stroke="#f59e0b" strokeWidth="1" opacity="0.15" />
+                {/* Lines radiating from the central bright node (140, 60) */}
+                <line x1="140" y1="60" x2="140" y2="30" stroke="#f59e0b" strokeWidth="1" opacity="0.3" />
+                <line x1="140" y1="60" x2="60" y2="35" stroke="#f59e0b" strokeWidth="1" opacity="0.15" />
+                <line x1="140" y1="60" x2="45" y2="65" stroke="#f59e0b" strokeWidth="1" opacity="0.15" />
+                <line x1="140" y1="60" x2="75" y2="85" stroke="#f59e0b" strokeWidth="1" opacity="0.15" />
+                <line x1="140" y1="60" x2="220" y2="35" stroke="#f59e0b" strokeWidth="1" opacity="0.15" />
+                <line x1="140" y1="60" x2="240" y2="70" stroke="#f59e0b" strokeWidth="1" opacity="0.15" />
+                <line x1="140" y1="60" x2="225" y2="90" stroke="#f59e0b" strokeWidth="1" opacity="0.15" />
 
-              {/* Left Group Nodes */}
-              <circle cx="60" cy="35" r="7" fill="#d97706" opacity="0.8" filter="url(#glow-gold)" />
-              <circle cx="45" cy="65" r="7" fill="#d97706" opacity="0.8" filter="url(#glow-gold)" />
-              <circle cx="75" cy="85" r="7" fill="#d97706" opacity="0.8" filter="url(#glow-gold)" />
+                {/* Left Group Nodes */}
+                <circle cx="60" cy="35" r="7" fill="#d97706" opacity="0.8" filter="url(#glow-gold)" />
+                <circle cx="45" cy="65" r="7" fill="#d97706" opacity="0.8" filter="url(#glow-gold)" />
+                <circle cx="75" cy="85" r="7" fill="#d97706" opacity="0.8" filter="url(#glow-gold)" />
 
-              {/* Middle Group Nodes */}
-              <circle cx="140" cy="30" r="7" fill="#d97706" opacity="0.8" filter="url(#glow-gold)" />
-              <circle cx="140" cy="60" r="9" fill="#f59e0b" filter="url(#glow-gold)" />
+                {/* Middle Group Nodes */}
+                <circle cx="140" cy="30" r="7" fill="#d97706" opacity="0.8" filter="url(#glow-gold)" />
+                <circle cx="140" cy="60" r="9" fill="#f59e0b" filter="url(#glow-gold)" />
 
-              {/* Right Group Nodes */}
-              <circle cx="220" cy="35" r="7" fill="#d97706" opacity="0.8" filter="url(#glow-gold)" />
-              <circle cx="240" cy="70" r="7" fill="#d97706" opacity="0.8" filter="url(#glow-gold)" />
-              <circle cx="225" cy="90" r="7" fill="#d97706" opacity="0.8" filter="url(#glow-gold)" />
-            </svg>
-          </div>
+                {/* Right Group Nodes */}
+                <circle cx="220" cy="35" r="7" fill="#d97706" opacity="0.8" filter="url(#glow-gold)" />
+                <circle cx="240" cy="70" r="7" fill="#d97706" opacity="0.8" filter="url(#glow-gold)" />
+                <circle cx="225" cy="90" r="7" fill="#d97706" opacity="0.8" filter="url(#glow-gold)" />
+              </svg>
+            </div>
 
-          <p className="text-gray-400 text-[12px] mb-4 px-1 leading-relaxed">
-            mykryptexapp.com offer 2-level referral system and also deposit bonus.
-          </p>
-          
-          <div className="space-y-1.5 px-1">
-            <label className="text-gray-400 text-[10px] font-bold uppercase tracking-wider">Your referral link</label>
-            <div className="flex gap-2">
-              <input 
-                type="text" 
-                readOnly 
-                value={userProfile?.referral_code ? `https://mykryptexapp.com/auth/register?ref=${userProfile.referral_code}` : "Loading..."}
-                className="flex-1 bg-white/5 border border-white/5 rounded-lg px-3 py-2 text-[12px] text-white/90 outline-none focus:border-amber-500/50"
-              />
-              <button 
-                onClick={() => {
-                  if (userProfile?.referral_code) {
-                    navigator.clipboard.writeText(`https://mykryptexapp.com/auth/register?ref=${userProfile.referral_code}`);
-                    toast.success("Referral link copied!");
-                  }
-                }}
-                className="bg-[#f59e0b] hover:bg-[#d97706] text-[#111827] text-[12px] font-bold px-4 py-2 rounded-lg transition-all active:scale-95 cursor-pointer"
-              >
-                Copy
-              </button>
+            <p className="text-gray-400 text-[12px] mb-4 leading-relaxed">
+              mykryptexapp.com offer 2-level referral system and also deposit bonus.
+            </p>
+            
+            <div className="space-y-1.5">
+              <label className="text-gray-400 text-[10px] font-bold uppercase tracking-wider">Your referral link</label>
+              <div className="flex gap-2">
+                <input 
+                  type="text" 
+                  readOnly 
+                  value={userProfile?.referral_code ? `https://mykryptexapp.com/auth/register?ref=${userProfile.referral_code}` : "Loading..."}
+                  className="flex-1 bg-white/5 border border-white/5 rounded-lg px-3 py-2 text-[12px] text-white/90 outline-none focus:border-amber-500/50"
+                />
+                <button 
+                  onClick={() => {
+                    if (userProfile?.referral_code) {
+                      navigator.clipboard.writeText(`https://mykryptexapp.com/auth/register?ref=${userProfile.referral_code}`);
+                      toast.success("Referral link copied!");
+                    }
+                  }}
+                  className="bg-[#f59e0b] hover:bg-[#d97706] text-[#111827] text-[12px] font-bold px-4 py-2 rounded-lg transition-all active:scale-95 cursor-pointer"
+                >
+                  Copy
+                </button>
+              </div>
             </div>
           </div>
         </div>
 
         {/* Recent Transaction */}
-        <div className="bg-[#111827] rounded-[18px] p-4 shadow-sm border border-white/5">
+        <div className="mt-5">
           <h3 className="font-semibold text-white/95 text-[15px] mb-3 px-1">Recent Transaction</h3>
+          <div className="bg-[#111827] rounded-[18px] p-5 shadow-sm border border-amber-500/10">
           
           {/* Filters */}
           <div className="flex gap-1.5 mb-4 overflow-x-auto pb-1 [&::-webkit-scrollbar]:hidden px-1">
@@ -654,6 +662,7 @@ export default function DashboardPage() {
               </button>
             </div>
           )}
+          </div>
         </div>
 
       </div>
