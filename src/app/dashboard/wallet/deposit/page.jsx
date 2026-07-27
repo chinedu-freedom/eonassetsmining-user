@@ -112,7 +112,7 @@ function DepositContent() {
   return (
     <div className="flex flex-col h-full bg-transparent overflow-y-auto [&::-webkit-scrollbar]:hidden relative">
       {/* Header */}
-      <div className="bg-[#131F37] px-4 py-4 flex items-center justify-center sticky top-0 z-20 shadow-sm border-b border-white/5">
+      <div className="bg-[#111827] px-4 py-4 flex items-center justify-center sticky top-0 z-20 shadow-sm border-b border-white/5">
         <button
           onClick={() => {
             if (step === 2) {
@@ -133,18 +133,18 @@ function DepositContent() {
       <div className="px-4 py-5 max-w-[480px] mx-auto w-full space-y-4 pb-[80px]">
         {isLoadingCryptos || isLoadingSettings || !selectedCrypto ? (
           <div className="flex justify-center py-20">
-            <Loader2 className="animate-spin text-purple-500" size={32} />
+            <Loader2 className="animate-spin text-amber-500" size={32} />
           </div>
         ) : step === 1 ? (
           <>
             {/* Selected Crypto Card */}
-            <div className="bg-[#131F37] border border-white/5 rounded-[10px] p-3 flex items-center justify-between shadow-sm">
+            <div className="bg-[#111827] border border-white/5 rounded-[10px] p-3 flex items-center justify-between shadow-sm">
               <div className="flex items-center gap-2.5">
                 <div className="w-10 h-10 bg-white/5 rounded-[8px] flex items-center justify-center shadow-sm overflow-hidden border border-white/5 shrink-0">
                   {selectedCrypto.icon ? (
                     <Image src={selectedCrypto.icon} alt={selectedCrypto.name} width={32} height={32} className="object-cover" />
                   ) : (
-                    <div className="w-full h-full bg-[#8b5cf6] flex items-center justify-center text-white font-bold text-sm">
+                    <div className="w-full h-full bg-[#f59e0b] flex items-center justify-center text-white font-bold text-sm">
                       {selectedCrypto.symbol.charAt(0)}
                     </div>
                   )}
@@ -152,7 +152,7 @@ function DepositContent() {
                 <div>
                   <h3 className="font-bold text-[13px] text-white/90 uppercase flex items-center gap-1.5">
                     {selectedCrypto.name} 
-                    <span className="text-[8.5px] px-1.5 py-0.5 bg-purple-100 text-purple-600 rounded-md font-medium tracking-wide">
+                    <span className="text-[8.5px] px-1.5 py-0.5 bg-amber-100 text-amber-600 rounded-md font-medium tracking-wide">
                       {selectedCrypto.symbol}-{selectedCrypto.network}
                     </span>
                   </h3>
@@ -161,27 +161,27 @@ function DepositContent() {
               </div>
               <button 
                 onClick={() => router.replace("?depositModal=true")}
-                className="bg-[#8b5cf6] text-white font-semibold text-[11.5px] px-3 py-1.5 rounded-[6px] border border-[#8b5cf6] hover:bg-purple-600 transition-colors shadow-sm cursor-pointer"
+                className="bg-[#f59e0b] text-white font-semibold text-[11.5px] px-3 py-1.5 rounded-[6px] border border-[#f59e0b] hover:bg-amber-600 transition-colors shadow-sm cursor-pointer"
               >
                 Change
               </button>
             </div>
 
             {/* Deposit Amount Section */}
-            <div className="bg-[#131F37] border border-white/5 rounded-[10px] p-4 shadow-sm space-y-4">
+            <div className="bg-[#111827] border border-white/5 rounded-[10px] p-4 shadow-sm space-y-4">
               <div className="flex items-center gap-2">
-                <div className="w-5 h-5 bg-white/5 rounded-full flex items-center justify-center text-purple-500 font-bold text-[12px]">{settings.currency_symbol || "$"}</div>
+                <div className="w-5 h-5 bg-white/5 rounded-full flex items-center justify-center text-amber-500 font-bold text-[12px]">{settings.currency_symbol || "$"}</div>
                 <h3 className="font-bold text-[13px] text-white/90">Deposit Amount</h3>
               </div>
 
               <div className="relative">
-                <div className="absolute left-3 top-1/2 -translate-y-1/2 text-purple-500 font-bold text-[16px]">{settings.currency_symbol || "$"}</div>
+                <div className="absolute left-3 top-1/2 -translate-y-1/2 text-amber-500 font-bold text-[16px]">{settings.currency_symbol || "$"}</div>
                 <input 
                   type="number"
                   value={amount}
                   onChange={(e) => setAmount(e.target.value)}
                   placeholder="0.00"
-                  className="w-full h-[45px] bg-[#0b1426] border border-white/10 rounded-[8px] pl-8 pr-4 text-[18px] font-bold text-white/90 focus:outline-none focus:border-purple-300 focus:ring-1 focus:ring-purple-100 transition-all placeholder:text-gray-500"
+                  className="w-full h-[45px] bg-[#0b0f19] border border-white/10 rounded-[8px] pl-8 pr-4 text-[18px] font-bold text-white/90 focus:outline-none focus:border-amber-300 focus:ring-1 focus:ring-amber-100 transition-all placeholder:text-gray-500"
                 />
               </div>
 
@@ -193,7 +193,7 @@ function DepositContent() {
                     className={`h-[32px] rounded-[6px] font-semibold text-[12px] transition-colors border cursor-pointer ${
                       amount === preset.toString() 
                         ? 'bg-white/5 border-white/10 text-white' 
-                        : 'bg-[#131F37] border-white/5 text-gray-400 hover:bg-white/5'
+                        : 'bg-[#111827] border-white/5 text-gray-400 hover:bg-white/5'
                     }`}
                   >
                     {settings.currency_symbol || "$"}{preset}
@@ -218,7 +218,7 @@ function DepositContent() {
             {/* Important Information */}
             <div className="bg-white/5 border border-white/5 rounded-[16px] p-5 shadow-sm space-y-3.5">
               <div className="flex items-center gap-2.5 text-white/90">
-                <Info size={19} className="text-[#8b5cf6]" />
+                <Info size={19} className="text-[#f59e0b]" />
                 <h3 className="font-bold text-[15px]">Important Information</h3>
               </div>
               
@@ -227,7 +227,7 @@ function DepositContent() {
                   <div className="space-y-1">
                     {parseNoticeToLines(settings.deposit_notice).map((line, idx) => (
                       <div key={idx} className="flex items-center gap-2">
-                        <div className="w-5 h-5 rounded-full bg-[#8b5cf6] text-white flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5">
+                        <div className="w-5 h-5 rounded-full bg-[#f59e0b] text-white flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5">
                           {idx + 1}
                         </div>
                         <p className="leading-normal font-medium text-gray-300 mt-0.5" dangerouslySetInnerHTML={{ __html: line }} />
@@ -237,19 +237,19 @@ function DepositContent() {
                 ) : (
                   <div className="space-y-3.5">
                     <div className="flex items-start gap-3">
-                      <div className="w-5 h-5 rounded-full bg-[#8b5cf6] text-white flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5">1</div>
+                      <div className="w-5 h-5 rounded-full bg-[#f59e0b] text-white flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5">1</div>
                       <p className="leading-normal font-medium">Enter amount ({settings.currency_symbol || "$"}{settings?.min_deposit || 10} - {settings.currency_symbol || "$"}{settings?.max_deposit || 100000})</p>
                     </div>
                     <div className="flex items-start gap-3">
-                      <div className="w-5 h-5 rounded-full bg-[#8b5cf6] text-white flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5">2</div>
+                      <div className="w-5 h-5 rounded-full bg-[#f59e0b] text-white flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5">2</div>
                       <p className="leading-normal font-medium">You will get the deposit details immediately</p>
                     </div>
                     <div className="flex items-start gap-3">
-                      <div className="w-5 h-5 rounded-full bg-[#8b5cf6] text-white flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5">3</div>
+                      <div className="w-5 h-5 rounded-full bg-[#f59e0b] text-white flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5">3</div>
                       <p className="leading-normal font-medium">Confirmation takes 5-30 minutes</p>
                     </div>
                     <div className="flex items-start gap-3">
-                      <div className="w-5 h-5 rounded-full bg-[#8b5cf6] text-white flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5">4</div>
+                      <div className="w-5 h-5 rounded-full bg-[#f59e0b] text-white flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5">4</div>
                       <p className="leading-normal font-medium">Funds credited automatically upon blockchain receipt</p>
                     </div>
                   </div>
@@ -261,7 +261,7 @@ function DepositContent() {
             <button
               onClick={handleProceed}
               disabled={isPending || !amount}
-              className="w-full bg-[#8b5cf6] hover:bg-[#7c3aed] text-white py-2.5 rounded-[8px] font-bold text-[13px] transition-all shadow-[0_4px_12px_-4px_rgba(139,92,246,0.4)] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 mt-2 cursor-pointer"
+              className="w-full bg-[#f59e0b] hover:bg-[#d97706] text-white py-2.5 rounded-[8px] font-bold text-[13px] transition-all shadow-[0_4px_12px_-4px_rgba(139,92,246,0.4)] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 mt-2 cursor-pointer"
             >
               {isPending ? <Loader2 className="animate-spin" size={16} /> : <Wallet size={16} />}
               Proceed to Payment
@@ -270,20 +270,20 @@ function DepositContent() {
         ) : (
           <>
             {/* Step 2 Payment Details */}
-            <div className="bg-[#131F37] border border-white/5 rounded-[10px] p-4 shadow-sm space-y-4">
+            <div className="bg-[#111827] border border-white/5 rounded-[10px] p-4 shadow-sm space-y-4">
               <div className="text-center space-y-0.5">
                 <p className="text-[11px] text-gray-400 font-medium">Send exactly</p>
                 <p className="text-[20px] font-bold text-white/90">
                   {settings.currency_symbol || "$"}{Number(amount).toFixed(2)}
                 </p>
-                <p className="text-[9.5px] text-purple-600 font-semibold bg-white/5 inline-block px-2 py-0.5 rounded-full uppercase tracking-wider mt-0.5">
+                <p className="text-[9.5px] text-amber-600 font-semibold bg-white/5 inline-block px-2 py-0.5 rounded-full uppercase tracking-wider mt-0.5">
                   On {selectedCrypto.network} network
                 </p>
               </div>
 
               {/* QR Code */}
               <div className="flex justify-center py-1">
-                <div className="w-[130px] h-[130px] bg-[#131F37] border border-white/5 p-1.5 rounded-xl shadow-inner flex items-center justify-center">
+                <div className="w-[130px] h-[130px] bg-[#111827] border border-white/5 p-1.5 rounded-xl shadow-inner flex items-center justify-center">
                   <img
                     src={`https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=${encodeURIComponent(paymentAddress)}&margin=6&color=4c1d95&bgcolor=ffffff`}
                     alt="Payment QR Code"
@@ -296,7 +296,7 @@ function DepositContent() {
               <div className="space-y-1">
                 <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block">Deposit Address</label>
                 <div className="flex gap-2">
-                  <div className="flex-1 bg-[#0b1426] border border-white/10 rounded-lg px-2.5 py-2 text-[10px] font-mono text-gray-300 break-all select-all flex items-center leading-normal">
+                  <div className="flex-1 bg-[#0b0f19] border border-white/10 rounded-lg px-2.5 py-2 text-[10px] font-mono text-gray-300 break-all select-all flex items-center leading-normal">
                     {paymentAddress}
                   </div>
                   <button
@@ -304,7 +304,7 @@ function DepositContent() {
                     className={`px-2.5 rounded-lg border font-semibold text-[11px] flex items-center justify-center gap-1 cursor-pointer transition-all ${
                       copied
                         ? "bg-green-500 border-green-500 text-white"
-                        : "bg-white/5 border-white/10 text-purple-400 hover:bg-white/10"
+                        : "bg-white/5 border-white/10 text-amber-400 hover:bg-white/10"
                     }`}
                   >
                     {copied ? <Check size={12} /> : <Copy size={12} />}
@@ -324,8 +324,8 @@ function DepositContent() {
             </div>
 
             {/* Waiting for Payment Notification */}
-            <div className="bg-[#131F37] border border-white/5 rounded-[10px] p-4 shadow-sm flex flex-col items-center justify-center space-y-3">
-              <Loader2 className="animate-spin text-purple-500" size={28} />
+            <div className="bg-[#111827] border border-white/5 rounded-[10px] p-4 shadow-sm flex flex-col items-center justify-center space-y-3">
+              <Loader2 className="animate-spin text-amber-500" size={28} />
               <div className="text-center">
                 <h4 className="text-[13px] font-bold text-white/90">Awaiting Payment</h4>
                 <p className="text-[11px] text-gray-400">Your balance will be credited automatically once the network confirms your transaction. You can safely leave this page.</p>
@@ -342,7 +342,7 @@ export default function DepositPage() {
   return (
     <Suspense fallback={
       <div className="flex justify-center py-20">
-        <Loader2 className="animate-spin text-purple-500" size={32} />
+        <Loader2 className="animate-spin text-amber-500" size={32} />
       </div>
     }>
       <DepositContent />

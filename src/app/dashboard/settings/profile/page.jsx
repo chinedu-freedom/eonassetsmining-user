@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { ArrowLeft, User, Mail, Share2, Calendar, Info, Loader2 } from "lucide-react";
+import { ArrowLeft, User, Mail, Share2, Calendar, Info, Loader2, Globe } from "lucide-react";
 import { useFetchData } from "@/hooks/useApi";
 
 export default function MyProfilePage() {
@@ -10,15 +10,9 @@ export default function MyProfilePage() {
   const user = data?.user || {};
 
   return (
-    <div className="flex flex-col h-full bg-[#0B1426] overflow-y-auto [&::-webkit-scrollbar]:hidden">
+    <div className="flex flex-col h-full bg-[#0b0f19] overflow-y-auto [&::-webkit-scrollbar]:hidden">
       {/* Header */}
-      <div className="bg-[#131F37] px-4 py-3 flex items-center gap-2.5 sticky top-0 z-20 shadow-sm border-b border-white/5">
-        <button 
-          onClick={() => router.back()}
-          className="w-7 h-7 bg-white/5 hover:bg-white/10 rounded-full flex items-center justify-center transition-colors text-gray-400 cursor-pointer"
-        >
-          <ArrowLeft size={16} />
-        </button>
+      <div className="bg-[#111827] px-4 py-3.5 flex items-center sticky top-0 z-20 shadow-sm border-b border-white/5">
         <h1 className="text-white/90 text-[15px] font-bold">My Profile</h1>
       </div>
 
@@ -26,19 +20,19 @@ export default function MyProfilePage() {
         
         {isLoading ? (
           <div className="flex flex-col items-center justify-center py-10">
-             <Loader2 className="animate-spin text-[#8b5cf6] mb-2" size={32} />
+             <Loader2 className="animate-spin text-[#f59e0b] mb-2" size={32} />
              <p className="text-gray-500 text-sm">Loading profile...</p>
           </div>
         ) : (
           <>
             {/* Main Details Card */}
-            <div className="bg-[#131F37] rounded-[16px] border border-white/5 shadow-sm overflow-hidden">
+            <div className="bg-[#111827] rounded-[16px] border border-white/5 shadow-sm overflow-hidden">
               <div className="flex flex-col divide-y divide-white/5">
                 {/* Full Name */}
                 <div className="p-4">
                   <div className="text-gray-400 text-[10px] font-medium tracking-wide uppercase mb-1.5">Full Name</div>
                   <div className="flex items-center gap-3">
-                    <User size={16} className="text-[#8b5cf6] fill-[#8b5cf6]/20" />
+                    <User size={16} className="text-[#f59e0b] fill-[#f59e0b]/20" />
                     <span className="text-white/90 text-[14px]">{user.full_name || "N/A"}</span>
                   </div>
                 </div>
@@ -47,7 +41,7 @@ export default function MyProfilePage() {
                 <div className="p-4">
                   <div className="text-gray-400 text-[10px] font-medium tracking-wide uppercase mb-1.5">Email Address</div>
                   <div className="flex items-center gap-3">
-                    <Mail size={16} className="text-[#8b5cf6] fill-[#8b5cf6]/20" />
+                    <Mail size={16} className="text-[#f59e0b] fill-[#f59e0b]/20" />
                     <span className="text-white/90 text-[14px]">{user.email || "N/A"}</span>
                   </div>
                 </div>
@@ -55,7 +49,8 @@ export default function MyProfilePage() {
                 {/* Country */}
                 <div className="p-4">
                   <div className="text-gray-400 text-[10px] font-medium tracking-wide uppercase mb-1.5">Country</div>
-                  <div className="flex items-center gap-3 pl-[28px]">
+                  <div className="flex items-center gap-3">
+                    <Globe size={16} className="text-[#f59e0b] fill-[#f59e0b]/20" />
                     <span className="text-white/90 text-[14px]">{user.country?.country_name || "N/A"}</span>
                   </div>
                 </div>
@@ -64,7 +59,7 @@ export default function MyProfilePage() {
                 <div className="p-4">
                   <div className="text-gray-400 text-[10px] font-medium tracking-wide uppercase mb-1.5">Referral Code</div>
                   <div className="flex items-center gap-3">
-                    <Share2 size={16} className="text-[#8b5cf6]" />
+                    <Share2 size={16} className="text-[#f59e0b]" />
                     <span className="text-white/90 text-[14px]">{user.referral_code || "N/A"}</span>
                   </div>
                 </div>
@@ -73,7 +68,7 @@ export default function MyProfilePage() {
                 <div className="p-4">
                   <div className="text-gray-400 text-[10px] font-medium tracking-wide uppercase mb-1.5">Member Since</div>
                   <div className="flex items-center gap-3">
-                    <Calendar size={16} className="text-[#8b5cf6]" />
+                    <Calendar size={16} className="text-[#f59e0b]" />
                     <span className="text-white/90 text-[14px]">{user.created_at ? new Date(user.created_at).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) : "N/A"}</span>
                   </div>
                 </div>
@@ -81,13 +76,13 @@ export default function MyProfilePage() {
             </div>
 
             {/* Info Banner */}
-            <div className="bg-purple-900/20 rounded-[12px] p-4 border border-purple-500/20 flex items-start gap-3">
+            <div className="bg-amber-900/20 rounded-[12px] p-4 border border-amber-500/20 flex items-start gap-3">
               <div className="mt-0.5 shrink-0">
-                <div className="w-[18px] h-[18px] bg-purple-500 rounded-full flex items-center justify-center text-white">
+                <div className="w-[18px] h-[18px] bg-amber-500 rounded-full flex items-center justify-center text-white">
                   <Info size={12} strokeWidth={3} />
                 </div>
               </div>
-              <p className="text-purple-300 text-[13px] leading-snug">
+              <p className="text-amber-300 text-[13px] leading-snug">
                 Profile information cannot be edited. Contact support if you need to make changes.
               </p>
             </div>

@@ -43,7 +43,7 @@ function SignupForm() {
   const signupMutation = usePost("/auth/register", null);
   const { data: settingsResponse, isLoading: isLoadingSettings } = useFetchData("/settings", ["platform-settings"]);
   const settings = settingsResponse?.settings || {};
-  const siteName = settings.site_name || "Polychainapp";
+  const siteName = settings.site_name || "mykryptexapp.com";
   const siteLogo = settings.platform_logo || null;
 
   const { data: countriesRes, isLoading: isLoadingCountries } = useFetchData("/auth/countries", ["countries"]);
@@ -60,7 +60,7 @@ function SignupForm() {
   if (!isMounted || isLoadingSettings) {
     return (
       <div className="fixed inset-0 flex items-center justify-center bg-white z-[9999]">
-        <div className="w-12 h-12 border-4 border-gray-100 border-t-[#8b5cf6] rounded-full animate-spin"></div>
+        <div className="w-12 h-12 border-4 border-gray-100 border-t-[#f59e0b] rounded-full animate-spin"></div>
       </div>
     );
   }
@@ -96,7 +96,7 @@ function SignupForm() {
                 <img src={siteLogo} alt="Logo" className="w-full h-full object-contain" />
               </div>
             ) : (
-              <div className="w-16 h-16 bg-gradient-to-br from-[#4c1d95] to-[#0f172a] rounded-full flex items-center justify-center shadow-sm mb-4">
+              <div className="w-16 h-16 bg-gradient-to-br from-[#d97706] to-[#0f172a] rounded-full flex items-center justify-center shadow-sm mb-4">
                 <div className="text-white text-xs font-bold tracking-wider">
                   {siteName.substring(0, 4).toUpperCase()}
                 </div>
@@ -237,7 +237,7 @@ function SignupForm() {
             {/* Submit Button */}
             <Button
               type="submit"
-              className="w-full bg-purple-600 text-white hover:bg-purple-700 rounded-md py-4 font-medium transition-all"
+              className="w-full bg-amber-600 text-white hover:bg-amber-700 rounded-md py-4 font-medium transition-all"
               disabled={signupMutation.isPending}
             >
               {signupMutation.isPending ? <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><rect width="10" height="10" x="1" y="1" fill="currentColor" rx="1"><animate id="SVG7WybndBt" fill="freeze" attributeName="x" begin="0;SVGo3aOUHlJ.end" dur="0.2s" values="1;13" /><animate id="SVGVoKldbWM" fill="freeze" attributeName="y" begin="SVGFpk9ncYc.end" dur="0.2s" values="1;13" /><animate id="SVGKsXgPbui" fill="freeze" attributeName="x" begin="SVGaI8owdNK.end" dur="0.2s" values="13;1" /><animate id="SVG7JzAfdGT" fill="freeze" attributeName="y" begin="SVG28A4To9L.end" dur="0.2s" values="13;1" /></rect><rect width="10" height="10" x="1" y="13" fill="currentColor" rx="1"><animate id="SVGUiS2jeZq" fill="freeze" attributeName="y" begin="SVG7WybndBt.end" dur="0.2s" values="13;1" /><animate id="SVGU0vu2GEM" fill="freeze" attributeName="x" begin="SVGVoKldbWM.end" dur="0.2s" values="1;13" /><animate id="SVGOIboFeLf" fill="freeze" attributeName="y" begin="SVGKsXgPbui.end" dur="0.2s" values="1;13" /><animate id="SVG14lAaeuv" fill="freeze" attributeName="x" begin="SVG7JzAfdGT.end" dur="0.2s" values="13;1" /></rect><rect width="10" height="10" x="13" y="13" fill="currentColor" rx="1"><animate id="SVGFpk9ncYc" fill="freeze" attributeName="x" begin="SVGUiS2jeZq.end" dur="0.2s" values="13;1" /><animate id="SVGaI8owdNK" fill="freeze" attributeName="y" begin="SVGU0vu2GEM.end" dur="0.2s" values="13;1" /><animate id="SVG28A4To9L" fill="freeze" attributeName="x" begin="SVGOIboFeLf.end" dur="0.2s" values="1;13" /><animate id="SVGo3aOUHlJ" fill="freeze" attributeName="y" begin="SVG14lAaeuv.end" dur="0.2s" values="1;13" /></rect></svg> : "Sign up"}
@@ -250,7 +250,7 @@ function SignupForm() {
             Already have an account?{" "}
             <Link
               href="/"
-              className="text-purple-600 font-medium hover:underline cursor-pointer"
+              className="text-amber-600 font-medium hover:underline cursor-pointer"
             >
               Sign in
             </Link>

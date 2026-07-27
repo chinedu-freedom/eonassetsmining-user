@@ -13,7 +13,7 @@ function ReceiptContent() {
   const receiptRef = useRef(null);
 
   const { data: settingsRes } = useFetchData("/settings", ["platform-settings"]);
-  const siteName = settingsRes?.settings?.site_name || "Polychainapp";
+  const siteName = settingsRes?.settings?.site_name || "mykryptexapp.com";
   const symbol = settingsRes?.settings?.currency_symbol || "$";
 
   // Extract from URL query params
@@ -69,7 +69,7 @@ function ReceiptContent() {
   return (
     <div className="flex flex-col h-full bg-transparent overflow-y-auto [&::-webkit-scrollbar]:hidden pb-32">
       {/* Header */}
-      <div className="bg-[#131F37] px-4 py-4 flex items-center gap-3 sticky top-0 z-20 shadow-sm border-b border-white/5">
+      <div className="bg-[#111827] px-4 py-4 flex items-center gap-3 sticky top-0 z-20 shadow-sm border-b border-white/5">
         <button 
           onClick={() => router.back()}
           className="w-9 h-9 bg-white/5 border border-white/5 rounded-[10px] flex items-center justify-center transition-colors text-gray-300 shadow-sm hover:bg-white/10 shrink-0 cursor-pointer"
@@ -84,7 +84,7 @@ function ReceiptContent() {
         {/* Receipt Card */}
         <div 
           ref={receiptRef}
-          className="bg-[#131F37] rounded-[20px] shadow-sm border border-white/5 w-full max-w-[360px] p-6 relative overflow-hidden flex flex-col items-center"
+          className="bg-[#111827] rounded-[20px] shadow-sm border border-white/5 w-full max-w-[360px] p-6 relative overflow-hidden flex flex-col items-center"
         >
           {/* Watermarks */}
           <div className="absolute inset-0 pointer-events-none flex flex-col items-center justify-center gap-12 z-0 opacity-[0.03]">
@@ -145,7 +145,7 @@ function ReceiptContent() {
             )}
           </div>
 
-          <div className="w-full bg-[#0B1426] border-l-[3px] border-[#8b5cf6] rounded-r-[8px] p-3 mt-2 relative z-10">
+          <div className="w-full bg-[#0b0f19] border-l-[3px] border-[#f59e0b] rounded-r-[8px] p-3 mt-2 relative z-10">
             <p className="text-gray-400 text-[10px] leading-relaxed">
               Transaction processed by <span className="font-bold text-white/90">{siteName}</span>. Thank you for being a valued member of our platform.
             </p>
@@ -154,17 +154,17 @@ function ReceiptContent() {
       </div>
 
       {/* Bottom Actions */}
-      <div className="fixed bottom-0 left-0 right-0 bg-[#131F37] border-t border-white/5 pb-6 pt-4 px-4 z-50">
+      <div className="fixed bottom-0 left-0 right-0 bg-[#111827] border-t border-white/5 pb-6 pt-4 px-4 z-50">
         <div className="max-w-[480px] mx-auto w-full flex gap-3">
           <button 
             onClick={handleShareAsImage}
-            className="flex-1 bg-[#0B1426] border border-white/10 text-[#8b5cf6] flex items-center justify-center gap-2 py-3.5 rounded-[12px] text-[13px] font-medium hover:bg-white/5 active:scale-[0.98] transition-all shadow-sm cursor-pointer"
+            className="flex-1 bg-[#0b0f19] border border-white/10 text-[#f59e0b] flex items-center justify-center gap-2 py-3.5 rounded-[12px] text-[13px] font-medium hover:bg-white/5 active:scale-[0.98] transition-all shadow-sm cursor-pointer"
           >
             <ImageIcon size={16} /> Share as image
           </button>
           <button 
             onClick={handleShareAsPDF}
-            className="flex-1 bg-[#0B1426] border border-white/10 text-[#8b5cf6] flex items-center justify-center gap-2 py-3.5 rounded-[12px] text-[13px] font-medium hover:bg-white/5 active:scale-[0.98] transition-all shadow-sm cursor-pointer"
+            className="flex-1 bg-[#0b0f19] border border-white/10 text-[#f59e0b] flex items-center justify-center gap-2 py-3.5 rounded-[12px] text-[13px] font-medium hover:bg-white/5 active:scale-[0.98] transition-all shadow-sm cursor-pointer"
           >
             <FileText size={16} /> Share as PDF
           </button>

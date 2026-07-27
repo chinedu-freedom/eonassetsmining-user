@@ -12,7 +12,7 @@ export default function NewsPage() {
   return (
     <div className="flex flex-col h-full bg-transparent overflow-y-auto  [&::-webkit-scrollbar]:hidden">
       {/* Header */}
-      <div className="bg-[#131F37] px-4 pt-4 pb-4 shadow-sm z-10 sticky top-0 flex items-center justify-between gap-2 border-b border-white/5">
+      <div className="bg-[#111827] px-4 pt-4 pb-4 shadow-sm z-10 sticky top-0 flex items-center justify-between gap-2 border-b border-white/5">
         <div className="flex items-center gap-3">
           <Link href="/dashboard" className="w-8 h-8 bg-white/20 rounded-xl flex items-center justify-center text-white hover:bg-white/30 transition-colors shrink-0 cursor-pointer">
             <ArrowLeft size={16} />
@@ -31,7 +31,7 @@ export default function NewsPage() {
       <div className="px-4 pt-4 pb-4 space-y-3 max-w-[480px] mx-auto w-full flex-1 ">
         {isLoading ? (
           <div className="flex flex-col items-center justify-center py-20 text-gray-400">
-            <Loader2 className="w-8 h-8 animate-spin mb-3 text-purple-500" />
+            <Loader2 className="w-8 h-8 animate-spin mb-3 text-amber-500" />
             <p className="text-sm font-medium">Loading news...</p>
           </div>
         ) : error ? (
@@ -40,9 +40,9 @@ export default function NewsPage() {
           </div>
         ) : newsItems.length > 0 ? (
           newsItems.map((news) => (
-            <Link href={`/dashboard/news/${news.id}`} key={news.id} className="block bg-[#131F37] rounded-[16px] p-[16px] border border-white/5 shadow-md hover:bg-white/5 transition-colors cursor-pointer">
+            <Link href={`/dashboard/news/${news.id}`} key={news.id} className="block bg-[#111827] rounded-[16px] p-[16px] border border-white/5 shadow-md hover:bg-white/5 transition-colors cursor-pointer">
               <div className="flex justify-between items-center mb-2">
-                <span className="text-[9px] font-bold px-2 py-0.5 rounded bg-purple-900/30 text-purple-400">
+                <span className="text-[9px] font-bold px-2 py-0.5 rounded bg-amber-900/30 text-amber-400">
                   {news.category || "General"}
                 </span>
                 <div className="flex items-center gap-1 text-gray-400 text-[9px]">
@@ -69,7 +69,7 @@ export default function NewsPage() {
 
               <div className="flex justify-between items-center mt-2 border-t border-white/5 pt-2">
                 <div className="text-[10px] text-gray-400 font-medium">{news.views} views</div>
-                <div className="flex items-center text-[#8b5cf6] text-[10px] font-bold">
+                <div className="flex items-center text-[#f59e0b] text-[10px] font-bold">
                   Read Full Article <ChevronRight size={12} className="ml-0.5" />
                 </div>
               </div>

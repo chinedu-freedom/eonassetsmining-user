@@ -43,7 +43,7 @@ export default function WhatsAppModal() {
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogContent className="sm:max-w-[360px] p-0 overflow-hidden bg-[#131F37] rounded-[24px] border border-white/5 shadow-2xl">
+      <DialogContent className="sm:max-w-[360px] p-0 overflow-hidden bg-[#111827] rounded-[24px] border border-white/5 shadow-2xl">
 
         <div className="p-8 flex flex-col items-center text-center">
           <div className="w-[60px] h-[60px] bg-[#25D366] rounded-full flex items-center justify-center mb-6 shadow-[0_4px_14px_rgba(37,211,102,0.4)]">
@@ -55,11 +55,11 @@ export default function WhatsAppModal() {
           <h2 className="text-[18px] font-bold text-white/90 mb-3">Official Information Release</h2>
           
           <p className="text-[13px] text-gray-400 mb-8 leading-relaxed">
-            Join our official WhatsApp group to get the latest news and welfare information about {settingsRes?.settings?.site_name || "Polychainapp"} Platform.
+            Join our official WhatsApp group to get the latest news and welfare information about {settingsRes?.settings?.site_name || "mykryptexapp.com"} Platform.
           </p>
           
           <Button 
-            className="w-full bg-[#8b5cf6] hover:bg-purple-600 text-white rounded-[12px] h-[48px] text-[15px] font-bold shadow-md transition-all"
+            className="w-full bg-[#f59e0b] hover:bg-amber-600 text-white rounded-[12px] h-[48px] text-[15px] font-bold shadow-md transition-all"
             onClick={() => {
               setIsOpen(false);
               if (whatsappGroupLink && whatsappGroupLink !== "#") {

@@ -33,7 +33,7 @@ export default function DailyCheckinModal() {
             this.resize();
             this.canvas.style.display = 'block';
             this.particles = [];
-            const colors = ['#8b5cf6', '#22c55e', '#f59e0b', '#ef4444', '#8b5cf6', '#06b6d4'];
+            const colors = ['#f59e0b', '#22c55e', '#f59e0b', '#ef4444', '#f59e0b', '#06b6d4'];
             for (let i = 0; i < count; i++) {
                 this.particles.push({
                     x: Math.random() * this.canvas.width,
@@ -163,7 +163,7 @@ export default function DailyCheckinModal() {
 
   return (
     <Dialog open={isOpen} onOpenChange={handleOpenChange}>
-      <DialogContent className="cursor-pointer sm:max-w-[400px] p-0 overflow-hidden bg-[#131F37] rounded-2xl border border-white/5 shadow-2xl">
+      <DialogContent className="cursor-pointer sm:max-w-[400px] p-0 overflow-hidden bg-[#111827] rounded-2xl border border-white/5 shadow-2xl">
         <div className="p-8 flex flex-col items-center">
           
           <div className="w-16 h-16 bg-orange-500/20 rounded-full flex items-center justify-center mb-4 text-orange-400 shadow-sm relative overflow-hidden">
@@ -195,7 +195,7 @@ export default function DailyCheckinModal() {
             <Button 
               onClick={handleClaim} 
               disabled={claimMutation.isPending}
-              className="w-full bg-[#8b5cf6] hover:bg-[#8b5cf6] text-white rounded-xl py-6 font-semibold shadow-md shadow-purple-500/20 transition-all active:scale-[0.98]"
+              className="w-full bg-[#f59e0b] hover:bg-[#f59e0b] text-white rounded-xl py-6 font-semibold shadow-md shadow-amber-500/20 transition-all active:scale-[0.98]"
             >
               {claimMutation.isPending ? (
                 <Loader2 className="w-5 h-5 animate-spin" />
@@ -224,11 +224,11 @@ function RewardCard({ reward, isNext, settings }) {
     <div className={`
       flex flex-col items-center justify-center p-3 rounded-xl border-2 transition-all
       ${isClaimed ? 'border-[#10b981] bg-[#10b981]/10' : ''}
-      ${isAvailable ? 'border-[#8b5cf6] bg-[#8b5cf6]/10 shadow-sm scale-105 z-10 relative' : ''}
+      ${isAvailable ? 'border-[#f59e0b] bg-[#f59e0b]/10 shadow-sm scale-105 z-10 relative' : ''}
       ${reward.status === 'locked' && !isNext ? 'border-white/5 bg-white/5' : ''}
     `}>
       <span className={`text-[11px] font-bold tracking-wider uppercase mb-2 
-        ${isClaimed ? 'text-[#10b981]' : isAvailable ? 'text-[#8b5cf6]' : 'text-gray-400'}
+        ${isClaimed ? 'text-[#10b981]' : isAvailable ? 'text-[#f59e0b]' : 'text-gray-400'}
       `}>
         Day {reward.day}
       </span>
@@ -246,7 +246,7 @@ function RewardCard({ reward, isNext, settings }) {
       </div>
       
       <span className={`text-xs font-bold 
-        ${isClaimed ? 'text-[#10b981]' : isAvailable ? 'text-[#8b5cf6]' : 'text-gray-400'}
+        ${isClaimed ? 'text-[#10b981]' : isAvailable ? 'text-[#f59e0b]' : 'text-gray-400'}
       `}>
         +{settings?.currency_symbol || "$"}{parseFloat(reward.amount).toFixed(2)}
       </span>

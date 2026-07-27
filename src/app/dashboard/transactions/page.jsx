@@ -30,11 +30,11 @@ export default function TransactionsPage() {
 
   const getTransactionMeta = (type) => {
     const t = (type || "").toLowerCase();
-    if (t.includes('deposit')) return { category: 'Deposits', icon: Download, iconBg: "bg-purple-100", iconColor: "text-purple-500" };
+    if (t.includes('deposit')) return { category: 'Deposits', icon: Download, iconBg: "bg-amber-100", iconColor: "text-amber-500" };
     if (t.includes('withdraw')) return { category: 'Withdrawals', icon: Upload, iconBg: "bg-red-100", iconColor: "text-red-500" };
     if (t.includes('commission') || t.includes('referral')) return { category: 'Commission', icon: Gift, iconBg: "bg-amber-100", iconColor: "text-amber-500" };
     if (t.includes('reward') || t.includes('gift') || t.includes('bonus') || t.includes('spin') || t.includes('task') || t.includes('checkin') || t.includes('admin_credit')) return { category: 'Rewards', icon: Gift, iconBg: "bg-green-100", iconColor: "text-green-500" };
-    if (t.includes('invest') || t.includes('plan')) return { category: 'Investments', icon: BarChart2, iconBg: "bg-purple-100", iconColor: "text-purple-500" };
+    if (t.includes('invest') || t.includes('plan')) return { category: 'Investments', icon: BarChart2, iconBg: "bg-amber-100", iconColor: "text-amber-500" };
     return { category: 'Others', icon: FileText, iconBg: "bg-gray-100", iconColor: "text-gray-500" };
   };
 
@@ -173,13 +173,7 @@ export default function TransactionsPage() {
     <div className="flex flex-col h-full bg-transparent overflow-y-auto [&::-webkit-scrollbar]:hidden pb-10">
 
       {/* Header */}
-      <div className="bg-[#131F37] px-4 py-3 flex items-center gap-2.5 sticky top-0 z-20 shadow-sm border-b border-white/5">
-        <button
-          onClick={() => router.back()}
-          className="w-7 h-7 bg-white/5 hover:bg-white/10 rounded-full flex items-center justify-center transition-colors text-gray-300 cursor-pointer"
-        >
-          <ArrowLeft size={16} />
-        </button>
+      <div className="bg-[#111827] px-4 py-3.5 flex items-center sticky top-0 z-20 shadow-sm border-b border-white/5">
         <h1 className="text-white/90 text-[15px] font-bold">All Transactions</h1>
       </div>
 
@@ -187,8 +181,8 @@ export default function TransactionsPage() {
 
         {/* Summary Cards */}
         <div className="grid grid-cols-2 gap-3">
-          <div className="bg-[#131F37] rounded-[16px] p-4 border border-white/5 shadow-[0_2px_8px_-4px_rgba(0,0,0,0.05)] flex flex-col">
-            <div className="w-8 h-8 bg-purple-900/20 rounded-[8px] flex items-center justify-center text-[#a855f7] mb-3">
+          <div className="bg-[#111827] rounded-[16px] p-4 border border-white/5 shadow-[0_2px_8px_-4px_rgba(0,0,0,0.05)] flex flex-col">
+            <div className="w-8 h-8 bg-amber-900/20 rounded-[8px] flex items-center justify-center text-[#f59e0b] mb-3">
               <BarChart2 size={16} />
             </div>
             <div className="text-white/90 font-bold text-[18px] mb-0.5">
@@ -197,8 +191,8 @@ export default function TransactionsPage() {
             <div className="text-gray-400 text-[11px]">Total Inflow</div>
           </div>
 
-          <div className="bg-[#131F37] rounded-[16px] p-4 border border-white/5 shadow-[0_2px_8px_-4px_rgba(0,0,0,0.05)] flex flex-col">
-            <div className="w-8 h-8 bg-purple-900/20 rounded-[8px] flex items-center justify-center text-[#8b5cf6] mb-3">
+          <div className="bg-[#111827] rounded-[16px] p-4 border border-white/5 shadow-[0_2px_8px_-4px_rgba(0,0,0,0.05)] flex flex-col">
+            <div className="w-8 h-8 bg-amber-900/20 rounded-[8px] flex items-center justify-center text-[#f59e0b] mb-3">
               <FileText size={16} />
             </div>
             <div className="text-white/90 font-bold text-[18px] mb-0.5">{totalCount}</div>
@@ -216,8 +210,8 @@ export default function TransactionsPage() {
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
                 className={`cursor-pointer flex items-center gap-1.5 px-3.5 py-2 rounded-full whitespace-nowrap text-[12px] font-bold transition-all ${isActive
-                    ? 'bg-[#8b5cf6] text-white shadow-[0_4px_10px_rgba(37,99,235,0.25)]'
-                    : 'bg-[#131F37] text-gray-400 border border-white/5 hover:bg-white/5'
+                    ? 'bg-[#f59e0b] text-white shadow-[0_4px_10px_rgba(37,99,235,0.25)]'
+                    : 'bg-[#111827] text-gray-400 border border-white/5 hover:bg-white/5'
                   }`}
               >
                 <Icon size={14} className={isActive ? "text-white" : "text-gray-400"} />
@@ -231,7 +225,7 @@ export default function TransactionsPage() {
         <div className="mt-2">
           {isLoading ? (
             <div className="flex flex-col items-center justify-center py-10">
-              <Loader2 className="w-8 h-8 animate-spin text-[#8b5cf6] mb-2" />
+              <Loader2 className="w-8 h-8 animate-spin text-[#f59e0b] mb-2" />
               <span className="text-[12px] text-gray-500">Loading transactions...</span>
             </div>
           ) : filteredTransactions.length > 0 ? (
@@ -253,7 +247,7 @@ export default function TransactionsPage() {
                     }
                     router.push(`/dashboard/transactions/receipt?${params.toString()}`);
                   }}
-                  className="bg-[#131F37] rounded-[14px] p-3 border border-white/5 shadow-[0_2px_8px_-4px_rgba(0,0,0,0.05)] flex items-center justify-between cursor-pointer hover:bg-white/5 active:scale-[0.99] transition-all"
+                  className="bg-[#111827] rounded-[14px] p-3 border border-white/5 shadow-[0_2px_8px_-4px_rgba(0,0,0,0.05)] flex items-center justify-between cursor-pointer hover:bg-white/5 active:scale-[0.99] transition-all"
                 >
                   <div className="flex items-center gap-3">
                     <div className={`w-10 h-10 rounded-[10px] flex items-center justify-center ${tx.iconBg.replace('bg-', 'bg-').replace('100', '900/20')} ${tx.iconColor.replace('500', '400')}`}>
@@ -280,7 +274,7 @@ export default function TransactionsPage() {
               ))}
             </div>
           ) : (
-            <div className="bg-[#131F37] rounded-[16px] border-2 border-dashed border-white/5 p-8 flex flex-col items-center justify-center text-center mt-4">
+            <div className="bg-[#111827] rounded-[16px] border-2 border-dashed border-white/5 p-8 flex flex-col items-center justify-center text-center mt-4">
               <div className="w-12 h-12 bg-white/5 rounded-2xl flex items-center justify-center text-gray-500 mb-3">
                 <Inbox size={24} />
               </div>

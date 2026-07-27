@@ -27,7 +27,7 @@ export default function InvitePage() {
   const invitationCode = user?.referral_code || "------";
 
   const { data: settingsRes } = useFetchData("/settings", ["platform-settings"]);
-  const siteName = settingsRes?.settings?.site_name || "Polychainapp";
+  const siteName = settingsRes?.settings?.site_name || "mykryptexapp.com";
 
   useEffect(() => {
     if (invitationCode && invitationCode !== "------") {
@@ -83,18 +83,12 @@ export default function InvitePage() {
           <DollarSign size={20} />
         </div>
         <div className="absolute bottom-[15%] right-[25%] w-2 h-2 bg-yellow-500/20 rounded-full blur-[1px]"></div>
-        <div className="absolute top-[30%] left-[20%] w-1.5 h-1.5 bg-purple-500/30 rounded-full blur-[1px]"></div>
+        <div className="absolute top-[30%] left-[20%] w-1.5 h-1.5 bg-amber-500/30 rounded-full blur-[1px]"></div>
       </div>
       
       {/* Header */}
-      <div className="px-4 py-3 flex items-center justify-between sticky top-0 z-20">
-        <button 
-          onClick={() => router.back()}
-          className="w-8 h-8 bg-white/5 border border-white/10 hover:bg-white/10 rounded-xl flex items-center justify-center transition-colors text-white backdrop-blur-md cursor-pointer"
-        >
-          <ArrowLeft size={16} />
-        </button>
-        <h1 className="text-white text-[14px] font-bold absolute left-1/2 -translate-x-1/2">Invite Friends</h1>
+      <div className="px-4 py-4 flex items-center justify-center sticky top-0 z-20 bg-[#0b0f19]/60 backdrop-blur-md">
+        <h1 className="text-white text-[14px] font-bold">Invite Friends</h1>
       </div>
 
       <div className="px-4 mt-2 flex flex-col items-center max-w-[480px] mx-auto w-full z-10">
@@ -107,7 +101,7 @@ export default function InvitePage() {
         <div className="bg-white p-2.5 rounded-[16px] mb-5 shadow-lg relative">
           {isLoading && (
             <div className="absolute inset-0 flex items-center justify-center bg-white/80 backdrop-blur-sm z-10 rounded-[16px]">
-              <div className="w-6 h-6 border-2 border-[#4c1d95] border-t-transparent rounded-full animate-spin"></div>
+              <div className="w-6 h-6 border-2 border-[#d97706] border-t-transparent rounded-full animate-spin"></div>
             </div>
           )}
           <div className="w-[130px] h-[130px] flex items-center justify-center rounded-[10px] overflow-hidden">
@@ -122,7 +116,7 @@ export default function InvitePage() {
         {/* Info Cards */}
         <div className="w-full space-y-2 mb-4">
           {/* Invitation Code */}
-          <div className="bg-[#131F37] border border-white/5 rounded-[12px] p-3 flex items-center justify-between shadow-md">
+          <div className="bg-[#111827] border border-white/5 rounded-[12px] p-3 flex items-center justify-between shadow-md">
             <div>
               <div className="text-white/50 text-[10px] mb-1 font-medium">Invitation code</div>
               <div className="text-white/90 font-bold text-[13px]">{invitationCode}</div>
@@ -136,7 +130,7 @@ export default function InvitePage() {
           </div>
 
           {/* Invitation Link */}
-          <div className="bg-[#131F37] border border-white/5 rounded-[12px] p-3 flex items-center justify-between shadow-md">
+          <div className="bg-[#111827] border border-white/5 rounded-[12px] p-3 flex items-center justify-between shadow-md">
             <div className="overflow-hidden pr-3">
               <div className="text-white/50 text-[10px] mb-1 font-medium">Invitation link</div>
               <div className="text-white/90 font-bold text-[11px] truncate">{invitationLink}</div>
@@ -152,7 +146,7 @@ export default function InvitePage() {
 
         {/* Actions */}
         <div className="w-full flex gap-2 mb-5">
-          <button onClick={handleShare} className=" cursor-pointer flex-1 bg-[#8b5cf6] text-white flex items-center justify-center gap-1.5 py-2.5 rounded-[10px] text-[12px] font-bold hover:bg-[#7c3aed] active:scale-[0.98] transition-all shadow-md">
+          <button onClick={handleShare} className=" cursor-pointer flex-1 bg-[#f59e0b] text-white flex items-center justify-center gap-1.5 py-2.5 rounded-[10px] text-[12px] font-bold hover:bg-[#d97706] active:scale-[0.98] transition-all shadow-md">
             <Share2 size={14} /> Share Link
           </button>
           <button 
@@ -164,9 +158,9 @@ export default function InvitePage() {
         </div>
 
         {/* Referral Rewards Banner */}
-        <div className="w-full bg-purple-900/20 border border-white/5 rounded-[16px] p-4 text-center shadow-md relative overflow-hidden">
+        <div className="w-full bg-amber-900/20 border border-white/5 rounded-[16px] p-4 text-center shadow-md relative overflow-hidden">
           {/* Subtle gradient overlay */}
-          <div className="absolute inset-0 bg-gradient-to-br from-[#8b5cf6]/5 to-transparent"></div>
+          <div className="absolute inset-0 bg-gradient-to-br from-[#f59e0b]/5 to-transparent"></div>
           
           <div className="relative z-10 flex flex-col items-center">
             <div className="flex items-center gap-1.5 mb-1.5">

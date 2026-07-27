@@ -106,7 +106,7 @@ export default function WalletPage() {
   return (
     <div className="flex flex-col h-full bg-transparent overflow-y-auto  [&::-webkit-scrollbar]:hidden">
       {/* Header */}
-      <div className="bg-[#131F37] px-4 pt-4 pb-3 flex justify-between items-center shadow-sm z-10 sticky top-0 border-b border-white/5">
+      <div className="bg-[#111827] px-4 pt-4 pb-3 flex justify-between items-center shadow-sm z-10 sticky top-0 border-b border-white/5">
         <div className="flex items-center gap-2.5">
           <button
             onClick={() => router.back()}
@@ -116,14 +116,14 @@ export default function WalletPage() {
           </button>
           <h1 className="text-white/90 text-[15px] font-bold">Wallet</h1>
         </div>
-        <Link href="/dashboard/wallet" className="w-8 h-8 bg-[#8b5cf6] rounded-xl flex items-center justify-center text-white hover:bg-purple-600 transition-colors shadow-sm cursor-pointer">
+        <Link href="/dashboard/wallet" className="w-8 h-8 bg-[#f59e0b] rounded-xl flex items-center justify-center text-white hover:bg-amber-600 transition-colors shadow-sm cursor-pointer">
           <Wallet size={14} />
         </Link>
       </div>
 
       <div className="px-4 pt-4 pb-4 space-y-3 max-w-[480px] mx-auto w-full">
         {/* Balance Card */}
-        <div className="bg-gradient-to-br from-[#4c1d95] to-[#0f172a] rounded-[16px] p-[16px] text-white shadow-lg relative overflow-hidden border border-white/10">
+        <div className="bg-gradient-to-br from-[#d97706] to-[#0f172a] rounded-[16px] p-[16px] text-white shadow-lg relative overflow-hidden border border-white/10">
           {/* Background decoration */}
           <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/3 blur-2xl"></div>
 
@@ -167,7 +167,7 @@ export default function WalletPage() {
           <div className="flex gap-2.5 relative z-10">
             <button 
               onClick={() => handleAction("?depositModal=true")}
-              className="cursor-pointer flex-1 bg-[#8b5cf6] text-white flex items-center justify-center gap-1.5 py-2 rounded-[8px] text-[11px] font-bold hover:bg-purple-600 transition-colors shadow-sm"
+              className="cursor-pointer flex-1 bg-[#f59e0b] text-white flex items-center justify-center gap-1.5 py-2 rounded-[8px] text-[11px] font-bold hover:bg-amber-600 transition-colors shadow-sm"
             >
               <Download size={12} /> Deposit
             </button>
@@ -181,13 +181,13 @@ export default function WalletPage() {
         </div>
 
         {/* Recent Transactions */}
-        <div className="bg-[#131F37] rounded-[16px] p-[16px] border border-white/5 shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] min-h-[180px] flex flex-col">
+        <div className="bg-[#111827] rounded-[16px] p-[16px] border border-white/5 shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)] min-h-[180px] flex flex-col">
           <div className="flex justify-between items-center mb-6">
             <div className="flex items-center gap-1.5">
-              <Clock size={14} className="text-[#8b5cf6]" />
+              <Clock size={14} className="text-[#f59e0b]" />
               <h2 className="text-white/90 font-bold text-[13px]">Recent Transactions</h2>
             </div>
-            <Link href="/dashboard/transactions" className="flex items-center gap-1 text-[#8b5cf6] text-[10px] font-medium hover:text-purple-400 transition-colors cursor-pointer">
+            <Link href="/dashboard/transactions" className="flex items-center gap-1 text-[#f59e0b] text-[10px] font-medium hover:text-amber-400 transition-colors cursor-pointer">
               View All <ArrowRight size={10} />
             </Link>
           </div>
@@ -200,7 +200,7 @@ export default function WalletPage() {
                  {transactions.slice(0, 10).map((tx) => (
                    <div key={tx.id} className="flex justify-between items-center bg-white/5 rounded-xl p-3 border border-white/5">
                      <div className="flex items-center gap-3">
-                        <div className={`w-8 h-8 rounded-full flex items-center justify-center ${tx.type === 'DEPOSIT' ? 'bg-green-900/20 text-green-400' : tx.type === 'WITHDRAWAL' ? 'bg-red-900/20 text-red-400' : 'bg-purple-900/20 text-purple-400'}`}>
+                        <div className={`w-8 h-8 rounded-full flex items-center justify-center ${tx.type === 'DEPOSIT' ? 'bg-green-900/20 text-green-400' : tx.type === 'WITHDRAWAL' ? 'bg-red-900/20 text-red-400' : 'bg-amber-900/20 text-amber-400'}`}>
                           {tx.type === 'DEPOSIT' ? <ArrowDownLeft size={14} /> : tx.type === 'WITHDRAWAL' ? <ArrowUpRight size={14} /> : <Receipt size={14} />}
                         </div>
                         <div>
@@ -220,7 +220,7 @@ export default function WalletPage() {
                </div>
             ) : (
                <>
-                 <div className="w-10 h-10 bg-[#131F37] rounded-xl flex items-center justify-center border border-white/5 shadow-sm">
+                 <div className="w-10 h-10 bg-[#111827] rounded-xl flex items-center justify-center border border-white/5 shadow-sm">
                    <Receipt size={18} className="text-gray-500" />
                  </div>
                  <span className="text-[11px] text-gray-400 font-medium">No transactions yet</span>

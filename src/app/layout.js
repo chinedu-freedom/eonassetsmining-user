@@ -22,7 +22,7 @@ export async function generateMetadata() {
       });
       if (res.ok) {
         const data = await res.json();
-        const siteName = data?.settings?.site_name || "Polychainapp";
+        const siteName = data?.settings?.site_name || "mykryptexapp.com";
         const siteTitle = data?.settings?.site_title || "The Ultimate Crypto Asset Mining Platform";
         return {
           title: siteName,
@@ -40,13 +40,13 @@ export async function generateMetadata() {
     // Ignore error and fallback to default
   }
   return {
-    title: "Polychainapp",
+    title: "mykryptexapp.com",
     description: "The Ultimate Crypto Asset Mining Platform",
     manifest: "/manifest.json",
     appleWebApp: {
       capable: true,
       statusBarStyle: "default",
-      title: "Polychainapp",
+      title: "mykryptexapp.com",
     },
   };
 }

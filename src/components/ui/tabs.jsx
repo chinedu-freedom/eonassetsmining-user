@@ -28,7 +28,7 @@ function TabsContent({ tabs = [], defaultTab }) {
             className={cn(
               "px-7 md:px-10 py-2 text-sm font-medium transition-colors cursor-pointer capitalize",
               isActive
-                ? "text-purple-600 border-b-4 border-purple-600"
+                ? "text-amber-600 border-b-4 border-amber-600"
                 : "text-gray-500 hover:text-gray-700"
             )}
           >

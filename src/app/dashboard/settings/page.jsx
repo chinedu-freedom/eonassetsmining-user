@@ -19,27 +19,17 @@ export default function SettingsPage() {
       label: "My Profile",
       icon: User,
       iconBg: "bg-white/5",
-      iconColor: "text-[#8b5cf6]",
+      iconColor: "text-[#f59e0b]",
       badge: null,
       href: "/dashboard/settings/profile"
     },
-    {
-      id: "payment",
-      label: "Payment Settings",
-      icon: Lock,
-      iconBg: "bg-white/5",
-      iconColor: "text-[#8b5cf6]",
-      badge: hasPin 
-        ? { text: "Set", bg: "bg-green-900/20", color: "text-green-400" }
-        : { text: "Not Set", bg: "bg-amber-900/20", color: "text-amber-400" },
-      href: "/dashboard/settings/payment"
-    },
+
     {
       id: "login",
       label: "Login Settings",
       icon: Key,
       iconBg: "bg-white/5",
-      iconColor: "text-[#8b5cf6]",
+      iconColor: "text-[#f59e0b]",
       badge: null,
       href: "/dashboard/settings/login"
     },
@@ -48,7 +38,7 @@ export default function SettingsPage() {
       label: "Authentication",
       icon: ShieldCheck,
       iconBg: "bg-white/5",
-      iconColor: "text-[#8b5cf6]",
+      iconColor: "text-[#f59e0b]",
       badge: isEmailVerified
         ? { text: "Verified", bg: "bg-emerald-900/20", color: "text-emerald-400" }
         : { text: "Unverified", bg: "bg-amber-900/20", color: "text-amber-400" },
@@ -59,20 +49,14 @@ export default function SettingsPage() {
   return (
     <div className="flex flex-col h-full bg-transparent overflow-y-auto [&::-webkit-scrollbar]:hidden ">
       {/* Header */}
-      <div className="bg-[#131F37] px-4 py-3 flex items-center gap-2.5 sticky top-0 z-20 shadow-sm border-b border-white/5">
-        <button
-          onClick={() => router.back()}
-          className="w-7 h-7 bg-white/5 hover:bg-white/10 rounded-full flex items-center justify-center transition-colors text-gray-300 cursor-pointer"
-        >
-          <ArrowLeft size={16} />
-        </button>
+      <div className="bg-[#111827] px-4 py-3.5 flex items-center sticky top-0 z-20 shadow-sm border-b border-white/5">
         <h1 className="text-white/90 text-[15px] font-bold">Settings</h1>
       </div>
 
       <div className="px-4 py-4 max-w-[480px] mx-auto w-full space-y-3">
 
         {/* Main Settings Group */}
-        <div className="bg-[#131F37] rounded-[16px] border border-white/5 shadow-[0_2px_8px_-4px_rgba(0,0,0,0.05)] overflow-hidden">
+        <div className="bg-[#111827] rounded-[16px] border border-white/5 shadow-[0_2px_8px_-4px_rgba(0,0,0,0.05)] overflow-hidden">
           {menuItems.map((item, index) => (
             <button
               key={item.id}
@@ -100,7 +84,7 @@ export default function SettingsPage() {
         </div>
 
         {/* Delete Account */}
-        <div className="bg-[#131F37] rounded-[16px] border border-white/5 shadow-[0_2px_8px_-4px_rgba(0,0,0,0.05)] overflow-hidden">
+        <div className="bg-[#111827] rounded-[16px] border border-white/5 shadow-[0_2px_8px_-4px_rgba(0,0,0,0.05)] overflow-hidden">
           <button
             onClick={() => setShowDeleteModal(true)}
             className="w-full flex items-center justify-between px-3.5 py-3 hover:bg-red-900/20 transition-colors"
@@ -125,7 +109,7 @@ export default function SettingsPage() {
         >
           <div 
             onClick={(e) => e.stopPropagation()}
-            className="bg-[#0B1426] border border-white/10 rounded-[20px] w-full max-w-[320px] p-5 shadow-xl animate-in fade-in zoom-in-95 duration-200"
+            className="bg-[#0b0f19] border border-white/10 rounded-[20px] w-full max-w-[320px] p-5 shadow-xl animate-in fade-in zoom-in-95 duration-200"
           >
             <div className="flex flex-col items-center text-center">
               <div className="w-12 h-12 bg-red-900/20 rounded-full flex items-center justify-center text-red-500 mb-4">

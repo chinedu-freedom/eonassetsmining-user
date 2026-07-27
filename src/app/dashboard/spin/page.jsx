@@ -85,7 +85,7 @@ export default function SpinPage() {
             this.resize();
             this.canvas.style.display = 'block';
             this.particles = [];
-            const colors = ['#8b5cf6', '#22c55e', '#f59e0b', '#ef4444', '#8b5cf6', '#06b6d4'];
+            const colors = ['#f59e0b', '#22c55e', '#f59e0b', '#ef4444', '#f59e0b', '#06b6d4'];
             for (let i = 0; i < count; i++) {
                 this.particles.push({
                     x: Math.random() * this.canvas.width,
@@ -301,7 +301,7 @@ export default function SpinPage() {
   return (
     <div className="flex flex-col h-full bg-transparent overflow-y-auto [&::-webkit-scrollbar]:hidden pb-20">
       {/* Header */}
-      <div className="px-4 py-4 flex justify-between items-center bg-[#131F37] sticky top-0 z-20 border-b border-white/5">
+      <div className="px-4 py-4 flex justify-between items-center bg-[#111827] sticky top-0 z-20 border-b border-white/5">
         <button 
           onClick={() => router.back()}
           className="w-10 h-10 bg-white/5 border border-white/5 rounded-[12px] flex items-center justify-center text-gray-300 shadow-sm cursor-pointer hover:bg-white/10 transition-colors"
@@ -321,24 +321,24 @@ export default function SpinPage() {
         
         {/* Stats Row */}
         <div className="grid grid-cols-2 gap-3 mb-4">
-          <div className="bg-[#131F37] p-4 rounded-[16px] border border-white/5 shadow-sm">
+          <div className="bg-[#111827] p-4 rounded-[16px] border border-white/5 shadow-sm">
             <div className="flex items-center gap-1.5 mb-2">
               <div className="w-4 h-4 rounded-[4px] bg-white/10 flex items-center justify-center">
                 <div className="w-2 h-1.5 bg-gray-400 rounded-[1px]"></div>
               </div>
               <span className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">Deposit Balance</span>
             </div>
-            <div className="text-[20px] font-bold text-[#8b5cf6]">
+            <div className="text-[20px] font-bold text-[#f59e0b]">
               {settings.currency_symbol || "$"}{Number(currentBalance).toFixed(2)}
             </div>
           </div>
 
-          <div className="bg-[#131F37] p-4 rounded-[16px] border border-white/5 shadow-sm">
+          <div className="bg-[#111827] p-4 rounded-[16px] border border-white/5 shadow-sm">
             <div className="flex items-center gap-1.5 mb-2">
               <Ticket className="text-gray-400 w-4 h-4" />
               <span className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">Free Spins</span>
             </div>
-            <div className="text-[20px] font-bold text-[#8b5cf6]">
+            <div className="text-[20px] font-bold text-[#f59e0b]">
               {freeSpins}
             </div>
           </div>
@@ -346,7 +346,7 @@ export default function SpinPage() {
 
         {/* Cost Indicator */}
         <div className="flex justify-center mt-2 mb-6">
-          <div className="bg-[#131F37] px-5 py-2 rounded-full border border-white/5 shadow-sm flex items-center gap-2">
+          <div className="bg-[#111827] px-5 py-2 rounded-full border border-white/5 shadow-sm flex items-center gap-2">
             <div className="w-4 h-4 bg-gray-400 rounded-[4px]"></div>
             <span className="text-[13px] font-bold text-white/90">Cost: {settings.currency_symbol || "$"}{cost.toFixed(2)}</span>
           </div>
@@ -356,9 +356,9 @@ export default function SpinPage() {
         <div className="flex justify-center items-center py-6">
           <div className="relative w-[320px] h-[320px]">
             {/* The Outer Blue Ring with Lights */}
-            <div className="absolute inset-0 rounded-full bg-[#8b5cf6] shadow-[0_0_20px_rgba(59,130,246,0.3)] border-4 border-[#60a5fa] overflow-hidden">
+            <div className="absolute inset-0 rounded-full bg-[#f59e0b] shadow-[0_0_20px_rgba(59,130,246,0.3)] border-4 border-[#60a5fa] overflow-hidden">
               {/* Fake lights using CSS repeating conic gradient or positioned dots */}
-              <div className="absolute inset-1 rounded-full border border-purple-400/50"></div>
+              <div className="absolute inset-1 rounded-full border border-amber-400/50"></div>
               {Array.from({ length: 24 }).map((_, i) => (
                 <div 
                   key={i}
@@ -430,10 +430,10 @@ export default function SpinPage() {
             {/* Center Start Button */}
             <div 
               onClick={handleSpin}
-              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80px] h-[80px] bg-gradient-to-b from-[#94a3b8] to-[#475569] rounded-full flex items-center justify-center cursor-pointer shadow-[0_0_15px_rgba(0,0,0,0.3)] z-30 border-[4px] border-[#8b5cf6] hover:scale-105 active:scale-95 transition-all"
+              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80px] h-[80px] bg-gradient-to-b from-[#94a3b8] to-[#475569] rounded-full flex items-center justify-center cursor-pointer shadow-[0_0_15px_rgba(0,0,0,0.3)] z-30 border-[4px] border-[#f59e0b] hover:scale-105 active:scale-95 transition-all"
             >
               {/* Pointer Triangle */}
-              <div className="absolute -top-[14px] left-1/2 -translate-x-1/2 w-0 h-0 border-l-[10px] border-l-transparent border-r-[10px] border-r-transparent border-b-[16px] border-b-[#8b5cf6]"></div>
+              <div className="absolute -top-[14px] left-1/2 -translate-x-1/2 w-0 h-0 border-l-[10px] border-l-transparent border-r-[10px] border-r-transparent border-b-[16px] border-b-[#f59e0b]"></div>
               
               <span className="text-white font-bold text-[16px] drop-shadow-md">Start</span>
             </div>
@@ -444,14 +444,14 @@ export default function SpinPage() {
         {/* Recent Wins */}
         <div className="mt-8">
           <div className="flex items-center gap-2 mb-4 px-1">
-            <History className="text-[#8b5cf6]" size={18} />
+            <History className="text-[#f59e0b]" size={18} />
             <h3 className="font-bold text-white/90 text-[16px]">Recent Wins</h3>
           </div>
 
           <div className="space-y-3">
             {spinData?.recentWins?.length > 0 ? (
               spinData.recentWins.map((win) => (
-                <div key={win.id} className="bg-[#131F37] rounded-[16px] p-4 border border-white/5 shadow-sm flex items-center justify-between">
+                <div key={win.id} className="bg-[#111827] rounded-[16px] p-4 border border-white/5 shadow-sm flex items-center justify-between">
                   <div className="flex items-center gap-3">
                     <div className={`w-12 h-12 rounded-[12px] flex items-center justify-center ${Number(win.reward_earned) > 0 ? 'bg-green-900/20' : 'bg-white/5'}`}>
                       <Gift className={Number(win.reward_earned) > 0 ? 'text-[#16a34a]' : 'text-gray-400'} size={20} />
@@ -472,7 +472,7 @@ export default function SpinPage() {
                 </div>
               ))
             ) : (
-              <div className="text-center py-6 text-gray-400 bg-[#131F37] rounded-[16px] border border-white/5 text-sm">
+              <div className="text-center py-6 text-gray-400 bg-[#111827] rounded-[16px] border border-white/5 text-sm">
                 No recent wins yet
               </div>
             )}
@@ -484,10 +484,10 @@ export default function SpinPage() {
       {/* Floating Help Button */}
       <button 
         onClick={() => setIsHowToPlayOpen(true)}
-        className="fixed bottom-[80px] right-4 w-[60px] h-[60px] bg-[#8b5cf6] rounded-full shadow-[0_4px_16px_rgba(59,130,246,0.5)] flex items-center justify-center z-40 hover:scale-105 active:scale-95 transition-transform"
+        className="fixed bottom-[80px] right-4 w-[60px] h-[60px] bg-[#f59e0b] rounded-full shadow-[0_4px_16px_rgba(59,130,246,0.5)] flex items-center justify-center z-40 hover:scale-105 active:scale-95 transition-transform"
       >
         <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center">
-          <span className="text-[#8b5cf6] font-bold text-[18px]">?</span>
+          <span className="text-[#f59e0b] font-bold text-[18px]">?</span>
         </div>
       </button>
 
@@ -496,7 +496,7 @@ export default function SpinPage() {
       {/* Spin Result Modal */}
       {showResultModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
-          <div className="bg-[#131F37] border border-white/5 rounded-[24px] p-8 w-full max-w-[320px] flex flex-col items-center text-center shadow-[0_25px_50px_rgba(0,0,0,0.25)] animate-in zoom-in-95 duration-200">
+          <div className="bg-[#111827] border border-white/5 rounded-[24px] p-8 w-full max-w-[320px] flex flex-col items-center text-center shadow-[0_25px_50px_rgba(0,0,0,0.25)] animate-in zoom-in-95 duration-200">
             
             <div 
               className={`w-20 h-20 rounded-full flex items-center justify-center mb-5 text-[40px]`}
@@ -517,8 +517,8 @@ export default function SpinPage() {
                 <p className="text-[#64748b] text-[14px]">
                   {resultData.message}
                 </p>
-                <p className="text-[#8b5cf6] text-[13px] mt-2 mb-4 flex items-center gap-1.5 font-medium">
-                  <span className="w-4 h-4 rounded-full bg-[#8b5cf6] text-white flex items-center justify-center text-[10px]">✓</span>
+                <p className="text-[#f59e0b] text-[13px] mt-2 mb-4 flex items-center gap-1.5 font-medium">
+                  <span className="w-4 h-4 rounded-full bg-[#f59e0b] text-white flex items-center justify-center text-[10px]">✓</span>
                   Added to withdrawable balance
                 </p>
               </div>
@@ -535,7 +535,7 @@ export default function SpinPage() {
             
             <button 
               onClick={() => setShowResultModal(false)}
-              className="w-full bg-gradient-to-br from-[#8b5cf6] to-[#2563eb] text-white font-semibold rounded-[12px] py-3.5 hover:-translate-y-0.5 hover:shadow-[0_8px_20px_rgba(59,130,246,0.3)] active:translate-y-0 transition-all"
+              className="w-full bg-gradient-to-br from-[#f59e0b] to-[#2563eb] text-white font-semibold rounded-[12px] py-3.5 hover:-translate-y-0.5 hover:shadow-[0_8px_20px_rgba(59,130,246,0.3)] active:translate-y-0 transition-all"
             >
               Continue
             </button>

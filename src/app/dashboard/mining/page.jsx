@@ -86,14 +86,11 @@ export default function MiningPlansPage() {
   return (
     <div className="flex flex-col h-full bg-transparent overflow-y-auto  [&::-webkit-scrollbar]:hidden relative">
       {/* Header */}
-      <div className="bg-[#131F37] px-4 pt-4 pb-3 flex justify-between items-center shadow-sm z-10 sticky top-0 border-b border-white/5">
+      <div className="bg-[#111827] px-4 pt-4 pb-3 flex justify-between items-center shadow-sm z-10 sticky top-0 border-b border-white/5">
         <div className="flex items-center gap-3">
-          <Link href="/dashboard" className="w-8 h-8 bg-white/5 rounded-xl flex items-center justify-center text-gray-300 hover:bg-white/10 transition-colors cursor-pointer">
-            <ArrowLeft size={16} />
-          </Link>
           <h1 className="text-white/90 text-[15px] font-bold">Mining Contracts</h1>
         </div>
-        <Link href="/dashboard/investments" className="w-8 h-8 bg-[#8b5cf6] rounded-md flex items-center justify-center text-white hover:bg-purple-600 transition-colors shadow-sm cursor-pointer">
+        <Link href="/dashboard/investments" className="w-8 h-8 bg-[#f59e0b] rounded-md flex items-center justify-center text-white hover:bg-amber-600 transition-colors shadow-sm cursor-pointer">
           <Wallet size={14} />
         </Link>
       </div>
@@ -102,7 +99,7 @@ export default function MiningPlansPage() {
       <div className="px-4 pt-4 pb-24 space-y-4 max-w-[480px] mx-auto w-full">
         {isLoading ? (
           <div className="flex flex-col items-center justify-center py-12 text-gray-500">
-            <Loader2 className="w-8 h-8 animate-spin mb-3 text-[#8b5cf6]" />
+            <Loader2 className="w-8 h-8 animate-spin mb-3 text-[#f59e0b]" />
             <p className="text-sm font-medium">Loading plans...</p>
           </div>
         ) : plans.length === 0 ? (
@@ -110,7 +107,7 @@ export default function MiningPlansPage() {
             <p className="text-sm font-medium">No plans available.</p>
           </div>
         ) : plans.map((plan) => (
-          <div key={plan.id} className="bg-[#131F37] rounded-[12px] p-3 border border-white/5 shadow-[0_2px_8px_rgba(0,0,0,0.04)] flex flex-col gap-3">
+          <div key={plan.id} className="bg-[#111827] rounded-[12px] p-3 border border-white/5 shadow-[0_2px_8px_rgba(0,0,0,0.04)] flex flex-col gap-3">
             {/* Header */}
             <div className="flex justify-between items-center">
               <div className="flex items-center gap-3">
@@ -118,12 +115,12 @@ export default function MiningPlansPage() {
                   {plan.image ? (
                     <img src={plan.image} alt={plan.name} className="w-full h-full object-cover rounded-full" />
                   ) : (
-                    <Layers className="text-[#8b5cf6]" size={18} strokeWidth={2.5} />
+                    <Layers className="text-[#f59e0b]" size={18} strokeWidth={2.5} />
                   )}
                 </div>
                 <h2 className="text-white/90 font-extrabold text-[14px] uppercase tracking-wide">{plan.name}</h2>
               </div>
-              <div className="text-[#8b5cf6] font-extrabold text-[18px] leading-none">
+              <div className="text-[#f59e0b] font-extrabold text-[18px] leading-none">
                 {Number(plan.daily_income).toFixed(1)}%
               </div>
             </div>
@@ -147,7 +144,7 @@ export default function MiningPlansPage() {
             {/* Action Button */}
             <button
               onClick={() => handleMineClick(plan)}
-              className="cursor-pointer w-full mt-0.5 bg-[#8b5cf6] text-white font-bold py-2 rounded-lg hover:bg-purple-600 transition-colors text-[12px] shadow-sm flex items-center justify-center gap-2"
+              className="cursor-pointer w-full mt-0.5 bg-[#f59e0b] text-white font-bold py-2 rounded-lg hover:bg-amber-600 transition-colors text-[12px] shadow-sm flex items-center justify-center gap-2"
             >
              {/* <Cpu size={14} /> */}
               Activate Plan
@@ -160,7 +157,7 @@ export default function MiningPlansPage() {
       {selectedPlan && (
         <div className="fixed inset-0 z-[100] flex items-end justify-center bg-black/40 backdrop-blur-sm">
           <div
-            className="bg-[#0B1426] border border-white/10 w-full max-w-[800px] rounded-t-[24px] overflow-hidden flex flex-col animate-in slide-in-from-bottom-full duration-300 ease-out shadow-2xl"
+            className="bg-[#0b0f19] border border-white/10 w-full max-w-[800px] rounded-t-[24px] overflow-hidden flex flex-col animate-in slide-in-from-bottom-full duration-300 ease-out shadow-2xl"
             style={{ maxHeight: '90vh' }}
           >
             {/* Drag Handle */}
@@ -172,12 +169,12 @@ export default function MiningPlansPage() {
             <div className="flex justify-between items-start px-4 pb-4 border-b border-white/5">
               <div className="flex items-center gap-3">
                 <div className="w-[42px] h-[42px] bg-[#020617] rounded-full flex items-center justify-center shadow-inner relative overflow-hidden shrink-0">
-                  <div className="absolute inset-0 bg-gradient-to-b from-purple-500/20 to-transparent"></div>
+                  <div className="absolute inset-0 bg-gradient-to-b from-amber-500/20 to-transparent"></div>
                   {selectedPlan.image ? (
                     <img src={selectedPlan.image} alt={selectedPlan.name} className="w-full h-full object-cover z-10" />
                   ) : (
-                    <div className="w-[18px] h-[26px] border border-purple-400/50 rounded flex flex-col items-center justify-center bg-[#0f172a] z-10 shadow-[0_0_8px_rgba(59,130,246,0.5)]">
-                      <span className="text-purple-400 text-[9px] font-bold leading-none">{selectedPlan.duration}</span>
+                    <div className="w-[18px] h-[26px] border border-amber-400/50 rounded flex flex-col items-center justify-center bg-[#0f172a] z-10 shadow-[0_0_8px_rgba(59,130,246,0.5)]">
+                      <span className="text-amber-400 text-[9px] font-bold leading-none">{selectedPlan.duration}</span>
                       <span className="text-white text-[4px] opacity-80 uppercase mt-0.5">Days</span>
                     </div>
                   )}
@@ -203,11 +200,11 @@ export default function MiningPlansPage() {
                   <div className="text-gray-400 text-[10px] mt-1">Daily Rate</div>
                 </div>
                 <div className="text-center w-1/3 border-x border-white/5">
-                  <div className="text-[#8b5cf6] font-bold text-[14px]">{selectedPlan.duration} days</div>
+                  <div className="text-[#f59e0b] font-bold text-[14px]">{selectedPlan.duration} days</div>
                   <div className="text-gray-400 text-[10px] mt-1">Revenue Days</div>
                 </div>
                 <div className="text-center w-1/3">
-                  <div className="text-[#8b5cf6] font-bold text-[14px]">{(Number(selectedPlan.daily_income) * selectedPlan.duration).toFixed(1)}%</div>
+                  <div className="text-[#f59e0b] font-bold text-[14px]">{(Number(selectedPlan.daily_income) * selectedPlan.duration).toFixed(1)}%</div>
                   <div className="text-gray-400 text-[10px] mt-1">Total Yield</div>
                 </div>
               </div>
@@ -215,8 +212,8 @@ export default function MiningPlansPage() {
               {/* Available Balance */}
               <div>
                 <label className="block text-gray-400 text-[12px] mb-2">Available Balance</label>
-                <div className="w-full py-4 rounded-[12px] border border-[#8b5cf6] bg-purple-900/10 flex flex-col items-center justify-center gap-1">
-                  <span className="text-[10px] font-semibold uppercase tracking-wider text-[#8b5cf6]">Earning & Deposit Balance</span>
+                <div className="w-full py-4 rounded-[12px] border border-[#f59e0b] bg-amber-900/10 flex flex-col items-center justify-center gap-1">
+                  <span className="text-[10px] font-semibold uppercase tracking-wider text-[#f59e0b]">Earning & Deposit Balance</span>
                   <span className="text-[18px] text-white font-bold">{formatCurrency(balances.main)}</span>
                 </div>
               </div>
@@ -232,7 +229,7 @@ export default function MiningPlansPage() {
                   value={investmentAmount}
                   onChange={(e) => setInvestmentAmount(e.target.value)}
                   placeholder="Enter amount"
-                  className="w-full border border-white/10 bg-[#131F37] rounded-[12px] px-4 py-3.5 text-[14px] text-white/90 focus:outline-none focus:border-[#8b5cf6] focus:ring-1 focus:ring-[#8b5cf6] transition-all placeholder:text-gray-500"
+                  className="w-full border border-white/10 bg-[#111827] rounded-[12px] px-4 py-3.5 text-[14px] text-white/90 focus:outline-none focus:border-[#f59e0b] focus:ring-1 focus:ring-[#f59e0b] transition-all placeholder:text-gray-500"
                 />
               </div>
 
@@ -254,14 +251,14 @@ export default function MiningPlansPage() {
             </div>
 
             {/* Footer */}
-            <div className="p-5 border-t border-white/5 bg-[#0B1426] flex flex-col items-center gap-3">
+            <div className="p-5 border-t border-white/5 bg-[#0b0f19] flex flex-col items-center gap-3">
               <div className="text-[12px] text-gray-400">
                  Balance: <span className="text-[#f59e0b] font-bold">{formatCurrency(balances.main)}</span>
               </div>
               <button 
                 onClick={handleInvest}
                 disabled={isInvesting}
-                className="w-full bg-[#8b5cf6] text-white font-bold py-4 rounded-[12px] hover:bg-purple-600 transition-colors text-[15px] shadow-md disabled:opacity-50 flex items-center justify-center cursor-pointer"
+                className="w-full bg-[#f59e0b] text-white font-bold py-4 rounded-[12px] hover:bg-amber-600 transition-colors text-[15px] shadow-md disabled:opacity-50 flex items-center justify-center cursor-pointer"
               >
                 {isInvesting ? <Loader2 className="w-5 h-5 animate-spin" /> : "Start Mining"}
               </button>

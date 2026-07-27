@@ -25,7 +25,7 @@ function VerifyEmailContent() {
 
   const { data: settingsResponse, isLoading: isLoadingSettings } = useFetchData("/settings", ["platform-settings"]);
   const settings = settingsResponse?.settings || {};
-  const siteName = settings.site_name || "Polychainapp";
+  const siteName = settings.site_name || "mykryptexapp.com";
   const siteLogo = settings.platform_logo || null;
 
   useEffect(() => {
@@ -101,7 +101,7 @@ function VerifyEmailContent() {
   if (!isMounted || isLoadingSettings) {
     return (
       <div className="fixed inset-0 flex items-center justify-center bg-white z-[9999]">
-        <div className="w-12 h-12 border-4 border-gray-100 border-t-[#8b5cf6] rounded-full animate-spin"></div>
+        <div className="w-12 h-12 border-4 border-gray-100 border-t-[#f59e0b] rounded-full animate-spin"></div>
       </div>
     );
   }
@@ -211,7 +211,7 @@ function VerifyEmailContent() {
       return (
         <div className="min-h-screen flex items-center justify-center bg-gray-50 w-full">
           <div className="text-center">
-            <RefreshCw className="w-12 h-12 text-purple-600 animate-spin mx-auto mb-4" />
+            <RefreshCw className="w-12 h-12 text-amber-600 animate-spin mx-auto mb-4" />
             <h2 className="text-xl font-semibold text-gray-900">Verifying your email...</h2>
           </div>
         </div>
@@ -240,7 +240,7 @@ function VerifyEmailContent() {
             <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-4" />
             <h2 className="text-2xl font-bold mb-2 text-gray-900">Email Verified!</h2>
             <p className="text-gray-600 mb-6">Your email has been successfully verified. You can now log in.</p>
-            <Button onClick={() => router.push("/")} className="w-full h-12 bg-purple-600 hover:bg-purple-700 text-white">
+            <Button onClick={() => router.push("/")} className="w-full h-12 bg-amber-600 hover:bg-amber-700 text-white">
               Go to Login
             </Button>
           </Card>
@@ -259,7 +259,7 @@ function VerifyEmailContent() {
                 <img src={siteLogo} alt="Logo" className="w-full h-full object-contain" />
               </div>
             ) : (
-              <div className="w-16 h-16 bg-gradient-to-br from-[#4c1d95] to-[#0f172a] rounded-full flex items-center justify-center shadow-sm mb-4">
+              <div className="w-16 h-16 bg-gradient-to-br from-[#d97706] to-[#0f172a] rounded-full flex items-center justify-center shadow-sm mb-4">
                 <div className="text-white text-xs font-bold tracking-wider">
                   {siteName.substring(0, 4).toUpperCase()}
                 </div>
@@ -276,8 +276,8 @@ function VerifyEmailContent() {
           <Card className="border border-gray-200 shadow-sm mb-6">
             <CardContent className="pt-6">
               <div className="flex items-start gap-4 mb-4">
-                <div className="w-12 h-12 bg-purple-50 rounded-full flex items-center justify-center flex-shrink-0">
-                  <Mail className="w-6 h-6 text-purple-600" />
+                <div className="w-12 h-12 bg-amber-50 rounded-full flex items-center justify-center flex-shrink-0">
+                  <Mail className="w-6 h-6 text-amber-600" />
                 </div>
                 <div>
                   <h3 className="font-medium text-gray-900 mb-1">
@@ -291,28 +291,28 @@ function VerifyEmailContent() {
                 </div>
               </div>
 
-              <div className="bg-purple-50 border border-purple-100 rounded-lg p-4">
+              <div className="bg-amber-50 border border-amber-100 rounded-lg p-4">
                 <div className="flex items-start gap-3">
-                  <AlertCircle className="w-5 h-5 text-purple-600 mt-0.5 flex-shrink-0" />
+                  <AlertCircle className="w-5 h-5 text-amber-600 mt-0.5 flex-shrink-0" />
                   <div>
-                    <p className="text-sm font-medium text-purple-800 mb-1">
+                    <p className="text-sm font-medium text-amber-800 mb-1">
                       {isInitialCountdown
                         ? "Please wait before resending"
                         : "Didn't receive the email?"}
                     </p>
-                    <ul className="text-sm text-purple-700 space-y-1">
+                    <ul className="text-sm text-amber-700 space-y-1">
                       <li className="flex items-start gap-2">
-                        <span className="text-purple-500">•</span>
+                        <span className="text-amber-500">•</span>
                         <span>Check your spam or junk folder</span>
                       </li>
                       <li className="flex items-start gap-2">
-                        <span className="text-purple-500">•</span>
+                        <span className="text-amber-500">•</span>
                         <span>
                           Make sure you entered the correct email address
                         </span>
                       </li>
                       <li className="flex items-start gap-2">
-                        <span className="text-purple-500">•</span>
+                        <span className="text-amber-500">•</span>
                         <span>Wait a few minutes for the email to arrive</span>
                       </li>
                     </ul>
@@ -337,7 +337,7 @@ function VerifyEmailContent() {
               variant={isButtonDisabled ? "outline" : "default"}
               className={`w-full h-12 ${isButtonDisabled
                   ? "border-gray-300 bg-gray-50 text-gray-400 cursor-not-allowed"
-                  : "bg-purple-600 hover:bg-purple-700 text-white"
+                  : "bg-amber-600 hover:bg-amber-700 text-white"
                 }`}
               disabled={isButtonDisabled}
             >
@@ -376,7 +376,7 @@ function VerifyEmailContent() {
               <Button
                 onClick={handleContinue}
                 variant="ghost"
-                className="w-full text-purple-600 hover:text-purple-700 hover:bg-purple-50"
+                className="w-full text-amber-600 hover:text-amber-700 hover:bg-amber-50"
               >
                 Continue to Login
               </Button>
@@ -389,7 +389,7 @@ function VerifyEmailContent() {
               href={settings?.whatsapp_support ? `https://wa.me/${settings.whatsapp_support.replace(/[^0-9]/g, '')}` : "#"}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-purple-600 font-medium hover:underline cursor-pointer"
+              className="text-amber-600 font-medium hover:underline cursor-pointer"
             >
               Contact Support
             </a>
@@ -406,7 +406,7 @@ export default function VerifyEmailPage() {
   return (
     <Suspense fallback={
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <RefreshCw className="w-12 h-12 text-purple-600 animate-spin" />
+        <RefreshCw className="w-12 h-12 text-amber-600 animate-spin" />
       </div>
     }>
       <VerifyEmailContent />

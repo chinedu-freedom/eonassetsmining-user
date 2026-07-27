@@ -34,7 +34,7 @@ export default function TaskPage() {
             this.resize();
             this.canvas.style.display = 'block';
             this.particles = [];
-            const colors = ['#8b5cf6', '#22c55e', '#f59e0b', '#ef4444', '#8b5cf6', '#06b6d4'];
+            const colors = ['#f59e0b', '#22c55e', '#f59e0b', '#ef4444', '#f59e0b', '#06b6d4'];
             for (let i = 0; i < count; i++) {
                 this.particles.push({
                     x: Math.random() * this.canvas.width,
@@ -106,7 +106,7 @@ export default function TaskPage() {
   return (
     <div className="flex flex-col h-full bg-transparent overflow-y-auto [&::-webkit-scrollbar]:hidden">
       {/* Header */}
-      <div className="bg-[#131F37] px-4 py-4 flex items-center gap-3 shadow-sm z-10 relative border-b border-white/5">
+      <div className="bg-[#111827] px-4 py-4 flex items-center gap-3 shadow-sm z-10 relative border-b border-white/5">
         <button 
           onClick={() => router.back()}
           className="w-8 h-8 bg-white/5 hover:bg-white/10 rounded-lg flex items-center justify-center transition-colors cursor-pointer"
@@ -118,21 +118,21 @@ export default function TaskPage() {
 
       <div className="p-4 space-y-4 pb-24">
         {/* Stats Card */}
-        <div className="bg-[#131F37] border border-white/5 rounded-[16px] p-5 text-white/90 shadow-sm flex justify-between items-center text-center">
+        <div className="bg-[#111827] border border-white/5 rounded-[16px] p-5 text-white/90 shadow-sm flex justify-between items-center text-center">
           <div className="flex flex-col gap-1 items-center">
-            <span className="text-[24px] font-bold leading-none text-[#8b5cf6]">{totalTasks}</span>
+            <span className="text-[24px] font-bold leading-none text-[#f59e0b]">{totalTasks}</span>
             <span className="text-[11px] text-gray-400">Total Tasks</span>
           </div>
           <div className="flex flex-col gap-1 items-center">
-            <span className="text-[24px] font-bold leading-none text-[#8b5cf6]">{readyTasks}</span>
+            <span className="text-[24px] font-bold leading-none text-[#f59e0b]">{readyTasks}</span>
             <span className="text-[11px] text-gray-400">Ready</span>
           </div>
           <div className="flex flex-col gap-1 items-center">
-            <span className="text-[24px] font-bold leading-none text-[#8b5cf6]">{claimedTasks}</span>
+            <span className="text-[24px] font-bold leading-none text-[#f59e0b]">{claimedTasks}</span>
             <span className="text-[11px] text-gray-400">Claimed</span>
           </div>
           <div className="flex flex-col gap-1 items-center">
-            <span className="text-[24px] font-bold leading-none text-[#8b5cf6]">{todayInvites}</span>
+            <span className="text-[24px] font-bold leading-none text-[#f59e0b]">{todayInvites}</span>
             <span className="text-[11px] text-gray-400">Today's Invites</span>
           </div>
         </div>
@@ -141,7 +141,7 @@ export default function TaskPage() {
         <div className="space-y-4">
           {isLoading ? (
             <div className="flex justify-center items-center py-10">
-              <Loader2 className="w-6 h-6 text-purple-600 animate-spin" />
+              <Loader2 className="w-6 h-6 text-amber-600 animate-spin" />
             </div>
           ) : tasks.length === 0 ? (
             <div className="text-center py-10 text-gray-500">No active tasks available.</div>
@@ -150,9 +150,9 @@ export default function TaskPage() {
               const progressPercent = Math.min((task.progress / task.required_referrals) * 100, 100);
               
               return (
-                <div key={task.id} className="bg-[#131F37] rounded-[10px] p-4 shadow-sm border border-white/5 flex gap-3">
-                  <div className="w-12 h-12 bg-purple-900/20 rounded-[12px] flex items-center justify-center shrink-0">
-                    <Gift className="text-[#8b5cf6]" size={20} />
+                <div key={task.id} className="bg-[#111827] rounded-[10px] p-4 shadow-sm border border-white/5 flex gap-3">
+                  <div className="w-12 h-12 bg-amber-900/20 rounded-[12px] flex items-center justify-center shrink-0">
+                    <Gift className="text-[#f59e0b]" size={20} />
                   </div>
                   <div className="flex-1">
                     <div className="flex justify-between items-start mb-2">

@@ -15,7 +15,7 @@ export default function TeamListPage() {
   return (
     <div className="flex flex-col h-full bg-transparent overflow-y-auto [&::-webkit-scrollbar]:hidden ">
       {/* Header */}
-      <div className="bg-[#131F37] px-4 py-4 flex items-center gap-3 sticky top-0 z-20 border-b border-white/5">
+      <div className="bg-[#111827] px-4 py-4 flex items-center gap-3 sticky top-0 z-20 border-b border-white/5">
         <button
           onClick={() => router.back()}
           className="w-9 h-9 bg-white/5 border border-white/5 rounded-[10px] flex items-center justify-center transition-colors text-white/90 shadow-sm hover:bg-white/10 shrink-0 cursor-pointer"
@@ -28,7 +28,7 @@ export default function TeamListPage() {
       <div className="px-4 max-w-[480px] mx-auto w-full flex-1 flex flex-col pb-10">
 
         {/* Tabs */}
-        <div className="bg-[#131F37] border border-white/5 p-1.5 rounded-[12px] flex mt-2 mb-6">
+        <div className="bg-[#111827] border border-white/5 p-1.5 rounded-[12px] flex mt-2 mb-6">
           {[1, 2, 3, 4].map((level) => (
             <button
               key={level}
@@ -46,7 +46,7 @@ export default function TeamListPage() {
         {/* Content */}
         {isLoading ? (
           <div className="flex flex-col items-center justify-center flex-1 min-h-[300px]">
-            <Loader2 className="w-8 h-8 animate-spin text-[#8b5cf6] mb-3" />
+            <Loader2 className="w-8 h-8 animate-spin text-[#f59e0b] mb-3" />
             <span className="text-[12px] text-gray-500 font-medium">Loading team members...</span>
           </div>
         ) : teamList.length === 0 ? (
@@ -63,7 +63,7 @@ export default function TeamListPage() {
         ) : (
           <div className="space-y-3">
             {teamList.map((user) => (
-              <div key={user.id} className="bg-[#131F37] rounded-[16px] px-4 py-3 flex items-center justify-between shadow-md border border-white/5">
+              <div key={user.id} className="bg-[#111827] rounded-[16px] px-4 py-3 flex items-center justify-between shadow-md border border-white/5">
                 <div className="flex items-center gap-4">
                   {/* Avatar */}
                   <div className="w-[48px] h-[48px] rounded-full bg-gradient-to-br from-[#0d9488] to-[#2563eb] flex items-center justify-center text-white font-bold text-[20px] shrink-0">

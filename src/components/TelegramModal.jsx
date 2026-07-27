@@ -17,7 +17,7 @@ export default function TelegramModal({ isOpen, setIsOpen }) {
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogContent className="sm:max-w-[360px] p-0 overflow-hidden bg-[#131F37] rounded-[24px] border border-white/5 shadow-2xl">
+      <DialogContent className="sm:max-w-[360px] p-0 overflow-hidden bg-[#111827] rounded-[24px] border border-white/5 shadow-2xl">
 
         <div className="p-8 flex flex-col items-center text-center">
           <div className="w-[70px] h-[70px] bg-[#0ea5e9]/20 rounded-full flex items-center justify-center mb-5 shadow-sm">
