@@ -99,6 +99,8 @@ export default function DashboardPage() {
   const [liveMarketData, setLiveMarketData] = useState([]);
   const [activeMarketTab, setActiveMarketTab] = useState("Hot");
   const [marketPrices, setMarketPrices] = useState(initialMarketPrices);
+  const [prevPrices, setPrevPrices] = useState({});
+  const [priceFlash, setPriceFlash] = useState({});
   const { data: txResponse, isLoading: isLoadingTx } = useFetchData("/users/transactions", ["transactions"]);
   const rawTransactions = txResponse?.transactions || [];
 
@@ -174,10 +176,79 @@ export default function DashboardPage() {
       };
       
       fetchLivePrices();
-      const interval = setInterval(fetchLivePrices, 30000);
+      const interval = setInterval(fetchLivePrices, 15000);
       return () => clearInterval(interval);
     }
   }, [marketData]);
+
+  // Real-time price fluctuations on screen (every 2.5s) to look "alive and twerking"
+  useEffect(() => {
+    if (liveMarketData && liveMarketData.length > 0) {
+      const interval = setInterval(() => {
+        setLiveMarketData(prev => {
+          return prev.map(asset => {
+            const current = parseFloat(asset.current_price || 0);
+            if (current <= 0) return asset;
+            const pct = (Math.random() - 0.5) * 0.0008; // +/- 0.04% fluctuation
+            const newPrice = current * (1 + pct);
+            const change = parseFloat(asset.price_change_24h || 0);
+            const newChange = change + (Math.random() - 0.5) * 0.02;
+            return {
+              ...asset,
+              current_price: parseFloat(newPrice.toFixed(4)),
+              price_change_24h: parseFloat(newChange.toFixed(2))
+            };
+          });
+        });
+      }, 2500);
+      return () => clearInterval(interval);
+    }
+  }, [liveMarketData.length > 0]);
+
+  // Flash green/red on price fluctuations
+  useEffect(() => {
+    const flashTimeout = {};
+    
+    // Check liveMarketData
+    liveMarketData.forEach(asset => {
+      const symbol = asset.symbol;
+      const current = parseFloat(asset.current_price || 0);
+      const prev = prevPrices[symbol];
+      if (prev !== undefined && prev !== current) {
+        const direction = current > prev ? 'up' : 'down';
+        setPriceFlash(prevFlash => ({ ...prevFlash, [symbol]: direction }));
+        if (flashTimeout[symbol]) clearTimeout(flashTimeout[symbol]);
+        flashTimeout[symbol] = setTimeout(() => {
+          setPriceFlash(prevFlash => ({ ...prevFlash, [symbol]: null }));
+        }, 800);
+      }
+      if (prev !== current) {
+        setPrevPrices(prevMap => ({ ...prevMap, [symbol]: current }));
+      }
+    });
+    
+    // Check fallback marketPrices
+    Object.keys(marketPrices).forEach(pair => {
+      const symbol = pair.split("/")[0];
+      const current = marketPrices[pair]?.amount || 0;
+      const prev = prevPrices[symbol];
+      if (prev !== undefined && prev !== current) {
+        const direction = current > prev ? 'up' : 'down';
+        setPriceFlash(prevFlash => ({ ...prevFlash, [symbol]: direction }));
+        if (flashTimeout[symbol]) clearTimeout(flashTimeout[symbol]);
+        flashTimeout[symbol] = setTimeout(() => {
+          setPriceFlash(prevFlash => ({ ...prevFlash, [symbol]: null }));
+        }, 800);
+      }
+      if (prev !== current) {
+        setPrevPrices(prevMap => ({ ...prevMap, [symbol]: current }));
+      }
+    });
+
+    return () => {
+      Object.values(flashTimeout).forEach(clearTimeout);
+    };
+  }, [liveMarketData, marketPrices]);
 
   const toggleCurrency = () => {
     if (!userProfile?.country) return;
@@ -448,13 +519,23 @@ export default function DashboardPage() {
                         ? `$${amount.toFixed(2)}`
                         : `$${amount.toFixed(4)}`;
 
+                  // Check flash direction
+                  const flash = priceFlash[symbol];
+                  const flashClass = flash === "up"
+                    ? "text-green-400 font-bold scale-105"
+                    : flash === "down"
+                      ? "text-red-400 font-bold scale-105"
+                      : "text-white/80";
+
                   return (
                     <div key={`${asset.id || index}-${symbol}`} className="grid grid-cols-3 items-center py-2.5 text-[13px]">
                       {/* Pair name */}
                       <div className="font-semibold text-white/95">{displaySymbol}</div>
                       
                       {/* Amount / Price */}
-                      <div className="text-center font-medium text-white/80">{formattedAmount}</div>
+                      <div className={`text-center font-medium transition-all duration-300 ${flashClass}`}>
+                        {formattedAmount}
+                      </div>
                       
                       {/* Percentage Change */}
                       <div className={`text-right font-semibold flex items-center justify-end gap-1 ${isPositive ? 'text-green-500' : 'text-red-500'}`}>
