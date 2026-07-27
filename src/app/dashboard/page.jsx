@@ -375,8 +375,8 @@ export default function DashboardPage() {
             </button>
           </div>
           
-          <div className="flex items-center justify-center gap-2 mb-1.5 relative z-10">
-            <h2 className="text-[32px] font-black tracking-wider leading-none text-white">
+          <div className="flex items-center justify-center gap-1.5 mb-5 relative z-10">
+            <h2 className="text-[26px] font-bold text-white tracking-tight leading-none">
               {showBalance ? currentBalanceTotal : "****"}
             </h2>
             <button 
@@ -386,10 +386,6 @@ export default function DashboardPage() {
               {(currency === "USDT" || currency === (settings.currency_name || "USDT")) ? (settings.currency_name || "USDT") : (userProfile?.country?.currency_code || "NGN")}
             </button>
           </div>
-          
-          <p className="text-green-500 text-[13px] font-semibold mb-5 relative z-10">
-            +$0.00 today
-          </p>
 
           <div className="relative z-10 w-full flex justify-center">
             <Link 
