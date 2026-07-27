@@ -595,7 +595,7 @@ export default function DashboardPage() {
             </div>
 
             <p className="text-gray-400 text-[12px] mb-4 leading-relaxed">
-              mykryptexapp.com offer 2-level referral system and also deposit bonus.
+              mykryptexapp.com offers a 4-level referral system. Invite friends and earn free spins to spin the wheel and win big!
             </p>
             
             <div className="space-y-1.5">
