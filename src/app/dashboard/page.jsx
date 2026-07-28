@@ -357,13 +357,6 @@ export default function DashboardPage() {
         (tx.type || "").toLowerCase().includes("checkin")
       );
     }
-    if (txFilter === "Trades") {
-      return rawTransactions.filter(tx => 
-        (tx.type || "").toLowerCase().includes("invest") || 
-        (tx.type || "").toLowerCase().includes("trade") || 
-        (tx.type || "").toLowerCase().includes("plan")
-      );
-    }
     return rawTransactions;
   };
 
@@ -675,7 +668,7 @@ export default function DashboardPage() {
           
           {/* Filters */}
           <div className="flex gap-1.5 mb-4 overflow-x-auto pb-1 [&::-webkit-scrollbar]:hidden px-1">
-            {["All", "Deposit", "Withdrawal", "Bonus", "Trades"].map((filter) => {
+            {["All", "Deposit", "Withdrawal", "Bonus"].map((filter) => {
               const isActive = txFilter === filter;
               return (
                 <button
@@ -698,7 +691,7 @@ export default function DashboardPage() {
 
           {/* Table */}
           <div className="overflow-x-auto [&::-webkit-scrollbar]:hidden">
-            <table className="w-full text-left border-collapse min-w-[300px]">
+            <table className="w-full text-left border-collapse min-w-[420px]">
               <thead>
                 <tr className="border-b border-white/5 text-[10px] font-bold text-gray-500 uppercase tracking-wider">
                   <th className="pb-2.5">Type</th>
@@ -739,6 +732,7 @@ export default function DashboardPage() {
                     const amountStr = `${sign}${settings.currency_symbol || '$'}${parseFloat(tx.amount || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
                     const dateObj = new Date(tx.created_at || Date.now());
                     const formattedDate = `${dateObj.getDate()}/${String(dateObj.getMonth() + 1).padStart(2, '0')}/${String(dateObj.getFullYear()).slice(-2)}`;
+                    const formattedTime = dateObj.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false });
                     
                     const statusStr = (tx.status || "pending").toLowerCase();
                     const statusBadgeClass = statusStr === "completed" || statusStr === "success" || statusStr === "approved"
@@ -751,7 +745,10 @@ export default function DashboardPage() {
                       <tr key={tx.id}>
                         <td className="py-3 font-semibold text-white/90 capitalize">{tx.type}</td>
                         <td className={`py-3 text-center font-bold ${amountColor}`}>{amountStr}</td>
-                        <td className="py-3 text-center text-gray-400">{formattedDate}</td>
+                        <td className="py-3 text-center text-gray-400">
+                          <div>{formattedDate}</div>
+                          <div className="text-[10px] text-gray-500 mt-0.5">{formattedTime}</div>
+                        </td>
                         <td className="py-3 text-right">
                           <span className={`px-2 py-0.5 rounded-[6px] text-[10px] font-bold ${statusBadgeClass}`}>
                             {statusStr}
