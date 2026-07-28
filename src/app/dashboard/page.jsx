@@ -465,16 +465,14 @@ export default function DashboardPage() {
         <div className="bg-[#111827] rounded-[24px] p-4 shadow-sm border border-white/5">
           <div className="grid grid-cols-4 gap-y-5 gap-x-2">
             {[
-              { label: "Fund", emoji: "💰", action: () => router.push('?depositModal=true') },
-              { label: "Referral", emoji: "👥", action: () => router.push('/dashboard/invite') },
+              { label: "Deposit", emoji: "💰", action: () => router.push('?depositModal=true') },
               { label: "Withdraw", emoji: "↩", action: () => router.push('/dashboard/wallet/withdraw') },
-              { label: "Trade", emoji: "📈", action: () => router.push('/dashboard/mining') },
-              { label: "Portfolio", emoji: "🔄", action: () => router.push('/dashboard/investments') },
-              { label: "History", emoji: "📋", action: () => router.push('/dashboard/transactions') },
-              { label: "Events", emoji: "🎁", action: () => setShowEventsModal(true) },
-              { label: "Analytics", emoji: "📊", action: () => router.push('/dashboard/about') },
+              { label: "Mine", emoji: "⛏️", action: () => router.push('/dashboard/mining') },
+              { label: "Active Mining", emoji: "⚡", action: () => router.push('/dashboard/investments') },
+              { label: "Transaction Log", emoji: "📋", action: () => router.push('/dashboard/transactions') },
+              { label: "Bonus Code", emoji: "🎁", action: () => router.push('/dashboard/treasure') },
               { 
-                label: "Download app", 
+                label: "Download App", 
                 emoji: "⬇️", 
                 action: () => {
                   if (isInstallable) {
@@ -484,10 +482,11 @@ export default function DashboardPage() {
                   }
                 } 
               },
+              { label: "Referrals", emoji: "👥", action: () => router.push('/dashboard/invite') },
               { label: "Settings", emoji: "⚙️", action: () => router.push('/dashboard/settings') },
               { 
-                label: "Join Community", 
-                emoji: "🏚️", 
+                label: "WhatsApp Group", 
+                emoji: "💬", 
                 action: () => {
                   const whatsappGroupLink = settings.whatsapp_group || "#";
                   if (whatsappGroupLink && whatsappGroupLink !== "#") {
