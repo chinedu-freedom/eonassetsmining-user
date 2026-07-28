@@ -600,23 +600,6 @@ export default function DashboardPage() {
           </div>
         )}
 
-        {/* Active Trades */}
-        <div className="mt-5">
-          <h3 className="font-semibold text-white/95 text-[15px] mb-3 px-1">Active Trades</h3>
-          <div className="bg-[#111827] rounded-[18px] p-6 shadow-sm border border-amber-500/10">
-            <div className="flex flex-col items-center justify-center py-6 text-center">
-              <svg className="w-20 h-20 text-white/10 mb-4 mx-auto" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round">
-                {/* L-shaped axis */}
-                <path d="M5 4v15h15" />
-                {/* Jagged trend line */}
-                <path d="M8 14l4-4 3 3 5-5" />
-              </svg>
-              <p className="text-[12px] text-gray-500 max-w-[240px] leading-relaxed">
-                No active trades yet. Start investing to see your trades here.
-              </p>
-            </div>
-          </div>
-        </div>
 
         {/* Referral / Mentor Network */}
         <div className="mt-5">
