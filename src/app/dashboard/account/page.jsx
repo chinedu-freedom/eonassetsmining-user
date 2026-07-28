@@ -212,56 +212,56 @@ export default function AccountPage() {
           </div>
         </div>
 
-        {/* Account Overview */}
-        <div className="bg-[#111827] rounded-[16px] p-[16px] border border-white/5 shadow-[0_2px_10px_-4px_rgba(0,0,0,0.05)]">
-          <div className="flex items-center gap-1.5 mb-3.5">
-            <BarChart3 size={14} className="text-[#f59e0b]" />
-            <h2 className="text-white/90 font-bold text-[13px]">Account Overview</h2>
-          </div>
+        {/* Account Statistics */}
+        <div className="bg-[#111827] rounded-[24px] p-6 border border-white/5 shadow-xl relative overflow-hidden">
+          {/* Subtle gold gradient accent on top border */}
+          <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-[#f59e0b]/40 to-transparent"></div>
+          
+          <h2 className="text-[#9ca3af] font-bold text-[12px] tracking-[0.2em] text-center uppercase mb-6">
+            Account Statistics
+          </h2>
 
-          <div className="grid grid-cols-2 gap-2.5">
-            {/* Total Deposit */}
-            <div className="bg-white/5 rounded-[12px] p-3 flex flex-col gap-2 border border-white/5">
-              <div className="flex items-center gap-2">
-                <div className="w-7 h-7 bg-green-900/20 rounded-[8px] flex items-center justify-center text-green-400">
-                  <Wallet size={12} />
-                </div>
-                <span className="text-[8px] font-bold text-gray-400 uppercase tracking-wider">Total Deposit</span>
+          <div className="flex flex-col gap-3.5">
+            {/* Total Deposits */}
+            <div className="flex items-center justify-between gap-3 w-full">
+              <div className="flex-1 h-11 bg-white/5 border border-white/5 rounded-[8px] transform -skew-x-[18deg] flex items-center justify-center shadow-inner">
+                <span className="transform skew-x-[18deg] text-[10px] font-extrabold text-gray-300 uppercase tracking-wider">
+                  Total Deposits
+                </span>
               </div>
-              <div className="text-[13px] font-bold text-white/90 ml-1">{showBalance ? balanceValues.deposit : "****"}</div>
+              <div className="flex-[1.2] h-11 bg-[#c2ff29] rounded-[8px] transform -skew-x-[18deg] flex items-center justify-center shadow-md">
+                <span className="transform skew-x-[18deg] text-[13px] font-black text-[#0b0f19] tracking-wide whitespace-nowrap">
+                  {showBalance ? balanceValues.deposit : "****"} {currency === "USDT" ? "USD" : currency}
+                </span>
+              </div>
             </div>
 
-            {/* Total Withdraw */}
-            <div className="bg-white/5 rounded-[12px] p-3 flex flex-col gap-2 border border-white/5">
-              <div className="flex items-center gap-2">
-                <div className="w-7 h-7 bg-red-900/20 rounded-[8px] flex items-center justify-center text-red-400">
-                  <CreditCard size={12} />
-                </div>
-                <span className="text-[8px] font-bold text-gray-400 uppercase tracking-wider">Total Withdraw</span>
+            {/* Total Withdrawals */}
+            <div className="flex items-center justify-between gap-3 w-full">
+              <div className="flex-1 h-11 bg-white/5 border border-white/5 rounded-[8px] transform -skew-x-[18deg] flex items-center justify-center shadow-inner">
+                <span className="transform skew-x-[18deg] text-[10px] font-extrabold text-gray-300 uppercase tracking-wider">
+                  Total Withdrawals
+                </span>
               </div>
-              <div className="text-[13px] font-bold text-white/90 ml-1">{showBalance ? balanceValues.withdraw : "****"}</div>
+              <div className="flex-[1.2] h-11 bg-[#c2ff29] rounded-[8px] transform -skew-x-[18deg] flex items-center justify-center shadow-md">
+                <span className="transform skew-x-[18deg] text-[13px] font-black text-[#0b0f19] tracking-wide whitespace-nowrap">
+                  {showBalance ? balanceValues.withdraw : "****"} {currency === "USDT" ? "USD" : currency}
+                </span>
+              </div>
             </div>
 
-            {/* Total Income */}
-            <div className="bg-white/5 rounded-[12px] p-3 flex flex-col gap-2 border border-white/5">
-              <div className="flex items-center gap-2">
-                <div className="w-7 h-7 bg-amber-900/20 rounded-[8px] flex items-center justify-center text-amber-400">
-                  <BarChart2 size={12} />
-                </div>
-                <span className="text-[8px] font-bold text-gray-400 uppercase tracking-wider">Total Assets</span>
+            {/* Total Earnings */}
+            <div className="flex items-center justify-between gap-3 w-full">
+              <div className="flex-1 h-11 bg-white/5 border border-white/5 rounded-[8px] transform -skew-x-[18deg] flex items-center justify-center shadow-inner">
+                <span className="transform skew-x-[18deg] text-[10px] font-extrabold text-gray-300 uppercase tracking-wider">
+                  Total Earnings
+                </span>
               </div>
-              <div className="text-[13px] font-bold text-white/90 ml-1">{showBalance ? balanceValues.income : "****"}</div>
-            </div>
-
-            {/* Team Members */}
-            <div className="bg-white/5 rounded-[12px] p-3 flex flex-col gap-2 border border-white/5">
-              <div className="flex items-center gap-2">
-                <div className="w-7 h-7 bg-amber-900/20 rounded-[8px] flex items-center justify-center text-amber-400">
-                  <Users size={12} />
-                </div>
-                <span className="text-[8px] font-bold text-gray-400 uppercase tracking-wider">Team Members</span>
+              <div className="flex-[1.2] h-11 bg-[#c2ff29] rounded-[8px] transform -skew-x-[18deg] flex items-center justify-center shadow-md">
+                <span className="transform skew-x-[18deg] text-[13px] font-black text-[#0b0f19] tracking-wide whitespace-nowrap">
+                  {showBalance ? balanceValues.income : "****"} {currency === "USDT" ? "USD" : currency}
+                </span>
               </div>
-              <div className="text-[13px] font-bold text-white/90 ml-1">{userProfile?.statistics?.team_members || 0}</div>
             </div>
           </div>
         </div>

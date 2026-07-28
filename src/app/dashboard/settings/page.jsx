@@ -132,7 +132,7 @@ export default function SettingsPage() {
                       const res = await axiosInstance.delete('/users/me');
                       if (res.data?.success) {
                         clearAuthToken();
-                        window.location.href = '/login';
+                        window.location.href = '/';
                       }
                     } catch (error) {
                       console.error('Failed to delete account:', error);

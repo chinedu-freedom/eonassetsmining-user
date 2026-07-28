@@ -147,7 +147,7 @@ export default function MiningPlansPage() {
               className="cursor-pointer w-full mt-0.5 bg-[#f59e0b] text-white font-bold py-2 rounded-lg hover:bg-amber-600 transition-colors text-[12px] shadow-sm flex items-center justify-center gap-2"
             >
              {/* <Cpu size={14} /> */}
-              Activate Plan
+              Activate Pool
             </button>
           </div>
         ))}
