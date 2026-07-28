@@ -406,7 +406,7 @@ export default function DashboardPage() {
 
           <div className="relative z-10 w-full flex justify-center">
             <Link 
-              href="?depositModal=true" 
+              href="/dashboard/wallet/deposit" 
               className="bg-[#f59e0b] hover:bg-[#d97706] text-[#111827] text-[12px] font-bold px-8 py-2 rounded-lg transition-all shadow-md active:scale-[0.98]"
             >
               Top up
@@ -466,7 +466,7 @@ export default function DashboardPage() {
         <div className="bg-[#111827] rounded-[24px] p-4 shadow-sm border border-white/5">
           <div className="grid grid-cols-4 gap-y-5 gap-x-2">
             {[
-              { label: "Deposit", emoji: "💰", action: () => router.push('?depositModal=true') },
+              { label: "Deposit", emoji: "💰", action: () => router.push('/dashboard/wallet/deposit') },
               { label: "Withdraw", emoji: "↩", action: () => router.push('/dashboard/wallet/withdraw') },
               { label: "Mine", emoji: "⛏️", action: () => router.push('/dashboard/mining') },
               { label: "Active Mining", emoji: "⚡", action: () => router.push('/dashboard/investments') },

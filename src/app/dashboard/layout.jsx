@@ -3,7 +3,6 @@
 import { Suspense, useState, useEffect, useMemo } from "react";
 import BottomNav from "@/components/BottomNav";
 import DailyCheckinModal from "@/components/DailyCheckinModal";
-import DepositModal from "@/components/DepositModal";
 import { useFetchData } from "@/hooks/useApi";
 import { useRouter, usePathname } from "next/navigation";
 import { Globe, X, Home, Wallet, CreditCard, Cpu, TrendingUp, Clock, MessageCircle, User, Users, Settings, LogOut, Menu, ChevronDown, CheckCircle2, Search, Download, ChevronRight } from "lucide-react";
@@ -105,7 +104,7 @@ export default function DashboardLayout({ children }) {
           <div className="flex-1 overflow-y-auto py-4 px-2 space-y-1 [&::-webkit-scrollbar]:hidden">
             {[
               { name: "Dashboard", href: "/dashboard", icon: Home },
-              { name: "Deposit", href: "?depositModal=true", icon: Wallet },
+              { name: "Deposit", href: "/dashboard/wallet/deposit", icon: Wallet },
               { name: "Withdraw", href: "/dashboard/wallet/withdraw", icon: CreditCard },
               { name: "Mining Pool", href: "/dashboard/mining", icon: Cpu },
               { name: "Active Mining", href: "/dashboard/investments", icon: TrendingUp },
@@ -274,9 +273,6 @@ export default function DashboardLayout({ children }) {
         </div>
 
         <DailyCheckinModal />
-        <Suspense fallback={null}>
-          <DepositModal />
-        </Suspense>
 
         {/* Language Modal */}
         {showLanguageModal && (

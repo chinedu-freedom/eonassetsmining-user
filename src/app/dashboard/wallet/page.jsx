@@ -161,7 +161,7 @@ export default function WalletPage() {
           {/* Actions */}
           <div className="flex gap-2.5 relative z-10">
             <button 
-              onClick={() => handleAction("?depositModal=true")}
+              onClick={() => handleAction("/dashboard/wallet/deposit")}
               className="cursor-pointer flex-1 bg-[#f59e0b] text-white flex items-center justify-center gap-1.5 py-2 rounded-[8px] text-[11px] font-bold hover:bg-amber-600 transition-colors shadow-sm"
             >
               <Download size={12} /> Deposit

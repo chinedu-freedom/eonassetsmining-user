@@ -201,7 +201,7 @@ export default function AccountPage() {
           </div>
 
           <div className="flex gap-2.5 relative z-10">
-            <Link href="?depositModal=true" className="flex-1 bg-[#f59e0b] text-white py-2 rounded-lg text-[13px] font-semibold flex items-center justify-center gap-1.5 hover:bg-amber-600 transition-colors shadow-md cursor-pointer">
+            <Link href="/dashboard/wallet/deposit" className="flex-1 bg-[#f59e0b] text-white py-2 rounded-lg text-[13px] font-semibold flex items-center justify-center gap-1.5 hover:bg-amber-600 transition-colors shadow-md cursor-pointer">
               <Wallet size={16} />
               Deposit
             </Link>
