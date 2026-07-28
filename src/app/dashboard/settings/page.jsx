@@ -11,7 +11,6 @@ export default function SettingsPage() {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const { data: userRes } = useFetchData("/users/me", ["profile"]);
   const hasPin = !!userRes?.user?.has_withdrawal_pin;
-  const isEmailVerified = !!userRes?.user?.email_verified;
 
   const menuItems = [
     {
@@ -32,17 +31,6 @@ export default function SettingsPage() {
       iconColor: "text-[#f59e0b]",
       badge: null,
       href: "/dashboard/settings/login"
-    },
-    {
-      id: "auth",
-      label: "Authentication",
-      icon: ShieldCheck,
-      iconBg: "bg-white/5",
-      iconColor: "text-[#f59e0b]",
-      badge: isEmailVerified
-        ? { text: "Verified", bg: "bg-emerald-900/20", color: "text-emerald-400" }
-        : { text: "Unverified", bg: "bg-amber-900/20", color: "text-amber-400" },
-      href: "/dashboard/settings/auth"
     }
   ];
 

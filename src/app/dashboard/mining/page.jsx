@@ -58,11 +58,6 @@ export default function MiningPlansPage() {
   };
 
   const handleMineClick = (plan) => {
-    if (userRes?.user && !userRes.user.email_verified) {
-      toast.error("Please verify your email to perform this action");
-      router.push("/dashboard/settings/auth");
-      return;
-    }
     setSelectedPlan(plan);
     setBalanceSource("main");
     setInvestmentAmount("");

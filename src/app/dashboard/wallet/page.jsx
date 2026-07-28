@@ -54,11 +54,6 @@ export default function WalletPage() {
   };
 
   const handleAction = (actionPath) => {
-    if (user && !user.email_verified) {
-      toast.error("Please verify your email to perform this action");
-      router.push("/dashboard/settings/auth");
-      return;
-    }
     router.push(actionPath);
   };
 

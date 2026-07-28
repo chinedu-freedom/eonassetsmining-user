@@ -26,10 +26,8 @@ export default function AuthenticationSettingsPage() {
   const { mutate: verifyCode, isPending: isVerifying } = usePost("/users/me/verify-email");
 
   useEffect(() => {
-    if (userProfile?.user && userProfile.user.email_verified) {
-      setStep(3);
-    }
-  }, [userProfile]);
+    router.replace("/dashboard/settings");
+  }, [router]);
 
   const handleSendCode = () => {
     sendCode({}, {

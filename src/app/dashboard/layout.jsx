@@ -44,12 +44,6 @@ export default function DashboardLayout({ children }) {
   }, [pathname]);
 
   useEffect(() => {
-    if (!isLoadingProfile && user && user.email_verified === false && isProtectedRoute) {
-      router.replace("/dashboard/settings/auth");
-    }
-  }, [user, isLoadingProfile, router, isProtectedRoute]);
-
-  useEffect(() => {
     if (user?.language?.language_code) {
       setCurrentLang(user.language.language_code);
     }
@@ -61,10 +55,6 @@ export default function DashboardLayout({ children }) {
         <div className="w-12 h-12 border-4 border-gray-100 border-t-[#f59e0b] rounded-full animate-spin"></div>
       </div>
     );
-  }
-
-  if (user && user.email_verified === false && isProtectedRoute) {
-    return null;
   }
 
   return (
