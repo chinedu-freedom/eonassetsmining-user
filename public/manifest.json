@@ -1,7 +1,7 @@
 {
-  "name": "mykryptexapp.com",
-  "short_name": "mykryptexapp.com",
-  "description": "mykryptexapp.com - The Ultimate Crypto Asset Mining Platform",
+  "name": "Kryptex Mining",
+  "short_name": "Kryptex Mining",
+  "description": "Kryptex Mining - The Ultimate Crypto Asset Mining Platform",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#0b0f19",

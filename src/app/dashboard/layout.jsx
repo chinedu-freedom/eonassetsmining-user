@@ -68,8 +68,8 @@ export default function DashboardLayout({ children }) {
   }
 
   return (
-    <div className="min-h-screen bg-[#0b0f19] flex justify-center">
-      <div className="w-full max-w-[480px] bg-[#0b0f19] min-h-screen relative shadow-2xl overflow-hidden pb-[80px] flex flex-col">
+    <div className="h-screen bg-[#0b0f19] flex justify-center overflow-hidden">
+      <div className="w-full max-w-[480px] bg-[#0b0f19] h-screen relative shadow-2xl overflow-hidden pb-[80px] flex flex-col">
         
         {/* Sidebar Drawer Backdrop */}
         {isSidebarOpen && (
@@ -91,7 +91,9 @@ export default function DashboardLayout({ children }) {
                 </div>
               )}
               <span className="text-white font-bold text-[16px] tracking-tight">
-                {siteName.toLowerCase().includes('mykryptex') ? (
+                {siteName.toLowerCase().includes('kryptex') ? (
+                  <>Kryptex <span className="text-[#f59e0b]">Mining</span></>
+                ) : siteName.toLowerCase().includes('mykryptex') ? (
                   <>MyKryptex<span className="text-[#f59e0b]">App</span></>
                 ) : siteName.toLowerCase().includes('polychain') ? (
                   <>Polychain<span className="text-[#f59e0b]">Mining</span></>
@@ -204,7 +206,9 @@ export default function DashboardLayout({ children }) {
             </button>
             
             <span className="text-white font-bold text-[17px] tracking-tight">
-              {siteName.toLowerCase().includes('mykryptex') ? (
+              {siteName.toLowerCase().includes('kryptex') ? (
+                <>Kryptex <span className="text-[#f59e0b]">Mining</span></>
+              ) : siteName.toLowerCase().includes('mykryptex') ? (
                 <>MyKryptex<span className="text-[#f59e0b]">App</span></>
               ) : siteName.toLowerCase().includes('polychain') ? (
                 <>Polychain<span className="text-[#f59e0b]">Mining</span></>

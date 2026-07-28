@@ -25,7 +25,7 @@ function VerifyEmailContent() {
 
   const { data: settingsResponse, isLoading: isLoadingSettings } = useFetchData("/settings", ["platform-settings"]);
   const settings = settingsResponse?.settings || {};
-  const siteName = settings.site_name || "Mykryptexapp";
+  const siteName = settings.site_name || "Kryptex Mining";
   const siteLogo = settings.platform_logo || null;
 
   useEffect(() => {

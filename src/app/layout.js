@@ -22,7 +22,7 @@ export async function generateMetadata() {
       });
       if (res.ok) {
         const data = await res.json();
-        const siteName = data?.settings?.site_name || "Mykryptexapp";
+        const siteName = data?.settings?.site_name || "Kryptex Mining";
         const siteTitle = data?.settings?.site_title || "The Ultimate Crypto Asset Mining Platform";
         return {
           title: siteName,
@@ -40,13 +40,13 @@ export async function generateMetadata() {
     // Ignore error and fallback to default
   }
   return {
-    title: "Mykryptexapp",
+    title: "Kryptex Mining",
     description: "The Ultimate Crypto Asset Mining Platform",
     manifest: "/manifest.json",
     appleWebApp: {
       capable: true,
       statusBarStyle: "default",
-      title: "Mykryptexapp",
+      title: "Kryptex Mining",
     },
   };
 }

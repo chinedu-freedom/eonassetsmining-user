@@ -93,9 +93,9 @@ export default function DashboardPage() {
 
   const { data: settingsResponse } = useFetchData("/settings", ["platform-settings"]);
   const settings = settingsResponse?.settings || {};
-  const siteName = settings.site_name || "Mykryptexapp";
+  const siteName = settings.site_name || "Kryptex Mining";
   const siteLogo = settings.platform_logo || null;
-  const referralDomain = typeof window !== "undefined" ? window.location.origin : "https://mykryptexapp.com";
+  const referralDomain = typeof window !== "undefined" ? window.location.origin : "https://kryptexmining.com";
 
   const [liveMarketData, setLiveMarketData] = useState([]);
   const [activeMarketTab, setActiveMarketTab] = useState("Hot");

@@ -31,7 +31,7 @@ export default function WhatsAppModal() {
           <h2 className="text-[18px] font-bold text-white/90 mb-3">Official Information Release</h2>
           
           <p className="text-[13px] text-gray-400 mb-8 leading-relaxed">
-            Join our official WhatsApp group to get the latest news and welfare information about {settingsRes?.settings?.site_name || "Mykryptexapp"} Platform.
+            Join our official WhatsApp group to get the latest news and welfare information about {settingsRes?.settings?.site_name || "Kryptex Mining"} Platform.
           </p>
           
           <Button 
