@@ -277,6 +277,22 @@ export default function DashboardPage() {
     }
   };
 
+  const getFormattedStat = (val) => {
+    const numericVal = parseFloat(val || 0);
+    const baseSymbol = settings.currency_symbol || "$";
+    const baseCurrency = settings.currency_name || "USDT";
+    
+    if (currency === "USDT" || currency === baseCurrency) {
+      return `${baseSymbol}${numericVal.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ${baseCurrency}`;
+    } else {
+      const exchangeRate = parseFloat(userProfile?.country?.exchange_rate || 1);
+      const localVal = numericVal * exchangeRate;
+      const symbol = userProfile?.country?.currency_symbol || "";
+      const code = userProfile?.country?.currency_code || "NGN";
+      return `${symbol}${localVal.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ${code}`;
+    }
+  };
+
   const getTabAssets = () => {
     if (!liveMarketData || liveMarketData.length === 0) {
       return marketTabsData[activeMarketTab].map(pair => {
@@ -394,6 +410,54 @@ export default function DashboardPage() {
             >
               Top up
             </Link>
+          </div>
+        </div>
+
+        {/* Statistics Card (Deposits, Withdrawals, Earnings) */}
+        <div className="bg-gradient-to-br from-[#d97706]/20 via-[#111827]/90 to-[#0b0f19] rounded-[24px] p-5 text-white shadow-xl relative overflow-hidden border border-amber-500/20 flex flex-col gap-4">
+          {/* Background decoration */}
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-48 h-48 bg-[#f59e0b]/5 rounded-full blur-3xl -z-10"></div>
+          
+          <div className="flex items-center justify-center gap-1.5 relative z-10 w-full mb-1">
+            <span className="text-gray-400 text-[11px] font-bold tracking-wider uppercase">Account Statistics</span>
+          </div>
+
+          <div className="flex flex-col gap-3.5 relative z-10 w-full">
+            {/* Total Deposits */}
+            <div className="flex items-center justify-between w-full">
+              <div className="bg-white/5 text-gray-300 text-[11.5px] font-bold px-3 py-2 skew-x-[-12deg] rounded-[6px] w-[140px] text-center border border-white/5">
+                <span className="inline-block skew-x-[12deg] uppercase tracking-wider text-[10px]">Total Deposits</span>
+              </div>
+              <div className="bg-[#a3e635] text-[#111827] text-[12px] font-extrabold px-3 py-2 skew-x-[-12deg] rounded-[6px] flex-1 max-w-[190px] text-center shadow-md">
+                <span className="inline-block skew-x-[12deg] tracking-tight">
+                  {showBalance ? getFormattedStat(userProfile?.statistics?.total_deposit) : "****"}
+                </span>
+              </div>
+            </div>
+
+            {/* Total Withdrawals */}
+            <div className="flex items-center justify-between w-full">
+              <div className="bg-white/5 text-gray-300 text-[11.5px] font-bold px-3 py-2 skew-x-[-12deg] rounded-[6px] w-[140px] text-center border border-white/5">
+                <span className="inline-block skew-x-[12deg] uppercase tracking-wider text-[10px]">Total Withdrawals</span>
+              </div>
+              <div className="bg-[#a3e635] text-[#111827] text-[12px] font-extrabold px-3 py-2 skew-x-[-12deg] rounded-[6px] flex-1 max-w-[190px] text-center shadow-md">
+                <span className="inline-block skew-x-[12deg] tracking-tight">
+                  {showBalance ? getFormattedStat(userProfile?.statistics?.total_withdrawal) : "****"}
+                </span>
+              </div>
+            </div>
+
+            {/* Total Earnings */}
+            <div className="flex items-center justify-between w-full">
+              <div className="bg-white/5 text-gray-300 text-[11.5px] font-bold px-3 py-2 skew-x-[-12deg] rounded-[6px] w-[140px] text-center border border-white/5">
+                <span className="inline-block skew-x-[12deg] uppercase tracking-wider text-[10px]">Total Earnings</span>
+              </div>
+              <div className="bg-[#a3e635] text-[#111827] text-[12px] font-extrabold px-3 py-2 skew-x-[-12deg] rounded-[6px] flex-1 max-w-[190px] text-center shadow-md">
+                <span className="inline-block skew-x-[12deg] tracking-tight">
+                  {showBalance ? getFormattedStat(userProfile?.statistics?.total_income) : "****"}
+                </span>
+              </div>
+            </div>
           </div>
         </div>
 
