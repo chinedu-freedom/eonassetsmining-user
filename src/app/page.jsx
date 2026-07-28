@@ -75,7 +75,7 @@ export default function LoginPage() {
     loginMutation.mutate(payload, {
       onSuccess: (res) => {
         if (res?.token) {
-          setAuthToken(res.token);
+          setAuthToken(res.token, keepMeLoggedIn);
         }
         // redirect after successful login
         router.push("/dashboard");
