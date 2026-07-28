@@ -39,7 +39,7 @@ export default function AboutPage() {
   const teamMembers = Array.isArray(teamRes?.teamMembers) ? teamRes.teamMembers : [];
 
   const { data: settingsRes } = useFetchData("/settings", ["platform-settings"]);
-  const siteName = settingsRes?.settings?.site_name || "mykryptexapp.com";
+  const siteName = settingsRes?.settings?.site_name || "mykryptexapp";
 
   return (
     <div className="flex flex-col h-full bg-transparent overflow-y-auto [&::-webkit-scrollbar]:hidden">

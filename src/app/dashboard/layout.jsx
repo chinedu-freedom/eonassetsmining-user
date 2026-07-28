@@ -30,7 +30,7 @@ export default function DashboardLayout({ children }) {
 
   const user = userRes?.user;
   const settings = settingsResponse?.settings || {};
-  const siteName = settings.site_name || "mykryptexapp.com";
+  const siteName = settings.site_name || "mykryptexapp";
   const siteLogo = settings.platform_logo || null;
   const dynamicLanguages = languagesResponse?.data || [];
 

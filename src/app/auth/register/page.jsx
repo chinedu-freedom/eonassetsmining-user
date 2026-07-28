@@ -43,7 +43,7 @@ function SignupForm() {
   const signupMutation = usePost("/auth/register", null);
   const { data: settingsResponse, isLoading: isLoadingSettings } = useFetchData("/settings", ["platform-settings"]);
   const settings = settingsResponse?.settings || {};
-  const siteName = settings.site_name || "mykryptexapp.com";
+  const siteName = settings.site_name || "mykryptexapp";
   const siteLogo = settings.platform_logo || null;
 
   const { data: countriesRes, isLoading: isLoadingCountries } = useFetchData("/auth/countries", ["countries"]);

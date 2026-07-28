@@ -27,7 +27,7 @@ export default function InvitePage() {
   const invitationCode = user?.referral_code || "------";
 
   const { data: settingsRes } = useFetchData("/settings", ["platform-settings"]);
-  const siteName = settingsRes?.settings?.site_name || "mykryptexapp.com";
+  const siteName = settingsRes?.settings?.site_name || "mykryptexapp";
 
   useEffect(() => {
     if (invitationCode && invitationCode !== "------") {

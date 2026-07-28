@@ -93,8 +93,9 @@ export default function DashboardPage() {
 
   const { data: settingsResponse } = useFetchData("/settings", ["platform-settings"]);
   const settings = settingsResponse?.settings || {};
-  const siteName = settings.site_name || "mykryptexapp.com";
+  const siteName = settings.site_name || "mykryptexapp";
   const siteLogo = settings.platform_logo || null;
+  const referralDomain = typeof window !== "undefined" ? window.location.origin : "https://mykryptexapp.com";
 
   const [liveMarketData, setLiveMarketData] = useState([]);
   const [activeMarketTab, setActiveMarketTab] = useState("Hot");
@@ -641,7 +642,7 @@ export default function DashboardPage() {
             </div>
 
             <p className="text-gray-400 text-[12px] mb-4 leading-relaxed">
-              mykryptexapp.com offers a 4-level referral system. Invite friends and earn free spins to spin the wheel and win big!
+              {siteName} offers a 4-level referral system. Invite friends and earn free spins to spin the wheel and win big!
             </p>
             
             <div className="space-y-1.5">
@@ -650,13 +651,13 @@ export default function DashboardPage() {
                 <input 
                   type="text" 
                   readOnly 
-                  value={userProfile?.referral_code ? `https://mykryptexapp.com/auth/register?ref=${userProfile.referral_code}` : "Loading..."}
+                  value={userProfile?.referral_code ? `${referralDomain}/auth/register?ref=${userProfile.referral_code}` : "Loading..."}
                   className="flex-1 bg-white/5 border border-white/5 rounded-lg px-3 py-2 text-[12px] text-white/90 outline-none focus:border-amber-500/50"
                 />
                 <button 
                   onClick={() => {
                     if (userProfile?.referral_code) {
-                      navigator.clipboard.writeText(`https://mykryptexapp.com/auth/register?ref=${userProfile.referral_code}`);
+                      navigator.clipboard.writeText(`${referralDomain}/auth/register?ref=${userProfile.referral_code}`);
                       toast.success("Referral link copied!");
                     }
                   }}

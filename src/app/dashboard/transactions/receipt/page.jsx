@@ -13,7 +13,7 @@ function ReceiptContent() {
   const receiptRef = useRef(null);
 
   const { data: settingsRes } = useFetchData("/settings", ["platform-settings"]);
-  const siteName = settingsRes?.settings?.site_name || "mykryptexapp.com";
+  const siteName = settingsRes?.settings?.site_name || "mykryptexapp";
   const symbol = settingsRes?.settings?.currency_symbol || "$";
 
   // Extract from URL query params
