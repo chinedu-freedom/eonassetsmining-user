@@ -1,12 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Wallet, Info, Hexagon, X, Eye, EyeOff } from "lucide-react";
+import { ArrowLeft, Wallet, Info, ChevronDown, Copy, Check, Loader2, Eye, EyeOff } from "lucide-react";
 import { useFetchData, usePost } from "@/hooks/useApi";
-import Link from "next/link";
-import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
+import Link from "next/link";
 
 const parseNoticeToLines = (htmlString) => {
   if (!htmlString) return [];
@@ -30,29 +29,29 @@ const parseNoticeToLines = (htmlString) => {
     .filter(Boolean);
 };
 
-export default function WithdrawPage() {
+function WithdrawContent() {
   const router = useRouter();
-  const [showCryptoModal, setShowCryptoModal] = useState(false);
-  const [cryptoNetwork, setCryptoNetwork] = useState("");
+  
+  const [selectedCrypto, setSelectedCrypto] = useState(null);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [walletAddress, setWalletAddress] = useState("");
   const [amount, setAmount] = useState("");
   const [withdrawalPassword, setWithdrawalPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  
+  const [copied, setCopied] = useState(false);
+
   const { mutate: submitWithdrawal, isPending: isSubmitting } = usePost("/users/withdraw");
   
-  const { data: userRes, isLoading } = useFetchData("/users/me", ["profile"]);
+  const { data: userRes, isLoading: isLoadingUser } = useFetchData("/users/me", ["profile"]);
   const user = userRes?.user || {};
   
-  const { data: settingsRes } = useFetchData("/settings", ["platform-settings"]);
+  const { data: settingsRes, isLoading: isLoadingSettings } = useFetchData("/settings", ["platform-settings"]);
   const settings = settingsRes?.settings || {};
   
-  const { data: cryptosRes, isLoading: isLoadingCryptos } = useFetchData(
-    "/settings/payout-cryptos",
-    ["payout-cryptos"]
-  );
+  const { data: cryptosRes, isLoading: isLoadingCryptos } = useFetchData("/settings/payout-cryptos", ["payout-cryptos"]);
   const cryptos = cryptosRes?.data || [];
-  const minWithdrawal = Number(settings.min_withdrawal) || 5;
+
+  const minWithdrawal = Number(settings.min_withdrawal) || 20;
   const maxWithdrawal = Number(settings.max_withdrawal) || 10000;
   const withdrawalCharge = Number(settings.withdrawal_charge) || 2;
   
@@ -60,267 +59,341 @@ export default function WithdrawPage() {
   const totalBalance = mainBalance;
   const feeAmount = amount ? (Number(amount) * (withdrawalCharge / 100)) : 0;
 
-  const handleCloseModal = () => {
-    setShowCryptoModal(false);
-    setCryptoNetwork("");
-    setWalletAddress("");
-    setAmount("");
-    setWithdrawalPassword("");
-    setShowPassword(false);
+  // Auto-select first crypto if available
+  useEffect(() => {
+    if (!isLoadingCryptos && !selectedCrypto && cryptos.length > 0) {
+      setSelectedCrypto(cryptos[0]);
+    }
+  }, [isLoadingCryptos, cryptos, selectedCrypto]);
+
+  // Click outside to close dropdown
+  useEffect(() => {
+    if (!isDropdownOpen) return;
+    const closeDropdown = () => setIsDropdownOpen(false);
+    document.addEventListener("click", closeDropdown);
+    return () => document.removeEventListener("click", closeDropdown);
+  }, [isDropdownOpen]);
+
+  const handleSelectCrypto = (crypto) => {
+    setSelectedCrypto(crypto);
+    setIsDropdownOpen(false);
   };
 
+  const handlePasteAddress = async () => {
+    try {
+      const text = await navigator.clipboard.readText();
+      setWalletAddress(text);
+      setCopied(true);
+      toast.success("Address pasted from clipboard!");
+      setTimeout(() => setCopied(false), 2000);
+    } catch (err) {
+      toast.error("Failed to read clipboard. Please paste manually.");
+    }
+  };
+
+  const handleSubmit = () => {
+    if (!selectedCrypto) {
+      return toast.error("Please select a cryptocurrency network");
+    }
+    if (!walletAddress) {
+      return toast.error("Please enter a wallet address");
+    }
+    if (!amount || isNaN(amount) || Number(amount) <= 0) {
+      return toast.error("Please enter a valid withdrawal amount");
+    }
+    if (Number(amount) < minWithdrawal) {
+      return toast.error(`Minimum withdrawal amount is ${settings.currency_symbol || "$"}${minWithdrawal}`);
+    }
+    if (Number(amount) > maxWithdrawal) {
+      return toast.error(`Maximum withdrawal amount is ${settings.currency_symbol || "$"}${maxWithdrawal}`);
+    }
+    if (Number(amount) > totalBalance) {
+      return toast.error("Insufficient balance");
+    }
+    if (!withdrawalPassword) {
+      return toast.error("Please enter your withdrawal password");
+    }
+
+    submitWithdrawal({
+      amount: Number(amount),
+      network: `${selectedCrypto.symbol} (${selectedCrypto.network})`,
+      wallet_address: walletAddress,
+      password: withdrawalPassword,
+      method: "crypto"
+    }, {
+      onSuccess: () => {
+        setAmount("");
+        setWalletAddress("");
+        setWithdrawalPassword("");
+        setShowPassword(false);
+      }
+    });
+  };
+
+  const customRules = settings.withdrawal_notice ? parseNoticeToLines(settings.withdrawal_notice) : [];
+
   return (
-    <div className="flex flex-col h-full bg-transparent overflow-y-auto [&::-webkit-scrollbar]:hidden">
+    <div className="flex flex-col h-full bg-transparent overflow-y-auto [&::-webkit-scrollbar]:hidden relative z-10">
+      {/* Background Ambient Bubbles */}
+      <div className="absolute top-[15%] left-[-40px] w-[180px] h-[180px] bg-amber-500/5 rounded-full blur-[80px] pointer-events-none z-0" />
+      <div className="absolute bottom-[25%] right-[-40px] w-[180px] h-[180px] bg-amber-500/5 rounded-full blur-[80px] pointer-events-none z-0" />
+
       {/* Header */}
-      <div className="bg-[#111827] px-4 py-4 flex items-center sticky top-0 z-20 shadow-sm border-b border-white/5">
+      <div className="bg-[#111827] px-4 py-4 flex items-center justify-center sticky top-0 z-20 shadow-sm border-b border-white/5 shrink-0">
+        <button
+          onClick={() => router.push("/dashboard")}
+          className="absolute left-4 w-8 h-8 bg-white/5 hover:bg-white/10 rounded-xl flex items-center justify-center transition-colors text-gray-300 border border-white/5 cursor-pointer"
+        >
+          <ArrowLeft size={16} />
+        </button>
         <h1 className="text-white/90 text-[16px] font-bold">Withdraw</h1>
       </div>
 
-      <div className="px-4 py-5 max-w-[480px] mx-auto w-full space-y-6">
+      <div className="px-4 py-6 max-w-[480px] mx-auto w-full space-y-6 pb-[100px] relative z-10 flex-1">
         
-        {/* Balance Card */}
-        <div className="bg-[#f59e0b] rounded-[16px] p-5 text-white shadow-[0_8px_20px_-6px_rgba(37,99,235,0.4)] relative overflow-hidden">
-          {/* Background decoration */}
-          <div className="absolute -right-10 -top-10 w-32 h-32 bg-white/10 rounded-full blur-2xl"></div>
-          
-          <div className="flex items-center gap-1.5 mb-2 relative z-10">
-            <div className="bg-white/20 p-1 rounded-md">
-              <Wallet size={12} className="text-white" />
-            </div>
-            <span className="text-[12px] font-medium text-white/90">Total Balance</span>
-          </div>
-          
-          <div className="text-[32px] font-bold tracking-tight relative z-10 flex items-center">
-            {isLoading ? (
-               <Loader2 size={24} className="animate-spin text-white/70" />
-            ) : (
-               `${settings.currency_symbol || "$"}${totalBalance.toFixed(2)}`
-            )}
-          </div>
+        {/* Back to Dashboard link */}
+        <div className="pl-1">
+          <Link 
+            href="/dashboard"
+            className="text-gray-400 hover:text-white text-[13px] font-semibold flex items-center gap-1.5 transition-colors cursor-pointer"
+          >
+            <ArrowLeft size={14} /> Back to Dashboard
+          </Link>
         </div>
 
-        {/* Selection Area */}
-        <div>
-          <h2 className="text-white/90 font-bold text-[14px] mb-3 px-1">Select Withdrawal Method</h2>
-          
-          <div className="grid grid-cols-1 gap-3">
+        {/* Withdraw Funds Card */}
+        <div className="bg-[#111827]/50 border border-white/5 rounded-[24px] p-6 shadow-xl space-y-5">
+          <div className="text-center space-y-1">
+            <h2 className="text-[22px] font-extrabold text-white">Withdraw Funds</h2>
+            <p className="text-[12.5px] text-gray-400 leading-relaxed max-w-[320px] mx-auto">
+              Transfer your funds securely From Main Balance to your external wallet.
+            </p>
+          </div>
 
-            {/* Crypto Card (Active) */}
-            <button 
-              onClick={() => setShowCryptoModal(true)} 
-              className="bg-[#111827] cursor-pointer border border-white/5 rounded-md p-4 flex items-center justify-between shadow-sm hover:border-[#f59e0b] hover:shadow-[0_8px_20px_-6px_rgba(139,92,246,0.15)] transition-all group w-full"
-            >
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 bg-white/5 rounded-[12px] flex items-center justify-center text-white shadow-md group-hover:scale-105 transition-transform duration-300">
-                  <Hexagon size={24} className="fill-white" />
-                </div>
-                <div className="text-left">
-                  <h3 className="text-white/90 font-bold text-[14px] mb-0.5 group-hover:text-[#f59e0b] transition-colors">Withdraw to your Crypto Wallet</h3>
-                  <p className="text-gray-400 text-[11px] leading-relaxed">Transfer to your crypto wallet directly</p>
-                </div>
-              </div>
-              <div className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-amber-500/20 transition-colors text-gray-400 group-hover:text-amber-400">
-                <ArrowLeft size={16} className="rotate-180" />
-              </div>
-            </button>
+          {/* Currency Selector */}
+          <div className="space-y-2 relative">
+            <label className="text-[13px] font-semibold text-white/80 block pl-1">Select Currency</label>
             
-          </div>
-        </div>
-
-        {/* Info Box */}
-        <div className="bg-amber-900/20 border border-amber-500/20 rounded-[16px] p-5 shadow-sm space-y-3.5">
-          <div className="flex items-center gap-2.5 text-amber-300">
-            <Info size={19} className="text-amber-400" />
-            <h3 className="font-bold text-[15px]">Important Information</h3>
-          </div>
-          
-          <div className="text-[13px] text-amber-200 leading-normal">
-            {settings.withdrawal_notice && parseNoticeToLines(settings.withdrawal_notice).length > 0 ? (
-              <div className="space-y-1">
-                {parseNoticeToLines(settings.withdrawal_notice).map((line, idx) => (
-                  <div key={idx} className="flex items-start gap-3">
-                    <div className="w-5 h-5 rounded-full bg-amber-600 text-white flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5">
-                      {idx + 1}
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                setIsDropdownOpen(!isDropdownOpen);
+              }}
+              className="w-full h-[52px] bg-black/40 border border-white/10 rounded-[12px] px-4 flex items-center justify-between text-white/90 cursor-pointer hover:border-amber-500/30 transition-all"
+            >
+              <div className="flex items-center gap-3">
+                {selectedCrypto ? (
+                  <>
+                    <div className="w-6 h-6 bg-white/5 rounded-full flex items-center justify-center overflow-hidden shrink-0 border border-white/5">
+                      {selectedCrypto.icon ? (
+                        <img src={selectedCrypto.icon} alt={selectedCrypto.name} className="w-full h-full object-cover" />
+                      ) : (
+                        <span className="text-[10px] font-bold text-[#f59e0b]">{selectedCrypto.symbol.charAt(0)}</span>
+                      )}
                     </div>
-                    <p className="leading-normal font-medium text-amber-200 mt-0.5" dangerouslySetInnerHTML={{ __html: line }} />
-                  </div>
-                ))}
+                    <span className="font-bold text-[13.5px] uppercase text-white/90">
+                      {selectedCrypto.name} <span className="text-[9.5px] text-gray-400 font-medium ml-1">({selectedCrypto.symbol.toUpperCase()}-{selectedCrypto.network})</span>
+                    </span>
+                  </>
+                ) : (
+                  <>
+                    <span className="text-gray-400 font-medium text-[13.5px] flex items-center gap-1.5">
+                      <span className="text-amber-500 font-bold text-[16px] font-sans">₮</span> Choose currency
+                    </span>
+                  </>
+                )}
               </div>
-            ) : (
-              <div className="space-y-3.5">
-                <div className="flex items-start gap-3">
-                  <div className="w-5 h-5 rounded-full bg-amber-600 text-white flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5">1</div>
-                  <p className="leading-normal font-medium">Follow the below steps to make your withdrawal in the correct manner</p>
-                </div>
-                <div className="flex items-start gap-3">
-                  <div className="w-5 h-5 rounded-full bg-amber-600 text-white flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5">2</div>
-                  <p className="leading-normal font-medium">Enter your wallet address to withdraw correctly</p>
-                </div>
-                <div className="flex items-start gap-3">
-                  <div className="w-5 h-5 rounded-full bg-amber-600 text-white flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5">3</div>
-                  <p className="leading-normal font-medium">You can make a minimum withdrawal of {settings.currency_symbol || "$"}{minWithdrawal.toFixed(2)}</p>
-                </div>
-                <div className="flex items-start gap-3">
-                  <div className="w-5 h-5 rounded-full bg-amber-600 text-white flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5">4</div>
-                  <p className="leading-normal font-medium">Withdrawal may take 5 - 10 minutes with a {withdrawalCharge}% charge</p>
-                </div>
+              <ChevronDown size={16} className={`text-gray-400 transition-transform duration-200 ${isDropdownOpen ? "rotate-180" : ""}`} />
+            </button>
+
+            {/* Custom Dropdown List */}
+            {isDropdownOpen && (
+              <div className="absolute top-[78px] left-0 right-0 bg-[#131926] border border-white/10 rounded-[12px] shadow-2xl z-50 max-h-[220px] overflow-y-auto [&::-webkit-scrollbar]:hidden py-1.5">
+                {cryptos.length === 0 ? (
+                  <div className="px-4 py-3 text-gray-400 text-sm">No payout options available</div>
+                ) : (
+                  cryptos.map((crypto) => (
+                    <button
+                      key={crypto.id}
+                      type="button"
+                      onClick={() => handleSelectCrypto(crypto)}
+                      className={`w-full px-4 py-2.5 flex items-center justify-between text-left hover:bg-white/5 transition-colors cursor-pointer ${
+                        selectedCrypto?.id === crypto.id ? "bg-white/5" : ""
+                      }`}
+                    >
+                      <div className="flex items-center gap-3">
+                        <div className="w-6 h-6 bg-white/5 rounded-full flex items-center justify-center overflow-hidden shrink-0 border border-white/5">
+                          {crypto.icon ? (
+                            <img src={crypto.icon} alt={crypto.name} className="w-full h-full object-cover" />
+                          ) : (
+                            <span className="text-[10px] font-bold text-[#f59e0b]">{crypto.symbol.charAt(0)}</span>
+                          )}
+                        </div>
+                        <div>
+                          <p className="font-bold text-[12.5px] text-white/90 uppercase">{crypto.name}</p>
+                          <p className="text-[9.5px] text-gray-400">{crypto.symbol.toUpperCase()} - {crypto.network} network</p>
+                        </div>
+                      </div>
+                      {selectedCrypto?.id === crypto.id && (
+                        <Check size={14} className="text-[#f59e0b]" />
+                      )}
+                    </button>
+                  ))
+                )}
               </div>
             )}
           </div>
+
+          {/* Enter Amount */}
+          <div className="space-y-2">
+            <div className="flex justify-between items-center px-1">
+              <label className="text-[13px] font-semibold text-white/80 block">
+                Enter Amount
+              </label>
+              <span className="text-[11.5px] text-gray-400 font-semibold">
+                Available: {isLoadingUser ? "..." : `${settings.currency_symbol || "$"}${totalBalance.toFixed(2)}`}
+              </span>
+            </div>
+            
+            <div className="relative">
+              <input
+                type="number"
+                value={amount}
+                onChange={(e) => setAmount(e.target.value)}
+                placeholder="0.00"
+                className="w-full h-[52px] bg-black/40 border border-white/10 rounded-[12px] px-4 text-[16px] font-bold text-white/90 focus:outline-none focus:border-amber-500/30 transition-all placeholder:text-gray-600"
+              />
+              <button
+                type="button"
+                onClick={() => setAmount(totalBalance.toString())}
+                className="absolute right-3.5 top-1/2 -translate-y-1/2 bg-[#f59e0b] hover:bg-amber-600 text-black text-[10px] font-extrabold px-3 py-1.5 rounded-[8px] transition-colors cursor-pointer"
+              >
+                MAX
+              </button>
+            </div>
+            
+            <div className="flex justify-between items-center text-[11px] text-gray-400 font-medium px-1">
+              <span>Estimated value: ${amount ? Number(amount).toFixed(2) : "0.00"} USD</span>
+              {amount && (
+                <span>Fee ({withdrawalCharge}%): -{settings.currency_symbol || "$"}{feeAmount.toFixed(2)}</span>
+              )}
+            </div>
+          </div>
+
+          {/* Wallet Address */}
+          <div className="space-y-2">
+            <label className="text-[13px] font-semibold text-white/80 block pl-1">Wallet Address</label>
+            <div className="flex gap-2">
+              <input
+                type="text"
+                value={walletAddress}
+                onChange={(e) => setWalletAddress(e.target.value)}
+                placeholder="Paste your wallet address"
+                className="flex-1 h-[52px] bg-black/40 border border-white/10 rounded-[12px] px-4 text-[14px] text-white/90 placeholder:text-gray-600 focus:outline-none focus:border-amber-500/30 transition-all"
+              />
+              <button
+                type="button"
+                onClick={handlePasteAddress}
+                className={`w-[52px] h-[52px] rounded-[12px] border font-bold text-[12px] flex items-center justify-center cursor-pointer transition-all shrink-0 ${
+                  copied
+                    ? "bg-green-500 border-green-500 text-white"
+                    : "bg-white/5 border-white/10 text-amber-500 hover:bg-white/10"
+                }`}
+                title="Paste from clipboard"
+              >
+                {copied ? <Check size={16} /> : <Copy size={16} />}
+              </button>
+            </div>
+          </div>
+
+          {/* Withdrawal Password */}
+          <div className="space-y-2">
+            <label className="text-[13px] font-semibold text-white/80 block pl-1">Withdrawal Password</label>
+            <div className="relative flex items-center">
+              <input 
+                type={showPassword ? "text" : "password"}
+                value={withdrawalPassword}
+                onChange={(e) => setWithdrawalPassword(e.target.value)}
+                placeholder="Enter your withdrawal password"
+                className="w-full h-[52px] bg-black/40 border border-white/10 rounded-[12px] pl-4 pr-12 text-[14px] text-white/90 placeholder:text-gray-600 focus:outline-none focus:border-amber-500/30 transition-all"
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-4 text-gray-500 hover:text-gray-300 focus:outline-none cursor-pointer"
+              >
+                {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+              </button>
+            </div>
+          </div>
+
+          {/* Submit Button */}
+          <button
+            onClick={handleSubmit}
+            disabled={isSubmitting || !amount || !walletAddress || !selectedCrypto || !withdrawalPassword}
+            className="w-full h-[52px] bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-black py-2.5 rounded-[14px] font-bold text-[14.5px] transition-all shadow-[0_0_20px_rgba(245,158,11,0.15)] hover:shadow-[0_0_25px_rgba(245,158,11,0.3)] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 mt-4 cursor-pointer"
+          >
+            {isSubmitting ? (
+              <Loader2 className="animate-spin text-black" size={18} />
+            ) : (
+              "Continue"
+            )}
+          </button>
+        </div>
+
+        {/* Withdrawal Rules Card */}
+        <div className="bg-[#111827]/50 border border-white/5 rounded-[24px] p-6 shadow-xl space-y-4">
+          <h3 className="font-bold text-[14.5px] text-white/95 uppercase tracking-wider pl-1">Withdrawal Rules</h3>
+          
+          <ul className="space-y-3.5 text-[12px] text-gray-300 pl-1">
+            {customRules.length > 0 ? (
+              customRules.map((line, idx) => (
+                <li key={idx} className="flex items-start gap-2.5">
+                  <span className="text-[#f59e0b] font-bold shrink-0 mt-0.5">•</span>
+                  <p className="leading-relaxed font-medium text-gray-300" dangerouslySetInnerHTML={{ __html: line }} />
+                </li>
+              ))
+            ) : (
+              <>
+                <li className="flex items-start gap-2.5">
+                  <span className="text-[#f59e0b] font-bold shrink-0 mt-0.5">▲</span>
+                  <p className="leading-relaxed font-medium">Minimum withdrawal amount is ${minWithdrawal}</p>
+                </li>
+                <li className="flex items-start gap-2.5">
+                  <span className="text-[#f59e0b] font-bold shrink-0 mt-0.5">▲</span>
+                  <p className="leading-relaxed font-medium">Withdrawal requests may take several minutes to process</p>
+                </li>
+                <li className="flex items-start gap-2.5">
+                  <span className="text-[#f59e0b] font-bold shrink-0 mt-0.5">▲</span>
+                  <p className="leading-relaxed font-medium">Ensure the wallet address is correct before submitting</p>
+                </li>
+                <li className="flex items-start gap-2.5">
+                  <span className="text-[#f59e0b] font-bold shrink-0 mt-0.5">▲</span>
+                  <p className="leading-relaxed font-medium">Transactions cannot be reversed once processed</p>
+                </li>
+                <li className="flex items-start gap-2.5">
+                  <span className="text-[#f59e0b] font-bold shrink-0 mt-0.5">▲</span>
+                  <p className="leading-relaxed font-medium">Network fees may apply depending on the selected currency</p>
+                </li>
+              </>
+            )}
+          </ul>
         </div>
 
       </div>
-
-      {/* Crypto Withdrawal Modal */}
-      {showCryptoModal && (
-        <div 
-          className="fixed inset-0 z-[60] flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/50 backdrop-blur-sm animate-fade-in cursor-pointer"
-          onClick={handleCloseModal}
-        >
-          <div 
-            className="bg-[#0b0f19] border border-white/10 rounded-t-[24px] sm:rounded-[20px] w-full max-w-[450px] overflow-hidden shadow-2xl animate-slide-up flex flex-col max-h-[85vh] mt-auto sm:mt-0 cursor-pointer"
-            onClick={(e) => e.stopPropagation()}
-          >
-            
-            {/* Mobile Grabber */}
-            <div className="w-full flex justify-center pt-3 sm:hidden pb-1 shrink-0">
-              <div className="w-12 h-1.5 bg-white/20 rounded-full"></div>
-            </div>
-            
-            {/* Modal Header */}
-            <div className="flex justify-between items-center px-4 py-3 sm:py-4 border-b border-white/5 shrink-0">
-              <h3 className="text-white/90 text-[15px] font-bold">Withdraw to your Crypto Wallet</h3>
-              <button 
-                onClick={handleCloseModal}
-                className="cursor-pointer w-7 h-7 bg-white/5 hover:bg-white/10 rounded-full flex items-center justify-center text-gray-400 transition-colors"
-              >
-                <X size={14} />
-              </button>
-            </div>
-
-            {/* Modal Body */}
-            <div className="p-5 overflow-y-auto space-y-4 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
-              
-              <div className="space-y-1.5">
-                <label className="block text-white/90 text-[12px] font-bold">Select Cryptocurrency *</label>
-                <select 
-                  value={cryptoNetwork}
-                  onChange={(e) => setCryptoNetwork(e.target.value)}
-                  className="cursor-pointer w-full bg-[#111827] border border-white/10 rounded-[10px] px-3.5 py-2.5 text-[13px] text-white/90 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500 appearance-none"
-                >
-                  <option value="" disabled className="bg-[#111827]">Choose cryptocurrency & network</option>
-                  {isLoadingCryptos ? (
-                    <option disabled className="bg-[#111827]">Loading...</option>
-                  ) : (
-                    cryptos.map(crypto => (
-                      <option key={crypto.id} value={`${crypto.symbol} (${crypto.network})`} className="bg-[#111827]">
-                        {crypto.name} ({crypto.network})
-                      </option>
-                    ))
-                  )}
-                </select>
-              </div>
-
-              <div className="space-y-1.5">
-                <label className="block text-white/90 text-[12px] font-bold">Wallet Address *</label>
-                <input 
-                  type="text"
-                  value={walletAddress}
-                  onChange={(e) => setWalletAddress(e.target.value)}
-                  placeholder="Enter your wallet address"
-                  className="w-full bg-[#111827] border border-white/10 rounded-[10px] px-3.5 py-2.5 text-[13px] text-white/90 placeholder-gray-500 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500"
-                />
-                <p className="text-red-400 text-[10px]">Double-check your address. Incorrect addresses may result in lost funds.</p>
-              </div>
-
-              <div className="space-y-1.5">
-                <label className="block text-white/90 text-[12px] font-bold">Withdrawal Amount *</label>
-                <div className="relative flex items-center">
-                  <span className="absolute left-3.5 text-[#f59e0b] font-bold text-[14px]">{settings.currency_symbol || "$"}</span>
-                  <input 
-                    type="number"
-                    value={amount}
-                    onChange={(e) => setAmount(e.target.value)}
-                    placeholder="0.00"
-                    className="w-full bg-[#111827] border border-white/10 rounded-[10px] pl-8 pr-16 py-2.5 text-[14px] font-medium text-white/90 placeholder-gray-500 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500"
-                  />
-                  <button 
-                    onClick={() => setAmount(totalBalance.toString())}
-                    className="absolute right-2 bg-[#f59e0b] text-white text-[10px] font-bold px-2.5 py-1 rounded-sm hover:bg-amber-600 transition-colors cursor-pointer"
-                  >
-                    MAX
-                  </button>
-                </div>
-                <p className="text-gray-400 text-[10px]">Min: {settings.currency_symbol || "$"}{minWithdrawal.toFixed(2)} - Max: {settings.currency_symbol || "$"}{maxWithdrawal.toFixed(2)}</p>
-              </div>
-
-              <div className="bg-amber-900/20 border border-amber-500/20 rounded-[10px] p-3 space-y-2">
-                <div className="flex justify-between items-center text-[12px] text-amber-300">
-                  <span>Charge ({withdrawalCharge.toFixed(2)}%)</span>
-                  <span className="font-medium text-red-400">-{settings.currency_symbol || "$"}{feeAmount.toFixed(2)}</span>
-                </div>
-                <div className="w-full border-t border-dashed border-amber-500/20"></div>
-                <div className="flex justify-between items-center text-[12px] font-bold text-amber-200">
-                  <span>You will receive</span>
-                  <span>{settings.currency_symbol || "$"}{amount ? (Number(amount) - feeAmount).toFixed(2) : "0.00"}</span>
-                </div>
-              </div>
-
-              <div className="space-y-1.5">
-                <label className="block text-white/90 text-[12px] font-bold">Withdrawal Password *</label>
-                <div className="relative flex items-center">
-                  <input 
-                    type={showPassword ? "text" : "password"}
-                    value={withdrawalPassword}
-                    onChange={(e) => setWithdrawalPassword(e.target.value)}
-                    placeholder="Enter your withdrawal password"
-                    className="w-full bg-[#111827] border border-white/10 rounded-[10px] pl-3.5 pr-11 py-2.5 text-[13px] text-white/90 placeholder-gray-500 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3.5 text-gray-500 hover:text-gray-300 focus:outline-none cursor-pointer"
-                  >
-                    {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
-                  </button>
-                </div>
-              </div>
-
-            </div>
-
-            {/* Modal Footer */}
-            <div className="p-4 pb-12 sm:pb-4 border-t border-white/5 shrink-0">
-              <button 
-                onClick={() => {
-                  submitWithdrawal({
-                    amount: Number(amount),
-                    network: cryptoNetwork,
-                    wallet_address: walletAddress,
-                    password: withdrawalPassword,
-                    method: "crypto"
-                  }, {
-                    onSuccess: () => {
-                      setShowCryptoModal(false);
-                      setAmount("");
-                      setWalletAddress("");
-                      setCryptoNetwork("");
-                      setWithdrawalPassword("");
-                      setShowPassword(false);
-                    }
-                  });
-                }}
-                disabled={isSubmitting || !cryptoNetwork || !walletAddress || !amount || Number(amount) < minWithdrawal || Number(amount) > maxWithdrawal || Number(amount) > totalBalance || !withdrawalPassword}
-                className="w-full bg-[#f59e0b] hover:bg-[#d97706] disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed disabled:shadow-none text-white font-bold text-[14px] py-3 rounded-[12px] transition-all shadow-sm flex items-center justify-center gap-2"
-              >
-                {isSubmitting ? <Loader2 size={16} className="animate-spin" /> : <Wallet size={16} />}
-                {isSubmitting ? "Processing..." : "Submit Withdrawal"}
-              </button>
-            </div>
-
-          </div>
-        </div>
-      )}
-
     </div>
+  );
+}
+
+export default function WithdrawPage() {
+  return (
+    <Suspense fallback={
+      <div className="flex justify-center py-20">
+        <Loader2 className="animate-spin text-amber-500" size={32} />
+      </div>
+    }>
+      <WithdrawContent />
+    </Suspense>
   );
 }
