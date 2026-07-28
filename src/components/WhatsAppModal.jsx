@@ -12,6 +12,9 @@ export default function WhatsAppModal() {
   const whatsappGroupLink = settingsRes?.settings?.whatsapp_group || "#";
 
   useEffect(() => {
+    // Automatically open on mount when the dashboard loads
+    setIsOpen(true);
+
     const handleOpen = () => setIsOpen(true);
     window.addEventListener('open-whatsapp-modal', handleOpen);
     return () => window.removeEventListener('open-whatsapp-modal', handleOpen);
