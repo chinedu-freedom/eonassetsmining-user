@@ -489,12 +489,7 @@ export default function DashboardPage() {
                 label: "WhatsApp Group", 
                 emoji: "💬", 
                 action: () => {
-                  const whatsappGroupLink = settings.whatsapp_group || "#";
-                  if (whatsappGroupLink && whatsappGroupLink !== "#") {
-                    window.open(whatsappGroupLink, '_blank');
-                  } else {
-                    toast.info("WhatsApp group link is not configured.");
-                  }
+                  window.dispatchEvent(new Event('open-whatsapp-modal'));
                 } 
               },
             ].map((item, idx) => (
@@ -511,6 +506,25 @@ export default function DashboardPage() {
                 </span>
               </div>
             ))}
+          </div>
+        </div>
+
+        {/* Daily Check-in Claim Banner */}
+        <div 
+          onClick={() => window.dispatchEvent(new Event('open-daily-checkin'))}
+          className="mt-5 bg-[#111827] rounded-[18px] p-4 shadow-sm border border-amber-500/10 flex items-center justify-between text-white hover:border-amber-500/30 transition-all cursor-pointer group"
+        >
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-amber-500/10 rounded-xl flex items-center justify-center text-amber-500">
+              <Calendar size={20} />
+            </div>
+            <div>
+              <h3 className="font-bold text-[13.5px] text-white/90">Daily Check-in</h3>
+              <p className="text-gray-400 text-[11px] mt-0.5">Claim your daily mining rewards!</p>
+            </div>
+          </div>
+          <div className="bg-[#f59e0b] text-[#111827] px-3.5 py-1.5 rounded-full text-[11px] font-extrabold flex items-center gap-1 group-hover:bg-[#d97706] transition-colors">
+            Claim <ChevronRight size={13} />
           </div>
         </div>
 

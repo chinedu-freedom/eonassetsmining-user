@@ -12,33 +12,9 @@ export default function WhatsAppModal() {
   const whatsappGroupLink = settingsRes?.settings?.whatsapp_group || "#";
 
   useEffect(() => {
-    const showModal = () => {
-      setIsOpen(true);
-    };
-
-    // Check if checkin modal is showing or will show
-    const checkinDataRaw = localStorage.getItem("checkin-status"); // Not directly reliable due to React Query
-    
-    // Listen for checkin modal close
-    const handleCheckinClose = () => {
-      showModal();
-    };
-    
-    window.addEventListener('checkin-modal-closed', handleCheckinClose);
-
-    // Give the checkin modal a moment to appear. If it doesn't, show this modal.
-    const timer = setTimeout(() => {
-      // Very hacky but effective way to check if dialog is open in DOM
-      const isDialogActive = document.querySelector('[role="dialog"]');
-      if (!isDialogActive) {
-        showModal();
-      }
-    }, 1500);
-
-    return () => {
-      window.removeEventListener('checkin-modal-closed', handleCheckinClose);
-      clearTimeout(timer);
-    };
+    const handleOpen = () => setIsOpen(true);
+    window.addEventListener('open-whatsapp-modal', handleOpen);
+    return () => window.removeEventListener('open-whatsapp-modal', handleOpen);
   }, []);
 
   return (

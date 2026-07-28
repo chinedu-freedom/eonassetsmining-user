@@ -86,11 +86,12 @@ export default function DailyCheckinModal() {
     confettiRef.current = new Confetti(confettiCanvasRef.current);
   }, [isOpen]);
 
-  useEffect(() => {
-    if (data && data.enabled && !data.claimedToday) {
-      setIsOpen(true);
-    }
-  }, [data]);
+  // Commented out to prevent automatic modal popup on mount/data load:
+  // useEffect(() => {
+  //   if (data && data.enabled && !data.claimedToday) {
+  //     setIsOpen(true);
+  //   }
+  // }, [data]);
 
   // Allow other components to trigger the modal
   useEffect(() => {
