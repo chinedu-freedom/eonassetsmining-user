@@ -47,7 +47,7 @@ export default function AboutPage() {
       <div className="px-4 py-5 max-w-[480px] mx-auto w-full space-y-5">
         
         {/* Hero Section */}
-        <div className="relative bg-gradient-to-br from-amber-500 to-amber-600 rounded-[20px] pt-7 pb-10 px-5 text-center text-white overflow-hidden shadow-lg border border-amber-400/20">
+        <div className="relative bg-gradient-to-br from-amber-500 to-amber-600 rounded-[20px] pt-7 pb-12 px-5 text-center text-white overflow-hidden shadow-lg border border-amber-400/20">
           {/* Decorative Background Glows */}
           <div className="absolute top-0 right-0 w-24 h-24 bg-white/10 rounded-full blur-xl -translate-y-1/2 translate-x-1/4"></div>
           <div className="absolute bottom-0 left-0 w-20 h-20 bg-white/10 rounded-full blur-xl translate-y-1/2 -translate-x-1/4"></div>
@@ -63,6 +63,22 @@ export default function AboutPage() {
           <p className="text-[11.5px] text-white/90 leading-relaxed max-w-[340px] mx-auto relative z-10">
             Kryptex is a global cryptocurrency mining platform dedicated to making digital asset mining simple, efficient, and accessible for everyone. Since its launch, Kryptex has helped millions of users monetize their computing power by providing intelligent mining software, reliable mining pools, and an ecosystem designed for both beginners and experienced miners.
           </p>
+        </div>
+
+        {/* Stats Section - overlap */}
+        <div className="grid grid-cols-3 gap-1.5 -mt-8 px-2 relative z-10">
+          <div className="bg-[#111827] rounded-[12px] py-2.5 px-1 text-center shadow-md border border-white/5">
+            <div className="text-[#f59e0b] text-[14px] font-bold mb-0.5">2M+</div>
+            <div className="text-[8px] font-bold text-gray-400 tracking-wider">USERS</div>
+          </div>
+          <div className="bg-[#111827] rounded-[12px] py-2.5 px-1 text-center shadow-md border border-white/5">
+            <div className="text-[#f59e0b] text-[14px] font-bold mb-0.5">$50M+</div>
+            <div className="text-[8px] font-bold text-gray-400 tracking-wider">VOLUME</div>
+          </div>
+          <div className="bg-[#111827] rounded-[12px] py-2.5 px-1 text-center shadow-md border border-white/5">
+            <div className="text-[#f59e0b] text-[14px] font-bold mb-0.5">99.9%</div>
+            <div className="text-[8px] font-bold text-gray-400 tracking-wider">UPTIME</div>
+          </div>
         </div>
 
         {/* Our Mission */}
