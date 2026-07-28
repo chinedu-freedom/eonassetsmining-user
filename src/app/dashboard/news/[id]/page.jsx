@@ -12,7 +12,7 @@ export default function NewsArticlePage() {
   const article = data?.news;
 
   const { data: settingsRes } = useFetchData("/settings", ["platform-settings"]);
-  const siteName = settingsRes?.settings?.site_name || "mykryptexapp";
+  const siteName = settingsRes?.settings?.site_name || "Mykryptexapp";
 
   return (
     <div className="flex flex-col h-full bg-[#0b0f19] overflow-y-auto  [&::-webkit-scrollbar]:hidden">

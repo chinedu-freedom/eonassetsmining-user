@@ -93,7 +93,7 @@ export default function DashboardPage() {
 
   const { data: settingsResponse } = useFetchData("/settings", ["platform-settings"]);
   const settings = settingsResponse?.settings || {};
-  const siteName = settings.site_name || "mykryptexapp";
+  const siteName = settings.site_name || "Mykryptexapp";
   const siteLogo = settings.platform_logo || null;
   const referralDomain = typeof window !== "undefined" ? window.location.origin : "https://mykryptexapp.com";
 
