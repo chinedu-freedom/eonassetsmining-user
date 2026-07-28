@@ -263,6 +263,34 @@ export default function AccountPage() {
                 </span>
               </div>
             </div>
+
+            {/* Total Assets */}
+            <div className="flex items-center justify-between gap-3 w-full">
+              <div className="flex-1 h-11 bg-white/5 border border-white/5 rounded-[8px] transform -skew-x-[18deg] flex items-center justify-center shadow-inner">
+                <span className="transform skew-x-[18deg] text-[10px] font-extrabold text-gray-300 uppercase tracking-wider">
+                  Total Assets
+                </span>
+              </div>
+              <div className="flex-[1.2] h-11 bg-[#c2ff29] rounded-[8px] transform -skew-x-[18deg] flex items-center justify-center shadow-md">
+                <span className="transform skew-x-[18deg] text-[13px] font-black text-[#0b0f19] tracking-wide whitespace-nowrap">
+                  {showBalance ? balanceValues.income : "****"} {currency === "USDT" ? "USD" : currency}
+                </span>
+              </div>
+            </div>
+
+            {/* Team Member */}
+            <div className="flex items-center justify-between gap-3 w-full">
+              <div className="flex-1 h-11 bg-white/5 border border-white/5 rounded-[8px] transform -skew-x-[18deg] flex items-center justify-center shadow-inner">
+                <span className="transform skew-x-[18deg] text-[10px] font-extrabold text-gray-300 uppercase tracking-wider">
+                  Team Member
+                </span>
+              </div>
+              <div className="flex-[1.2] h-11 bg-[#c2ff29] rounded-[8px] transform -skew-x-[18deg] flex items-center justify-center shadow-md">
+                <span className="transform skew-x-[18deg] text-[13px] font-black text-[#0b0f19] tracking-wide whitespace-nowrap">
+                  {userProfile?.statistics?.team_members || 0}
+                </span>
+              </div>
+            </div>
           </div>
         </div>
 
