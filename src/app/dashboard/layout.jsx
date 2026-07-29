@@ -3,6 +3,7 @@
 import { Suspense, useState, useEffect, useMemo } from "react";
 import BottomNav from "@/components/BottomNav";
 import DailyCheckinModal from "@/components/DailyCheckinModal";
+import InstallGuideModal from "@/components/InstallGuideModal";
 import { useFetchData } from "@/hooks/useApi";
 import { useRouter, usePathname } from "next/navigation";
 import { Globe, X, Home, Wallet, CreditCard, Cpu, TrendingUp, Clock, MessageCircle, User, Users, Settings, LogOut, Menu, ChevronDown, CheckCircle2, Search, Download, ChevronRight } from "lucide-react";
@@ -273,6 +274,7 @@ export default function DashboardLayout({ children }) {
         </div>
 
         <DailyCheckinModal />
+        <InstallGuideModal />
 
         {/* Language Modal */}
         {showLanguageModal && (

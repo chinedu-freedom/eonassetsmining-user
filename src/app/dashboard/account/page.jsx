@@ -314,8 +314,7 @@ export default function AccountPage() {
                     if (isInstallable) {
                       installPWA();
                     } else {
-                      // Fallback toast if already installed or on iOS
-                      toast.info("To install on iOS: tap Share, then 'Add to Home Screen'. On Android, it may already be installed.");
+                      window.dispatchEvent(new Event('open-install-guide'));
                     }
                   }
                 }}
