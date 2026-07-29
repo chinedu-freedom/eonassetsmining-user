@@ -732,7 +732,7 @@ export default function DashboardPage() {
                     const amountStr = `${sign}${settings.currency_symbol || '$'}${parseFloat(tx.amount || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
                     const dateObj = new Date(tx.created_at || Date.now());
                     const formattedDate = `${dateObj.getDate()}/${String(dateObj.getMonth() + 1).padStart(2, '0')}/${String(dateObj.getFullYear()).slice(-2)}`;
-                    const formattedTime = dateObj.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false });
+                    const formattedTime = dateObj.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
                     
                     const statusStr = (tx.status || "pending").toLowerCase();
                     const statusBadgeClass = statusStr === "completed" || statusStr === "success" || statusStr === "approved"
