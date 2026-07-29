@@ -86,46 +86,53 @@ export default function MyInvestmentsPage() {
           </div>
         ) : (
           <div className="space-y-3 mt-4">
-            {currentList.map((inv) => (
-              <div key={inv.id} className="bg-[#111827] rounded-[16px] p-4 border border-white/5 relative overflow-hidden">
-                <div className="absolute top-0 left-0 w-1 h-full bg-[#f59e0b]"></div>
-                <div className="flex justify-between items-start mb-3">
-                  <div>
-                    <h3 className="text-white font-bold text-[15px]">{inv.plan?.name || 'Investment Plan'}</h3>
-                    <div className="text-gray-400 text-[11px] mt-0.5">{new Date(inv.created_at).toLocaleDateString()}</div>
-                  </div>
-                  <div className={`px-2 py-1 rounded text-[10px] font-bold ${activeTab === 'active' ? 'bg-amber-500/10 text-amber-400' : 'bg-green-500/10 text-green-400'}`}>
-                    {activeTab === 'active' ? 'ACTIVE' : 'COMPLETED'}
-                  </div>
-                </div>
-                
-                <div className="grid grid-cols-2 gap-3 mb-3">
-                  <div className="bg-white/5 p-2 rounded-lg">
-                    <div className="text-gray-400 text-[10px] mb-1">Amount Invested</div>
-                    <div className="text-white font-bold text-[13px]">{settings.currency_symbol || "$"}{Number(inv.amount).toFixed(2)}</div>
-                  </div>
-                  <div className="bg-white/5 p-2 rounded-lg">
-                    <div className="text-gray-400 text-[10px] mb-1">Expected Return</div>
-                    <div className="text-green-400 font-bold text-[13px]">
-                       {inv.plan?.daily_income ? `${inv.plan.daily_income}% Daily` : 'Variable'}
+            {currentList.map((inv) => {
+              const startDate = new Date(inv.created_at);
+              const formattedStart = `${startDate.toLocaleDateString()} ${startDate.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true })}`;
+              const endDate = inv.end_date ? new Date(inv.end_date) : null;
+              const formattedEnd = endDate ? `${endDate.toLocaleDateString()} ${endDate.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true })}` : '';
+
+              return (
+                <div key={inv.id} className="bg-[#111827] rounded-[16px] p-4 border border-white/5 relative overflow-hidden">
+                  <div className="absolute top-0 left-0 w-1 h-full bg-[#f59e0b]"></div>
+                  <div className="flex justify-between items-start mb-3">
+                    <div>
+                      <h3 className="text-white font-bold text-[15px]">{inv.plan?.name || 'Investment Plan'}</h3>
+                      <div className="text-gray-400 text-[11px] mt-0.5">{formattedStart}</div>
+                    </div>
+                    <div className={`px-2 py-1 rounded text-[10px] font-bold ${activeTab === 'active' ? 'bg-amber-500/10 text-amber-400' : 'bg-green-500/10 text-green-400'}`}>
+                      {activeTab === 'active' ? 'ACTIVE' : 'COMPLETED'}
                     </div>
                   </div>
+                  
+                  <div className="grid grid-cols-2 gap-3 mb-3">
+                    <div className="bg-white/5 p-2 rounded-lg">
+                      <div className="text-gray-400 text-[10px] mb-1">Amount Invested</div>
+                      <div className="text-white font-bold text-[13px]">{settings.currency_symbol || "$"}{Number(inv.amount).toFixed(2)}</div>
+                    </div>
+                    <div className="bg-white/5 p-2 rounded-lg">
+                      <div className="text-gray-400 text-[10px] mb-1">Expected Return</div>
+                      <div className="text-green-400 font-bold text-[13px]">
+                         {inv.plan?.daily_income ? `${inv.plan.daily_income}% Daily` : 'Variable'}
+                      </div>
+                    </div>
+                  </div>
+                  
+                  {activeTab === 'active' && inv.end_date && (
+                    <div className="flex items-center gap-1.5 text-gray-400 text-[11px]">
+                      <Clock size={12} className="text-amber-400" />
+                      <span>Ends: {formattedEnd}</span>
+                    </div>
+                  )}
+                  {activeTab === 'completed' && (
+                    <div className="flex items-center gap-1.5 text-green-400 text-[11px]">
+                      <CheckCircle2 size={12} />
+                      <span>Successfully matured</span>
+                    </div>
+                  )}
                 </div>
-                
-                {activeTab === 'active' && inv.end_date && (
-                  <div className="flex items-center gap-1.5 text-gray-400 text-[11px]">
-                    <Clock size={12} className="text-amber-400" />
-                    <span>Ends: {new Date(inv.end_date).toLocaleDateString()}</span>
-                  </div>
-                )}
-                {activeTab === 'completed' && (
-                  <div className="flex items-center gap-1.5 text-green-400 text-[11px]">
-                    <CheckCircle2 size={12} />
-                    <span>Successfully matured</span>
-                  </div>
-                )}
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
       </div>
