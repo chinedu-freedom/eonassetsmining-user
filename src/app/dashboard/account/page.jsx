@@ -251,7 +251,7 @@ export default function AccountPage() {
             </div>
 
             {/* Total Earnings */}
-            <div className="flex items-center justify-between gap-3 w-full">
+            {/* <div className="flex items-center justify-between gap-3 w-full">
               <div className="flex-1 h-11 bg-white/5 border border-white/5 rounded-[8px] transform -skew-x-[18deg] flex items-center justify-center shadow-inner">
                 <span className="transform skew-x-[18deg] text-[10px] font-extrabold text-gray-300 uppercase tracking-wider">
                   Total Earnings
@@ -262,7 +262,7 @@ export default function AccountPage() {
                   {showBalance ? balanceValues.income : "****"} {currency === "USDT" ? "USD" : currency}
                 </span>
               </div>
-            </div>
+            </div> */}
 
             {/* Total Assets */}
             <div className="flex items-center justify-between gap-3 w-full">

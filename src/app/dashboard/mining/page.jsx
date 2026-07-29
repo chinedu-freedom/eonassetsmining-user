@@ -234,13 +234,9 @@ export default function MiningPlansPage() {
                   <span className="text-gray-400 text-[12px]">Daily Income</span>
                   <span className="text-[#22c55e] text-[14px] font-bold">{formatCurrency(dailyIncome)}</span>
                 </div>
-                <div className="flex justify-between items-center border-b border-white/5 pb-4">
+                <div className="flex justify-between items-center pb-2">
                   <span className="text-gray-400 text-[12px]">Total Return</span>
                   <span className="text-white/90 text-[14px] font-bold">{formatCurrency(totalReturn)}</span>
-                </div>
-                <div className="flex justify-between items-center pb-2">
-                  <span className="text-gray-400 text-[12px]">Capital Return</span>
-                  <span className="text-red-500 text-[14px] font-bold">No</span>
                 </div>
               </div>
             </div>
