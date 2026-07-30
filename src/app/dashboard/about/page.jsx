@@ -81,6 +81,103 @@ export default function AboutPage() {
           </div>
         </div>
 
+        {/* How It Works & Mining Pools */}
+        <div className="space-y-5">
+          {/* How It Works */}
+          <div className="bg-[#111827] rounded-[16px] p-4.5 border border-white/5 shadow-sm space-y-4">
+            <div className="flex items-center gap-2">
+              <div className="w-7 h-7 bg-amber-500/10 rounded-[8px] flex items-center justify-center text-[#f59e0b]">
+                <Rocket size={14} className="animate-bounce" />
+              </div>
+              <h3 className="text-white/90 font-bold text-[13px]">How It Works</h3>
+            </div>
+            
+            <p className="text-gray-400 text-[11px] leading-relaxed font-semibold">
+              Getting started on {siteName} is simple:
+            </p>
+
+            <div className="space-y-2.5">
+              {[
+                { step: "1", text: "Register your personal account." },
+                { step: "2", text: "Fund your account." },
+                { step: "3", text: "Activate your preferred mining package." },
+                { step: "4", text: "Begin earning rewards automatically according to your selected mining plan." }
+              ].map((item, idx) => (
+                <div key={idx} className="flex items-center gap-3 bg-[#0b0f19]/40 p-2.5 rounded-xl border border-white/5">
+                  <div className="w-5.5 h-5.5 bg-[#f59e0b]/10 text-[#f59e0b] rounded-full flex items-center justify-center text-[10px] font-bold shrink-0">
+                    {item.step}
+                  </div>
+                  <span className="text-gray-300 text-[11px] font-medium leading-tight">{item.text}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Mining Pools Overview */}
+          <div className="bg-[#111827] rounded-[16px] p-4.5 border border-white/5 shadow-sm space-y-4">
+            <div className="flex items-center gap-2">
+              <div className="w-7 h-7 bg-amber-500/10 rounded-[8px] flex items-center justify-center text-[#f59e0b]">
+                <Cpu size={14} />
+              </div>
+              <h3 className="text-white/90 font-bold text-[13px]">Mining Pools Overview</h3>
+            </div>
+
+            {/* Basic Pool */}
+            <div className="space-y-2 border-b border-white/5 pb-3">
+              <h4 className="text-amber-500 text-[11px] font-extrabold uppercase tracking-wider">Kryptex Basic Pool</h4>
+              <p className="text-gray-300 text-[11px] leading-relaxed">
+                The Basic Pool offers a daily return of <strong>7.5% for 20 days</strong>, providing a total return of <strong>150%</strong> over the investment period without requiring referrals or compounding.
+              </p>
+              <p className="text-gray-400 text-[10.5px] leading-relaxed">
+                Users who wish to increase their earnings may also choose to compound their profits by following the platform’s activation process.
+              </p>
+              <div className="grid grid-cols-2 gap-2 pt-1">
+                <div className="bg-[#0b0f19]/30 p-2 rounded-lg border border-white/5">
+                  <span className="text-gray-400 text-[9.5px] block font-semibold">Activation Amount</span>
+                  <span className="text-white font-bold text-[11px]">$30</span>
+                </div>
+                <div className="bg-[#0b0f19]/30 p-2 rounded-lg border border-white/5">
+                  <span className="text-gray-400 text-[9.5px] block font-semibold">Min Compounding</span>
+                  <span className="text-white font-bold text-[11px]">$30</span>
+                </div>
+                <div className="bg-[#0b0f19]/30 p-2 rounded-lg border border-white/5 col-span-2">
+                  <span className="text-gray-400 text-[9.5px] block font-semibold">Min Withdrawal</span>
+                  <span className="text-white font-bold text-[11px]">$20 (Withdraw at any time once reached)</span>
+                </div>
+              </div>
+            </div>
+
+            {/* VIP Pool */}
+            <div className="space-y-2 border-b border-white/5 pb-3">
+              <h4 className="text-amber-500 text-[11px] font-extrabold uppercase tracking-wider">Kryptex VIP Pool</h4>
+              <p className="text-gray-300 text-[11px] leading-relaxed">
+                The Kryptex VIP Pool offers a daily return of <strong>8.5% for 20 days</strong> and is designed for users seeking higher investment opportunities.
+              </p>
+              <div className="grid grid-cols-2 gap-2 pt-1">
+                <div className="bg-[#0b0f19]/30 p-2 rounded-lg border border-white/5">
+                  <span className="text-gray-400 text-[9.5px] block font-semibold">Min Activation Amount</span>
+                  <span className="text-white font-bold text-[11px]">$10,000</span>
+                </div>
+                <div className="bg-[#0b0f19]/30 p-2 rounded-lg border border-white/5">
+                  <span className="text-gray-400 text-[9.5px] block font-semibold">Min Withdrawal</span>
+                  <span className="text-white font-bold text-[11px]">$20 (Withdraw at any time)</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Contract Pool */}
+            <div className="space-y-2">
+              <h4 className="text-amber-500 text-[11px] font-extrabold uppercase tracking-wider">Kryptex Contract Pool</h4>
+              <p className="text-gray-300 text-[11px] leading-relaxed">
+                The Kryptex Contract Pool is a fixed-income, long-term mining plan designed for users who prefer stable returns over an extended period. This plan provides a fixed daily return of <strong>10.5% for 183 days (6 months)</strong>.
+              </p>
+              <p className="text-gray-400 text-[10.5px] leading-relaxed">
+                Unlike the other mining pools, withdrawals are only available upon the completion of the contract period. At the end of the contract, both the accumulated earnings and the initial capital are released to the user.
+              </p>
+            </div>
+          </div>
+        </div>
+
         {/* Our Mission */}
         <div className="bg-[#111827] rounded-[16px] p-4.5 border border-white/5 shadow-sm space-y-2.5">
           <div className="flex items-center gap-2">
