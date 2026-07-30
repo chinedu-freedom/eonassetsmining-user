@@ -40,6 +40,8 @@ function DepositContent() {
   const [trackId, setTrackId] = useState(null);
   const [copied, setCopied] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [payableAmount, setPayableAmount] = useState(0);
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
 
   const { data: cryptosRes, isLoading: isLoadingCryptos } = useFetchData("/settings/payout-cryptos", ["payout-cryptos"]);
   const cryptos = cryptosRes?.data || [];
@@ -69,14 +71,11 @@ function DepositContent() {
     setIsDropdownOpen(false);
   };
 
-  const getEstimatedCrypto = () => {
-    if (!amount || isNaN(amount) || !selectedCrypto) return "0.00";
+  const getPayableAmount = () => {
+    if (!amount || isNaN(amount)) return "0.00";
     const charge = Number(settings?.deposit_charge || 0);
-    if (charge > 0) {
-      const fee = Number(amount) * (charge / 100);
-      return (Number(amount) - fee).toFixed(2);
-    }
-    return Number(amount).toFixed(2);
+    const fee = Number(amount) * (charge / 100);
+    return (Number(amount) + fee).toFixed(2);
   };
 
   const { mutate: submitDeposit, isPending } = usePost("/users/deposit");
@@ -95,12 +94,18 @@ function DepositContent() {
       return toast.error(`Amount must be between ${settings.currency_symbol || "$"}${minDep} and ${settings.currency_symbol || "$"}${maxDep}`);
     }
 
+    setShowConfirmModal(true);
+  };
+
+  const handleConfirmPay = () => {
+    setShowConfirmModal(false);
     submitDeposit(
       { amount: Number(amount), cryptoId: selectedCrypto.id },
       {
         onSuccess: (res) => {
           setPaymentAddress(res.address);
           setTrackId(res.trackId || null);
+          setPayableAmount(res.payableAmount || res.amount || (Number(amount) * (1 + Number(settings?.deposit_charge || 0) / 100)));
           setStep(2);
         }
       }
@@ -263,7 +268,7 @@ function DepositContent() {
                   />
                 </div>
                 <p className="text-[11px] text-gray-400 font-medium pl-1">
-                  Estimated value: ${amount ? getEstimatedCrypto() : "0.00"} USD
+                  Credited amount: ${amount ? Number(amount).toFixed(2) : "0.00"} USD | Total payable (with {settings?.deposit_charge || 0}% fee): ${amount ? getPayableAmount() : "0.00"} USD
                 </p>
               </div>
 
@@ -327,7 +332,7 @@ function DepositContent() {
               <div className="text-center space-y-1">
                 <p className="text-[12px] text-gray-400 font-semibold tracking-wider uppercase">Send exactly</p>
                 <p className="text-[26px] font-extrabold text-white">
-                  {settings.currency_symbol || "$"}{Number(amount).toFixed(2)}
+                  {settings.currency_symbol || "$"}{Number(payableAmount || amount).toFixed(2)}
                 </p>
                 <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-amber-500/10 border border-amber-500/20 rounded-full mt-1.5">
                   <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse" />
@@ -391,6 +396,58 @@ function DepositContent() {
           </>
         )}
       </div>
+
+      {/* Confirmation Modal */}
+      {showConfirmModal && (
+        <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
+          <div className="bg-[#111827] border border-white/10 w-full max-w-[360px] rounded-[24px] overflow-hidden shadow-2xl p-6 space-y-5 animate-in fade-in zoom-in-95 duration-200 text-left">
+            {/* Header */}
+            <div className="flex items-center gap-2.5 pb-1.5 border-b border-white/5">
+              <div className="w-8 h-8 bg-amber-500/10 rounded-lg flex items-center justify-center text-amber-500">
+                <Info size={18} />
+              </div>
+              <h3 className="font-bold text-white text-[15px]">Confirm Deposit</h3>
+            </div>
+
+            {/* Breakdown */}
+            <div className="space-y-3.5 text-[12.5px] text-gray-300">
+              <div className="flex justify-between">
+                <span className="text-gray-400">Intended Deposit:</span>
+                <span className="text-white font-bold">{settings.currency_symbol || "$"}{Number(amount).toFixed(2)}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-gray-400">Deposit Fee ({settings?.deposit_charge || 0}%):</span>
+                <span className="text-amber-500 font-bold">+{settings.currency_symbol || "$"}{(Number(amount) * Number(settings?.deposit_charge || 0) / 100).toFixed(2)}</span>
+              </div>
+              <div className="border-t border-white/5 pt-3 flex justify-between text-[14px]">
+                <span className="font-bold text-white">Total to Send:</span>
+                <span className="font-extrabold text-white">{settings.currency_symbol || "$"}{getPayableAmount()}</span>
+              </div>
+            </div>
+
+            {/* Warning */}
+            <div className="bg-amber-950/20 border border-amber-500/10 rounded-xl p-3 text-[11px] text-amber-200/90 leading-relaxed font-medium">
+              Important: You must send exactly <strong className="text-white font-bold">{settings.currency_symbol || "$"}{getPayableAmount()}</strong>. Sending any other amount may cause the transaction to fail to credit.
+            </div>
+
+            {/* Actions */}
+            <div className="flex gap-3 pt-2">
+              <button
+                onClick={() => setShowConfirmModal(false)}
+                className="flex-1 h-[42px] bg-white/5 hover:bg-white/10 text-gray-300 rounded-[12px] font-bold text-[13px] transition-all border border-white/5 cursor-pointer"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleConfirmPay}
+                className="flex-1 h-[42px] bg-[#f59e0b] hover:bg-amber-600 text-white rounded-[12px] font-bold text-[13px] transition-all shadow-md cursor-pointer"
+              >
+                Confirm & Pay
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
