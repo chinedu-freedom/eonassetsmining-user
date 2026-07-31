@@ -53,9 +53,14 @@ export default function PaymentSettingsPage() {
       <div className="px-4 py-4 max-w-[480px] mx-auto w-full">
         <div className="bg-[#111827] rounded-[16px] border border-white/5 shadow-sm p-5">
 
-          <h2 className="text-white/90 text-[15px] font-bold mb-1.5">Withdrawal Password</h2>
+          <h2 className="text-white/90 text-[15px] font-bold mb-1.5">
+            {hasPin ? "Change Withdrawal Password" : "Withdrawal Password"}
+          </h2>
           <p className="text-gray-400 text-[12.5px] leading-relaxed mb-4">
-            Set a separate password for withdrawals to add an extra layer of security to your account.
+            {hasPin 
+              ? "Update your separate withdrawal password to keep your account withdrawals secure." 
+              : "Set a separate password for withdrawals to add an extra layer of security to your account."
+            }
           </p>
 
           {!hasPin ? (
@@ -116,7 +121,7 @@ export default function PaymentSettingsPage() {
               disabled={isPending}
               className="w-full flex justify-center items-center gap-2 bg-[#f59e0b] hover:bg-amber-700 disabled:bg-amber-400 text-white font-bold text-[14px] py-3 rounded-[12px] transition-colors shadow-sm cursor-pointer"
             >
-              {isPending ? <Loader2 size={20} className="animate-spin" /> : "Set Password"}
+              {isPending ? <Loader2 size={20} className="animate-spin" /> : (hasPin ? "Update Password" : "Set Password")}
             </button>
           </form>
 
