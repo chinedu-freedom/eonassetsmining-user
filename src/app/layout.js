@@ -28,6 +28,11 @@ export async function generateMetadata() {
           title: siteName,
           description: siteTitle,
           manifest: "/manifest.json",
+          icons: {
+            icon: "/logo.jpeg",
+            shortcut: "/logo.jpeg",
+            apple: "/logo.jpeg",
+          },
           appleWebApp: {
             capable: true,
             statusBarStyle: "default",
@@ -43,6 +48,11 @@ export async function generateMetadata() {
     title: "Kryptex Mining",
     description: "The Ultimate Crypto Asset Mining Platform",
     manifest: "/manifest.json",
+    icons: {
+      icon: "/logo.jpeg",
+      shortcut: "/logo.jpeg",
+      apple: "/logo.jpeg",
+    },
     appleWebApp: {
       capable: true,
       statusBarStyle: "default",
