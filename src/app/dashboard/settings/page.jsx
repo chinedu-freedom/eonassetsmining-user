@@ -31,6 +31,18 @@ export default function SettingsPage() {
       iconColor: "text-[#f59e0b]",
       badge: null,
       href: "/dashboard/settings/login"
+    },
+
+    {
+      id: "payment",
+      label: "Withdrawal Password",
+      icon: Lock,
+      iconBg: "bg-white/5",
+      iconColor: "text-[#f59e0b]",
+      badge: hasPin 
+        ? { text: "Set", bg: "bg-green-500/10 border border-green-500/20", color: "text-green-400" } 
+        : { text: "Not Set", bg: "bg-amber-500/10 border border-amber-500/20", color: "text-amber-400" },
+      href: "/dashboard/settings/payment"
     }
   ];
 
@@ -38,6 +50,12 @@ export default function SettingsPage() {
     <div className="flex flex-col h-full bg-transparent overflow-y-auto [&::-webkit-scrollbar]:hidden ">
       {/* Header */}
       <div className="bg-[#111827] px-4 py-3.5 flex items-center sticky top-0 z-20 shadow-sm border-b border-white/5">
+        <button 
+          onClick={() => router.push('/dashboard')}
+          className="mr-3 text-gray-400 hover:text-white transition-colors cursor-pointer"
+        >
+          <ArrowLeft size={16} />
+        </button>
         <h1 className="text-white/90 text-[15px] font-bold">Settings</h1>
       </div>
 

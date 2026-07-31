@@ -65,6 +65,12 @@ export default function SecuritySettingsPage() {
     <div className="flex flex-col h-full bg-[#0b0f19] overflow-y-auto [&::-webkit-scrollbar]:hidden ">
       {/* Header */}
       <div className="bg-[#111827] px-4 py-3.5 flex items-center sticky top-0 z-20 shadow-sm border-b border-white/5">
+        <button 
+          onClick={() => router.push('/dashboard/settings')}
+          className="mr-3 text-gray-400 hover:text-white transition-colors cursor-pointer"
+        >
+          <ArrowLeft size={16} />
+        </button>
         <h1 className="text-white/90 text-[15px] font-bold">Security</h1>
       </div>
 
