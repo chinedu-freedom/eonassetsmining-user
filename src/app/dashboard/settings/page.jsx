@@ -1,14 +1,11 @@
 "use client";
 
-import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { ChevronRight, ShieldCheck, Key, Lock, User, ArrowLeft, Trash2 } from "lucide-react";
-import axiosInstance, { clearAuthToken } from "@/config/axiosInstance";
+import { ChevronRight, ShieldCheck, Key, Lock, User, ArrowLeft } from "lucide-react";
 import { useFetchData } from "@/hooks/useApi";
 
 export default function SettingsPage() {
   const router = useRouter();
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
   const { data: userRes } = useFetchData("/users/me", ["profile"]);
   const hasPin = !!userRes?.user?.has_withdrawal_pin;
 
@@ -89,71 +86,7 @@ export default function SettingsPage() {
           ))}
         </div>
 
-        {/* Delete Account */}
-        <div className="bg-[#111827] rounded-[16px] border border-white/5 shadow-[0_2px_8px_-4px_rgba(0,0,0,0.05)] overflow-hidden">
-          <button
-            onClick={() => setShowDeleteModal(true)}
-            className="w-full flex items-center justify-between px-3.5 py-3 hover:bg-red-900/20 transition-colors"
-          >
-            <div className="flex items-center gap-3.5">
-              <div className="w-9 h-9 rounded-[10px] flex items-center justify-center bg-red-900/20 text-red-400">
-                <Trash2 size={16} />
-              </div>
-              <span className="text-red-400 text-[13px] font-medium">Delete Account</span>
-            </div>
-            <ChevronRight size={16} className="text-gray-300" />
-          </button>
-        </div>
-
       </div>
-
-      {/* Delete Confirmation Modal */}
-      {showDeleteModal && (
-        <div 
-          onClick={() => setShowDeleteModal(false)}
-          className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm"
-        >
-          <div 
-            onClick={(e) => e.stopPropagation()}
-            className="bg-[#0b0f19] border border-white/10 rounded-[20px] w-full max-w-[320px] p-5 shadow-xl animate-in fade-in zoom-in-95 duration-200"
-          >
-            <div className="flex flex-col items-center text-center">
-              <div className="w-12 h-12 bg-red-900/20 rounded-full flex items-center justify-center text-red-500 mb-4">
-                <Trash2 size={24} />
-              </div>
-              <h3 className="text-white/90 text-[16px] font-bold mb-2">Delete Account</h3>
-              <p className="text-gray-400 text-[13px] leading-relaxed mb-6">
-                Are you sure you want to delete your account? This action is permanent and cannot be undone.
-              </p>
-              <div className="flex gap-3 w-full">
-                <button
-                  onClick={() => setShowDeleteModal(false)}
-                  className="flex-1 py-2.5 rounded-[12px] bg-white/10 text-gray-200 font-bold text-[13px] hover:bg-white/20 transition-colors cursor-pointer"
-                >
-                  Cancel
-                </button>
-                <button
-                  onClick={async () => {
-                    try {
-                      const res = await axiosInstance.delete('/users/me');
-                      if (res.data?.success) {
-                        clearAuthToken();
-                        window.location.href = '/';
-                      }
-                    } catch (error) {
-                      console.error('Failed to delete account:', error);
-                    }
-                    setShowDeleteModal(false);
-                  }}
-                  className="flex-1 py-2.5 rounded-[12px] bg-red-500 text-white font-bold text-[13px] hover:bg-red-600 transition-colors shadow-sm"
-                >
-                  Delete
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
 
     </div>
   );
