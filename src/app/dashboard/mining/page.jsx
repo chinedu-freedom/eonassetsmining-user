@@ -51,7 +51,8 @@ export default function MiningPlansPage() {
         toast.error(data.error || "Investment failed");
       }
     } catch (error) {
-      toast.error("An error occurred. Please try again.");
+      const errMsg = error.response?.data?.error || error.response?.data?.message || "An error occurred. Please try again.";
+      toast.error(errMsg);
     } finally {
       setIsInvesting(false);
     }
