@@ -18,15 +18,17 @@ function ReceiptContent() {
 
   // Extract from URL query params
   const id = searchParams.get("id") || "0";
-  const rawTitle = searchParams.get("title") || "Receipt";
-  const title = (
-    rawTitle === "Manual credit by admin" || 
-    rawTitle === "Manual Credit by Admin" || 
-    rawTitle.toLowerCase().includes("manual credit") ||
-    rawTitle === "ADMIN_CREDIT" ||
-    rawTitle.toLowerCase().includes("admin_credit") ||
-    rawTitle.toLowerCase() === "admin credit"
-  ) ? "Deposit Successful" : rawTitle;
+  const rawTitle = (searchParams.get("title") || "Receipt").toUpperCase();
+  let title = rawTitle;
+  if (rawTitle.includes("CREDIT") || rawTitle.includes("MANUAL CREDIT") || rawTitle.includes("DEPOSIT SUCCESSFUL")) {
+    title = "DEPOSIT SUCCESSFUL";
+  } else if (rawTitle.includes("INVEST") || rawTitle.includes("PLAN")) {
+    title = "MINING POOL ACTIVATED";
+  } else if (rawTitle === "DEPOSIT") {
+    title = "DEPOSIT CREDITED";
+  } else {
+    title = rawTitle.replace(/_/g, ' ');
+  }
   const date = searchParams.get("date") || "N/A";
   const amount = searchParams.get("amount") || `${symbol}0.00`;
   const rawStatus = searchParams.get("status") || "SUCCESS";
@@ -41,8 +43,8 @@ function ReceiptContent() {
   const isPositive = amount.startsWith('+');
   const amountColor = isPositive ? "text-[#10b981]" : "text-red-500";
   
-  // Format title for receipt (if "Welcome Bonus", receipt is "Welcome Bonus Receipt")
-  const receiptTitle = `${title} Receipt`;
+  // Format title for receipt
+  const receiptTitle = `${title} RECEIPT`;
 
   const handleShareAsImage = async () => {
     if (!receiptRef.current) return;

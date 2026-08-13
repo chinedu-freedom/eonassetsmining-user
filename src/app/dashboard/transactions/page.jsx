@@ -97,15 +97,19 @@ export default function TransactionsPage() {
     const rawStatus = (tx.status || "SUCCESS").toUpperCase();
     const displayStatus = (rawStatus === "APPROVED") ? "SUCCESS" : rawStatus;
 
-    const rawTitle = tx.description || tx.type;
-    const displayTitle = (
-      rawTitle === "Manual credit by admin" || 
-      rawTitle === "Manual Credit by Admin" || 
-      rawTitle.toLowerCase().includes("manual credit") ||
-      rawTitle === "ADMIN_CREDIT" ||
-      rawTitle.toLowerCase().includes("admin_credit") ||
-      rawTitle.toLowerCase() === "admin credit"
-    ) ? "Deposit Successful" : rawTitle;
+    const rawType = (tx.type || "").toUpperCase();
+    const rawDesc = (tx.description || "").toUpperCase();
+    
+    let displayTitle = (tx.description || tx.type || "").replace(/_/g, ' ');
+    if (rawType.includes("CREDIT") || rawDesc.includes("CREDIT") || rawDesc.includes("MANUAL CREDIT") || rawDesc.includes("DEPOSIT SUCCESSFUL")) {
+      displayTitle = "DEPOSIT SUCCESSFUL";
+    } else if (rawType.includes("INVEST") || rawType.includes("PLAN") || rawDesc.includes("INVEST")) {
+      displayTitle = "MINING POOL ACTIVATED";
+    } else if (rawType === "DEPOSIT") {
+      displayTitle = "DEPOSIT CREDITED";
+    } else {
+      displayTitle = displayTitle.toUpperCase();
+    }
 
     return {
       id: tx.id,

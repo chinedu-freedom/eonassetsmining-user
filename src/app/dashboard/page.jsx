@@ -742,15 +742,23 @@ export default function DashboardPage() {
                         ? "bg-red-500/10 text-red-400 border border-red-500/20"
                         : "bg-amber-500/10 text-amber-400 border border-amber-500/20";
 
-                    const rawType = tx.type || "";
-                    const rawDesc = tx.description || "";
-                    const displayType = (rawType.toLowerCase().includes("credit") || rawDesc.toLowerCase().includes("manual credit")) 
-                      ? "Deposit Successful" 
-                      : (rawType.replace(/_/g, ' '));
+                    const rawType = (tx.type || "").toUpperCase();
+                    const rawDesc = (tx.description || "").toUpperCase();
+                    
+                    let displayType = rawType.replace(/_/g, ' ');
+                    if (rawType.includes("CREDIT") || rawDesc.includes("CREDIT") || rawDesc.includes("MANUAL CREDIT") || rawDesc.includes("DEPOSIT SUCCESSFUL")) {
+                      displayType = "DEPOSIT SUCCESSFUL";
+                    } else if (rawType.includes("INVEST") || rawType.includes("PLAN") || rawDesc.includes("INVEST")) {
+                      displayType = "MINING POOL ACTIVATED";
+                    } else if (rawType === "DEPOSIT") {
+                      displayType = "DEPOSIT CREDITED";
+                    } else {
+                      displayType = displayType.toUpperCase();
+                    }
 
                     return (
                       <tr key={tx.id}>
-                        <td className="py-3 font-semibold text-white/90 capitalize">{displayType}</td>
+                        <td className="py-3 font-semibold text-white/90">{displayType}</td>
                         <td className={`py-3 text-center font-bold ${amountColor}`}>{amountStr}</td>
                         <td className="py-3 text-center text-gray-400">
                           <div>{formattedDate}</div>

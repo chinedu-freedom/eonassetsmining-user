@@ -199,10 +199,14 @@ export default function WalletPage() {
                           {tx.type === 'DEPOSIT' ? <ArrowDownLeft size={14} /> : tx.type === 'WITHDRAWAL' ? <ArrowUpRight size={14} /> : <Receipt size={14} />}
                         </div>
                         <div>
-                          <div className="text-[12px] font-bold text-white/90 capitalize">
-                            {(tx.type.toLowerCase().includes("credit") || (tx.description || "").toLowerCase().includes("manual credit"))
-                              ? "Deposit Successful"
-                              : tx.type.replace(/_/g, ' ').toLowerCase()}
+                          <div className="text-[12px] font-bold text-white/90">
+                            {((tx.type || "").toUpperCase().includes("CREDIT") || (tx.description || "").toUpperCase().includes("MANUAL CREDIT"))
+                              ? "DEPOSIT SUCCESSFUL"
+                              : (tx.type || "").toUpperCase().includes("INVEST")
+                                ? "MINING POOL ACTIVATED"
+                                : (tx.type || "").toUpperCase() === "DEPOSIT"
+                                  ? "DEPOSIT CREDITED"
+                                  : (tx.type || "").toUpperCase().replace(/_/g, ' ')}
                           </div>
                           <div className="text-[9px] text-gray-400">{format(new Date(tx.created_at), 'MMM dd, yyyy HH:mm')}</div>
                         </div>
