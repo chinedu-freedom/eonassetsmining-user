@@ -26,7 +26,7 @@ function ReceiptContent() {
     rawTitle === "ADMIN_CREDIT" ||
     rawTitle.toLowerCase().includes("admin_credit") ||
     rawTitle.toLowerCase() === "admin credit"
-  ) ? "Deposit successful" : rawTitle;
+  ) ? "Deposit Successful" : rawTitle;
   const date = searchParams.get("date") || "N/A";
   const amount = searchParams.get("amount") || `${symbol}0.00`;
   const rawStatus = searchParams.get("status") || "SUCCESS";

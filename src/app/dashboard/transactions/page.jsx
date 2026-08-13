@@ -105,7 +105,7 @@ export default function TransactionsPage() {
       rawTitle === "ADMIN_CREDIT" ||
       rawTitle.toLowerCase().includes("admin_credit") ||
       rawTitle.toLowerCase() === "admin credit"
-    ) ? "Deposit successful" : rawTitle;
+    ) ? "Deposit Successful" : rawTitle;
 
     return {
       id: tx.id,

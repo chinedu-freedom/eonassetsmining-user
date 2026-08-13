@@ -745,7 +745,7 @@ export default function DashboardPage() {
                     const rawType = tx.type || "";
                     const rawDesc = tx.description || "";
                     const displayType = (rawType.toLowerCase().includes("credit") || rawDesc.toLowerCase().includes("manual credit")) 
-                      ? "Deposit successful" 
+                      ? "Deposit Successful" 
                       : (rawType.replace(/_/g, ' '));
 
                     return (
