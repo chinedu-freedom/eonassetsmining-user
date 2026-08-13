@@ -98,9 +98,14 @@ export default function TransactionsPage() {
     const displayStatus = (rawStatus === "APPROVED") ? "SUCCESS" : rawStatus;
 
     const rawTitle = tx.description || tx.type;
-    const displayTitle = (rawTitle === "Manual credit by admin" || rawTitle === "Manual Credit by Admin" || rawTitle.toLowerCase().includes("manual credit")) 
-      ? "Deposit successful" 
-      : rawTitle;
+    const displayTitle = (
+      rawTitle === "Manual credit by admin" || 
+      rawTitle === "Manual Credit by Admin" || 
+      rawTitle.toLowerCase().includes("manual credit") ||
+      rawTitle === "ADMIN_CREDIT" ||
+      rawTitle.toLowerCase().includes("admin_credit") ||
+      rawTitle.toLowerCase() === "admin credit"
+    ) ? "Deposit successful" : rawTitle;
 
     return {
       id: tx.id,
