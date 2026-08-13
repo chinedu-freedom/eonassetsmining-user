@@ -26,7 +26,17 @@ export default function LinkedWalletsPage() {
   const { data: cryptosRes, isLoading: isLoadingCryptos } = useFetchData("/settings/payout-cryptos", ["payout-cryptos"]);
   const cryptos = Array.isArray(cryptosRes) ? cryptosRes : cryptosRes?.data || [];
 
-  const linkWalletMutation = usePost("/wallets", ["user-wallets"]);
+  const linkWalletMutation = usePost("/wallets", ["user-wallets"], false, {
+    showToast: true,
+    onError: (error) => {
+      const errMsg = error?.response?.data?.error || error?.message || "";
+      if (errMsg.includes("Please set your withdrawal password")) {
+        setTimeout(() => {
+          router.push("/dashboard/settings/payment");
+        }, 1500);
+      }
+    }
+  });
   const unlinkWalletMutation = useDelete((id) => `/wallets/${id}`, "user-wallets");
 
   const selectedCrypto = cryptos.find(c => c.id === selectedCryptoId);
@@ -63,11 +73,11 @@ export default function LinkedWalletsPage() {
         setWithdrawalPassword("");
         setShowConfirmModal(false);
         refetch();
-      } else {
-        toast.error(res?.error || "Failed to link address");
       }
     } catch (error) {
-      toast.error(error?.response?.data?.error || error?.message || "Failed to link address");
+      // The usePost hook already triggers a toast on error. We clean up the modal state.
+      setWithdrawalPassword("");
+      setShowConfirmModal(false);
     } finally {
       setIsLinking(false);
     }
