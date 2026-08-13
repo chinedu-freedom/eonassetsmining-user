@@ -66,7 +66,6 @@ export default function LinkedWalletsPage() {
         withdrawalPassword: withdrawalPassword
       });
       if (res?.success) {
-        toast.success(res.message || "Wallet address linked successfully!");
         setAddress("");
         setLabel("");
         setSelectedCryptoId("");
