@@ -26,6 +26,8 @@ function ReceiptContent() {
     title = "MINING POOL ACTIVATED";
   } else if (rawTitle === "DEPOSIT") {
     title = "DEPOSIT CREDITED";
+  } else if (rawTitle.includes("PROFIT")) {
+    title = "DAILY PROFITS";
   } else {
     title = rawTitle.replace(/_/g, ' ');
   }

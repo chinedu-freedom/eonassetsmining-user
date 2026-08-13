@@ -206,7 +206,9 @@ export default function WalletPage() {
                                 ? "MINING POOL ACTIVATED"
                                 : (tx.type || "").toUpperCase() === "DEPOSIT"
                                   ? "DEPOSIT CREDITED"
-                                  : (tx.type || "").toUpperCase().replace(/_/g, ' ')}
+                                  : ((tx.type || "").toUpperCase().includes("PROFIT") || (tx.description || "").toUpperCase().includes("PROFIT"))
+                                    ? "DAILY PROFITS"
+                                    : (tx.type || "").toUpperCase().replace(/_/g, ' ')}
                           </div>
                           <div className="text-[9px] text-gray-400">{format(new Date(tx.created_at), 'MMM dd, yyyy HH:mm')}</div>
                         </div>

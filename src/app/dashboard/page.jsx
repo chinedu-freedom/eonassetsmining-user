@@ -752,6 +752,8 @@ export default function DashboardPage() {
                       displayType = "MINING POOL ACTIVATED";
                     } else if (rawType === "DEPOSIT") {
                       displayType = "DEPOSIT CREDITED";
+                    } else if (rawType.includes("PROFIT") || rawDesc.includes("PROFIT")) {
+                      displayType = "DAILY PROFITS";
                     } else {
                       displayType = displayType.toUpperCase();
                     }

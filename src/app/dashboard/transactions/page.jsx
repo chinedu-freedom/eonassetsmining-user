@@ -107,6 +107,8 @@ export default function TransactionsPage() {
       displayTitle = "MINING POOL ACTIVATED";
     } else if (rawType === "DEPOSIT") {
       displayTitle = "DEPOSIT CREDITED";
+    } else if (rawType.includes("PROFIT") || rawDesc.includes("PROFIT")) {
+      displayTitle = "DAILY PROFITS";
     } else {
       displayTitle = displayTitle.toUpperCase();
     }
