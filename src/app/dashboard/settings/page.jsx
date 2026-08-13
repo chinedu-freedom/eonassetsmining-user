@@ -40,6 +40,16 @@ export default function SettingsPage() {
         ? { text: "Set", bg: "bg-green-500/10 border border-green-500/20", color: "text-green-400" } 
         : { text: "Not Set", bg: "bg-amber-500/10 border border-amber-500/20", color: "text-amber-400" },
       href: "/dashboard/settings/payment"
+    },
+
+    {
+      id: "wallets",
+      label: "Linked Wallets",
+      icon: ShieldCheck,
+      iconBg: "bg-white/5",
+      iconColor: "text-[#f59e0b]",
+      badge: null,
+      href: "/dashboard/settings/wallets"
     }
   ];
 

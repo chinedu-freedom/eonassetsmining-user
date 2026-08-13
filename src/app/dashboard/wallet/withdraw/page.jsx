@@ -51,6 +51,9 @@ function WithdrawContent() {
   const { data: cryptosRes, isLoading: isLoadingCryptos } = useFetchData("/settings/payout-cryptos", ["payout-cryptos"]);
   const cryptos = cryptosRes?.data || [];
 
+  const { data: walletsRes } = useFetchData("/wallets", ["user-wallets"]);
+  const wallets = walletsRes?.wallets || [];
+
   const minWithdrawal = Number(settings.min_withdrawal) || 20;
   const maxWithdrawal = Number(settings.max_withdrawal) || 10000;
   const withdrawalCharge = Number(settings.withdrawal_charge) || 2;
@@ -58,6 +61,20 @@ function WithdrawContent() {
   const mainBalance = Number(user.withdrawable_balance || 0);
   const totalBalance = mainBalance;
   const feeAmount = amount ? (Number(amount) * (withdrawalCharge / 100)) : 0;
+
+  const matchingWallet = selectedCrypto && wallets.find(
+    w => w.symbol.toLowerCase() === selectedCrypto.symbol.toLowerCase() && 
+         w.network.toLowerCase() === selectedCrypto.network.toLowerCase()
+  );
+
+  // Auto-populate walletAddress if a matching linked wallet is found
+  useEffect(() => {
+    if (matchingWallet) {
+      setWalletAddress(matchingWallet.address);
+    } else {
+      setWalletAddress("");
+    }
+  }, [matchingWallet]);
 
   // Auto-select first crypto if available
   useEffect(() => {
@@ -305,6 +322,20 @@ function WithdrawContent() {
                 {copied ? <Check size={16} /> : <Copy size={16} />}
               </button>
             </div>
+            {matchingWallet && (
+              <div className="flex items-center justify-between text-[11px] px-1 mt-1">
+                <button
+                  type="button"
+                  onClick={() => setWalletAddress(matchingWallet.address)}
+                  className="text-amber-500 hover:text-amber-400 font-bold flex items-center gap-1 cursor-pointer"
+                >
+                  ✨ Linked Wallet: {matchingWallet.label || `${matchingWallet.symbol} (${matchingWallet.network})`}
+                </button>
+                <span className="text-gray-500 font-mono truncate max-w-[200px]">
+                  {matchingWallet.address.substring(0, 8)}...{matchingWallet.address.substring(matchingWallet.address.length - 8)}
+                </span>
+              </div>
+            )}
           </div>
 
           {/* Withdrawal Password */}
