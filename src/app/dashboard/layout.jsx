@@ -158,6 +158,13 @@ export default function DashboardLayout({ children }) {
                     Security (Change Password)
                   </Link>
                   <Link
+                    href="/dashboard/settings/wallets"
+                    onClick={() => setIsSidebarOpen(false)}
+                    className="px-4 py-2 hover:bg-white/5 rounded-lg text-gray-400 hover:text-white text-xs font-medium transition-colors cursor-pointer"
+                  >
+                    Linked Wallets
+                  </Link>
+                  <Link
                     href="/dashboard/settings/profile"
                     onClick={() => setIsSidebarOpen(false)}
                     className="px-4 py-2 hover:bg-white/5 rounded-lg text-gray-400 hover:text-white text-xs font-medium transition-colors cursor-pointer"

@@ -2,10 +2,9 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Loader2, Plus, Trash2, Wallet, Info, CheckCircle } from "lucide-react";
+import { ArrowLeft, Loader2, Plus, Trash2, Wallet, Info, Lock, Eye, EyeOff } from "lucide-react";
 import { useFetchData, usePost, useDelete } from "@/hooks/useApi";
 import { toast } from "sonner";
-import { Input } from "@/components/ui/input";
 
 export default function LinkedWalletsPage() {
   const router = useRouter();
@@ -13,6 +12,11 @@ export default function LinkedWalletsPage() {
   const [address, setAddress] = useState("");
   const [label, setLabel] = useState("");
   const [isLinking, setIsLinking] = useState(false);
+
+  // Password confirmation states
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [withdrawalPassword, setWithdrawalPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
 
   // Fetch linked wallets
   const { data: walletsRes, isLoading: isLoadingWallets, refetch } = useFetchData("/wallets", ["user-wallets"]);
@@ -27,10 +31,18 @@ export default function LinkedWalletsPage() {
 
   const selectedCrypto = cryptos.find(c => c.id === selectedCryptoId);
 
-  const handleLink = async (e) => {
+  const handleOpenConfirm = (e) => {
     e.preventDefault();
     if (!selectedCryptoId || !address.trim()) {
       toast.error("Please select a coin and enter a valid address");
+      return;
+    }
+    setShowConfirmModal(true);
+  };
+
+  const handleConfirmLink = async () => {
+    if (!withdrawalPassword) {
+      toast.error("Please enter your withdrawal password");
       return;
     }
 
@@ -40,13 +52,16 @@ export default function LinkedWalletsPage() {
         symbol: selectedCrypto.symbol,
         network: selectedCrypto.network,
         address: address.trim(),
-        label: label.trim() || undefined
+        label: label.trim() || undefined,
+        withdrawalPassword: withdrawalPassword
       });
       if (res?.success) {
         toast.success(res.message || "Wallet address linked successfully!");
         setAddress("");
         setLabel("");
         setSelectedCryptoId("");
+        setWithdrawalPassword("");
+        setShowConfirmModal(false);
         refetch();
       } else {
         toast.error(res?.error || "Failed to link address");
@@ -98,7 +113,7 @@ export default function LinkedWalletsPage() {
             <Plus size={16} className="text-[#f59e0b]" /> Link New Wallet Address
           </h3>
 
-          <form onSubmit={handleLink} className="space-y-3.5">
+          <form onSubmit={handleOpenConfirm} className="space-y-3.5">
             <div className="space-y-1.5">
               <label className="text-gray-400 text-[11px] font-semibold uppercase">Select Cryptocurrency</label>
               <select
@@ -196,6 +211,67 @@ export default function LinkedWalletsPage() {
           )}
         </div>
       </div>
+
+      {/* Confirmation Modal */}
+      {showConfirmModal && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[999] flex items-center justify-center p-4">
+          <div className="bg-[#111827] border border-white/5 rounded-[24px] w-full max-w-[360px] p-6 space-y-4 shadow-2xl relative overflow-hidden animate-in fade-in zoom-in duration-200">
+            
+            {/* Background decoration */}
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-48 h-48 bg-[#f59e0b]/5 rounded-full blur-3xl -z-10"></div>
+
+            <div className="flex flex-col items-center text-center space-y-2">
+              <div className="w-12 h-12 bg-amber-500/10 border border-amber-500/20 rounded-full flex items-center justify-center text-[#f59e0b]">
+                <Lock size={20} />
+              </div>
+              <h3 className="text-white/90 text-sm font-bold">Verify Withdrawal Password</h3>
+              <p className="text-gray-400 text-[11px] leading-relaxed">
+                Please enter your withdrawal password to authorize and link this wallet address.
+              </p>
+            </div>
+
+            <div className="space-y-1.5 relative">
+              <input
+                type={showPassword ? "text" : "password"}
+                placeholder="Enter password"
+                value={withdrawalPassword}
+                onChange={(e) => setWithdrawalPassword(e.target.value)}
+                className="w-full bg-[#0b0f19] border border-white/5 text-white/90 rounded-lg pl-3 pr-10 py-2.5 text-xs focus:outline-none focus:border-[#f59e0b] focus:ring-1 focus:ring-[#f59e0b]"
+                autoFocus
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-300 focus:outline-none cursor-pointer"
+              >
+                {showPassword ? <EyeOff size={15} /> : <Eye size={15} />}
+              </button>
+            </div>
+
+            <div className="flex gap-3 pt-2">
+              <button
+                type="button"
+                onClick={() => {
+                  setShowConfirmModal(false);
+                  setWithdrawalPassword("");
+                }}
+                className="flex-1 bg-white/5 hover:bg-white/10 text-gray-300 text-xs font-bold py-2.5 rounded-lg transition-colors cursor-pointer border border-white/5"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={handleConfirmLink}
+                disabled={isLinking || !withdrawalPassword}
+                className="flex-1 bg-[#f59e0b] hover:bg-amber-600 text-[#111827] text-xs font-bold py-2.5 rounded-lg transition-colors cursor-pointer disabled:opacity-50 flex items-center justify-center"
+              >
+                {isLinking ? <Loader2 className="w-4 h-4 animate-spin" /> : "Confirm"}
+              </button>
+            </div>
+
+          </div>
+        </div>
+      )}
     </div>
   );
 }
