@@ -94,12 +94,20 @@ export default function TransactionsPage() {
       amountStr = `-${baseSymbol}${Math.abs(amountVal).toFixed(2)}`;
     }
 
+    const rawStatus = (tx.status || "SUCCESS").toUpperCase();
+    const displayStatus = (rawStatus === "APPROVED") ? "SUCCESS" : rawStatus;
+
+    const rawTitle = tx.description || tx.type;
+    const displayTitle = (rawTitle === "Manual credit by admin" || rawTitle === "Manual Credit by Admin" || rawTitle.toLowerCase().includes("manual credit")) 
+      ? "Deposit successful" 
+      : rawTitle;
+
     return {
       id: tx.id,
-      title: tx.description || tx.type,
+      title: displayTitle,
       date: new Date(tx.created_at).toLocaleString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric' }),
       amount: amountStr,
-      status: tx.status || "SUCCESS",
+      status: displayStatus,
       type: meta.category,
       iconBg: meta.iconBg,
       iconColor: meta.iconColor,

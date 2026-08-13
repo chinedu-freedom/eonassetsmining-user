@@ -18,10 +18,14 @@ function ReceiptContent() {
 
   // Extract from URL query params
   const id = searchParams.get("id") || "0";
-  const title = searchParams.get("title") || "Receipt";
+  const rawTitle = searchParams.get("title") || "Receipt";
+  const title = (rawTitle === "Manual credit by admin" || rawTitle === "Manual Credit by Admin" || rawTitle.toLowerCase().includes("manual credit")) 
+    ? "Deposit successful" 
+    : rawTitle;
   const date = searchParams.get("date") || "N/A";
   const amount = searchParams.get("amount") || `${symbol}0.00`;
-  const status = searchParams.get("status") || "SUCCESS";
+  const rawStatus = searchParams.get("status") || "SUCCESS";
+  const status = (rawStatus.toUpperCase() === "APPROVED") ? "SUCCESS" : rawStatus;
   const type = searchParams.get("type") || "Transaction";
   const walletAddress = searchParams.get("wallet_address") || "";
   

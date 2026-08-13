@@ -735,15 +735,22 @@ export default function DashboardPage() {
                     const formattedTime = dateObj.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
                     
                     const statusStr = (tx.status || "pending").toLowerCase();
+                    const statusDisplayStr = (statusStr === "approved" || statusStr === "completed" || statusStr === "success") ? "success" : statusStr;
                     const statusBadgeClass = statusStr === "completed" || statusStr === "success" || statusStr === "approved"
                       ? "bg-green-500/10 text-green-400 border border-green-500/20"
                       : statusStr === "failed" || statusStr === "declined"
                         ? "bg-red-500/10 text-red-400 border border-red-500/20"
                         : "bg-amber-500/10 text-amber-400 border border-amber-500/20";
 
+                    const rawType = tx.type || "";
+                    const rawDesc = tx.description || "";
+                    const displayType = (rawType.toLowerCase().includes("credit") || rawDesc.toLowerCase().includes("manual credit")) 
+                      ? "Deposit successful" 
+                      : (rawType.replace(/_/g, ' '));
+
                     return (
                       <tr key={tx.id}>
-                        <td className="py-3 font-semibold text-white/90 capitalize">{tx.type}</td>
+                        <td className="py-3 font-semibold text-white/90 capitalize">{displayType}</td>
                         <td className={`py-3 text-center font-bold ${amountColor}`}>{amountStr}</td>
                         <td className="py-3 text-center text-gray-400">
                           <div>{formattedDate}</div>
@@ -751,7 +758,7 @@ export default function DashboardPage() {
                         </td>
                         <td className="py-3 text-right">
                           <span className={`px-2 py-0.5 rounded-[6px] text-[10px] font-bold ${statusBadgeClass}`}>
-                            {statusStr}
+                            {statusDisplayStr}
                           </span>
                         </td>
                       </tr>
