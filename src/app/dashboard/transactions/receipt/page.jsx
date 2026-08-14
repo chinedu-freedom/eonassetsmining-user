@@ -19,13 +19,18 @@ function ReceiptContent() {
   // Extract from URL query params
   const id = searchParams.get("id") || "0";
   const rawTitle = (searchParams.get("title") || "Receipt").toUpperCase();
+  const rawStatus = (searchParams.get("status") || "SUCCESS").toUpperCase();
   let title = rawTitle;
   if (rawTitle.includes("CREDIT") || rawTitle.includes("MANUAL CREDIT") || rawTitle.includes("DEPOSIT SUCCESSFUL")) {
     title = "DEPOSIT SUCCESSFUL";
   } else if (rawTitle.includes("INVEST") || rawTitle.includes("PLAN")) {
     title = "MINING POOL ACTIVATED";
-  } else if (rawTitle === "DEPOSIT") {
-    title = "DEPOSIT CREDITED";
+  } else if (rawTitle === "DEPOSIT" || rawTitle === "DEPOSIT CREDITED" || rawTitle === "DEPOSIT INITIATED") {
+    if (rawStatus === "APPROVED" || rawStatus === "COMPLETED" || rawStatus === "SUCCESS") {
+      title = "DEPOSIT CREDITED";
+    } else {
+      title = "DEPOSIT INITIATED";
+    }
   } else if (rawTitle.includes("PROFIT")) {
     title = "DAILY PROFITS";
   } else {

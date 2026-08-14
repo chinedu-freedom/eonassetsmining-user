@@ -744,6 +744,7 @@ export default function DashboardPage() {
 
                     const rawType = (tx.type || "").toUpperCase();
                     const rawDesc = (tx.description || "").toUpperCase();
+                    const rawStatus = (tx.status || "").toUpperCase();
                     
                     let displayType = rawType.replace(/_/g, ' ');
                     if (rawType.includes("CREDIT") || rawDesc.includes("CREDIT") || rawDesc.includes("MANUAL CREDIT") || rawDesc.includes("DEPOSIT SUCCESSFUL")) {
@@ -751,7 +752,11 @@ export default function DashboardPage() {
                     } else if (rawType.includes("INVEST") || rawType.includes("PLAN") || rawDesc.includes("INVEST")) {
                       displayType = "MINING POOL ACTIVATED";
                     } else if (rawType === "DEPOSIT") {
-                      displayType = "DEPOSIT CREDITED";
+                      if (rawStatus === "APPROVED" || rawStatus === "COMPLETED" || rawStatus === "SUCCESS") {
+                        displayType = "DEPOSIT CREDITED";
+                      } else {
+                        displayType = "DEPOSIT INITIATED";
+                      }
                     } else if (rawType.includes("PROFIT") || rawDesc.includes("PROFIT")) {
                       displayType = "DAILY PROFITS";
                     } else {

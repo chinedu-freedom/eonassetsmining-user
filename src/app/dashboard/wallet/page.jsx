@@ -205,7 +205,9 @@ export default function WalletPage() {
                               : (tx.type || "").toUpperCase().includes("INVEST")
                                 ? "MINING POOL ACTIVATED"
                                 : (tx.type || "").toUpperCase() === "DEPOSIT"
-                                  ? "DEPOSIT CREDITED"
+                                  ? ((tx.status || "").toUpperCase() === "APPROVED" || (tx.status || "").toUpperCase() === "COMPLETED" || (tx.status || "").toUpperCase() === "SUCCESS")
+                                    ? "DEPOSIT CREDITED"
+                                    : "DEPOSIT INITIATED"
                                   : ((tx.type || "").toUpperCase().includes("PROFIT") || (tx.description || "").toUpperCase().includes("PROFIT"))
                                     ? "DAILY PROFITS"
                                     : (tx.type || "").toUpperCase().replace(/_/g, ' ')}

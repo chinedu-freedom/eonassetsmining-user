@@ -106,7 +106,11 @@ export default function TransactionsPage() {
     } else if (rawType.includes("INVEST") || rawType.includes("PLAN") || rawDesc.includes("INVEST")) {
       displayTitle = "MINING POOL ACTIVATED";
     } else if (rawType === "DEPOSIT") {
-      displayTitle = "DEPOSIT CREDITED";
+      if (rawStatus === "APPROVED" || rawStatus === "COMPLETED" || rawStatus === "SUCCESS") {
+        displayTitle = "DEPOSIT CREDITED";
+      } else {
+        displayTitle = "DEPOSIT INITIATED";
+      }
     } else if (rawType.includes("PROFIT") || rawDesc.includes("PROFIT")) {
       displayTitle = "DAILY PROFITS";
     } else {
