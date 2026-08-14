@@ -114,7 +114,8 @@ function WithdrawContent() {
         wallet_address: walletAddress
       });
       setCooldown(60);
-      toast.success(`Verification code sent to ${user.email || 'your email'}!`);
+      // Toast is already handled automatically by the usePost hook
+      // toast.success(`Verification code sent to ${user.email || 'your email'}!`);
     } catch (err) {
       const remaining = err?.response?.data?.remainingSeconds;
       if (remaining) setCooldown(remaining);
