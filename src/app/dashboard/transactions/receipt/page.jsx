@@ -38,8 +38,7 @@ function ReceiptContent() {
   }
   const date = searchParams.get("date") || "N/A";
   const amount = searchParams.get("amount") || `${symbol}0.00`;
-  const rawStatus = searchParams.get("status") || "SUCCESS";
-  const status = (rawStatus.toUpperCase() === "APPROVED") ? "SUCCESS" : rawStatus;
+  const status = (rawStatus === "APPROVED") ? "SUCCESS" : rawStatus;
   const type = searchParams.get("type") || "Transaction";
   const walletAddress = searchParams.get("wallet_address") || "";
   
