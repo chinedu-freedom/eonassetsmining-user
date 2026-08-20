@@ -150,14 +150,9 @@ function WithdrawContent() {
     setShowSecurityModal(true);
     setOtpCode("");
     setWithdrawalPassword("");
-    // Trigger OTP sending
-    handleSendOtp();
   };
 
   const handleFinalSubmit = () => {
-    if (!otpCode.trim() || otpCode.trim().length < 6) {
-      return toast.error("Please enter the 6-digit email verification code");
-    }
     if (!withdrawalPassword) {
       return toast.error("Please enter your withdrawal password");
     }
@@ -167,12 +162,10 @@ function WithdrawContent() {
       network: `${selectedCrypto.symbol} (${selectedCrypto.network})`,
       wallet_address: walletAddress,
       password: withdrawalPassword,
-      otp: otpCode.trim(),
       method: "crypto"
     }, {
       onSuccess: () => {
         setAmount("");
-        setOtpCode("");
         setWithdrawalPassword("");
         setShowSecurityModal(false);
         setShowPassword(false);
@@ -412,7 +405,7 @@ function WithdrawContent() {
                 </li>
                 <li className="flex items-start gap-2.5">
                   <span className="text-[#f59e0b] font-bold shrink-0 mt-0.5">▲</span>
-                  <p className="leading-relaxed font-medium">All withdrawals require 2-Step Authentication (Email OTP + Withdrawal Password)</p>
+                  <p className="leading-relaxed font-medium">All withdrawals require authorization with your Withdrawal Password</p>
                 </li>
                 <li className="flex items-start gap-2.5">
                   <span className="text-[#f59e0b] font-bold shrink-0 mt-0.5">▲</span>
@@ -441,7 +434,7 @@ function WithdrawContent() {
               <div className="w-12 h-12 bg-amber-500/10 border border-amber-500/20 rounded-full flex items-center justify-center text-amber-400">
                 <ShieldCheck size={24} />
               </div>
-              <h3 className="text-white text-base font-bold">2-Step Withdrawal Authorization</h3>
+              <h3 className="text-white text-base font-bold">Withdrawal Authorization</h3>
               <p className="text-gray-400 text-[11.5px] leading-relaxed">
                 Confirm your payout request for <span className="text-amber-400 font-bold">{settings.currency_symbol || "$"}{Number(amount).toFixed(2)}</span>
               </p>
@@ -467,44 +460,7 @@ function WithdrawContent() {
               </div>
             </div>
 
-            {/* Step 1: Email OTP */}
-            <div className="space-y-1.5">
-              <div className="flex justify-between items-center">
-                <label className="text-gray-300 text-[11.5px] font-bold flex items-center gap-1">
-                  <Mail size={13} className="text-amber-400" /> Email Verification Code
-                </label>
-                <button
-                  type="button"
-                  onClick={handleSendOtp}
-                  disabled={cooldown > 0 || sendOtpMutation.isPending}
-                  className={`text-[11px] font-semibold flex items-center gap-1 transition-colors cursor-pointer ${
-                    cooldown > 0 || sendOtpMutation.isPending
-                      ? "text-gray-500 cursor-not-allowed"
-                      : "text-amber-400 hover:text-amber-300 underline"
-                  }`}
-                >
-                  {sendOtpMutation.isPending ? (
-                    <RefreshCw size={11} className="animate-spin" />
-                  ) : cooldown > 0 ? (
-                    `Resend (${cooldown}s)`
-                  ) : (
-                    "Resend Code"
-                  )}
-                </button>
-              </div>
-              <input
-                type="text"
-                inputMode="numeric"
-                maxLength={6}
-                placeholder="Enter 6-digit code"
-                value={otpCode}
-                onChange={(e) => setOtpCode(e.target.value.replace(/\D/g, ""))}
-                className="w-full bg-[#0b0f19] border border-white/10 text-white rounded-lg px-3 py-2.5 text-center text-base tracking-widest font-mono font-bold focus:outline-none focus:border-[#f59e0b] focus:ring-1 focus:ring-[#f59e0b] placeholder:tracking-normal placeholder:font-sans placeholder:text-xs placeholder:text-gray-600"
-                autoFocus
-              />
-            </div>
-
-            {/* Step 2: Withdrawal Password */}
+            {/* Withdrawal Password */}
             <div className="space-y-1.5">
               <label className="text-gray-300 text-[11.5px] font-bold block">
                 Withdrawal Password
@@ -516,6 +472,7 @@ function WithdrawContent() {
                   value={withdrawalPassword}
                   onChange={(e) => setWithdrawalPassword(e.target.value)}
                   className="w-full bg-[#0b0f19] border border-white/10 text-white rounded-lg pl-3 pr-10 py-2.5 text-xs focus:outline-none focus:border-[#f59e0b] focus:ring-1 focus:ring-[#f59e0b] placeholder:text-gray-600"
+                  autoFocus
                 />
                 <button
                   type="button"
@@ -533,7 +490,6 @@ function WithdrawContent() {
                 type="button"
                 onClick={() => {
                   setShowSecurityModal(false);
-                  setOtpCode("");
                   setWithdrawalPassword("");
                 }}
                 className="flex-1 bg-white/5 hover:bg-white/10 text-gray-300 text-xs font-bold py-2.5 rounded-lg transition-colors cursor-pointer border border-white/5"
@@ -543,10 +499,10 @@ function WithdrawContent() {
               <button
                 type="button"
                 onClick={handleFinalSubmit}
-                disabled={isSubmitting || !withdrawalPassword || otpCode.length < 6}
+                disabled={isSubmitting || !withdrawalPassword}
                 className="flex-1 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-black text-xs font-bold py-2.5 rounded-lg transition-colors cursor-pointer disabled:opacity-50 flex items-center justify-center shadow-lg"
               >
-                {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin text-black" /> : "Verify & Withdraw"}
+                {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin text-black" /> : "Confirm & Withdraw"}
               </button>
             </div>
 
